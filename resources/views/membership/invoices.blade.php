@@ -34,10 +34,12 @@
                                                 {{ $invoice->created_at->format('M j, Y') }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                                                {{ $invoice->number ?? $invoice->stripe_invoice_id }}
+                                                <a href="{{ route('invoices.show', $invoice) }}" class="hover:underline" style="color: #374269;">
+                                                    {{ $invoice->number ?? 'N/A' }}
+                                                </a>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                ${{ number_format($invoice->amount_due, 2) }} {{ strtoupper($invoice->currency) }}
+                                                ${{ number_format($invoice->amount_due, 2) }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 @php
@@ -55,19 +57,23 @@
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                                <div class="flex justify-end space-x-2">
+                                                <div class="flex justify-end items-center space-x-3">
+                                                    @if (in_array($invoice->status, ['open', 'draft']))
+                                                        <form action="{{ route('invoices.pay', $invoice) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white" style="background-color: #d39c27;">
+                                                                Pay Now
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                     @if ($invoice->invoice_pdf_url)
                                                         <a href="{{ $invoice->invoice_pdf_url }}" target="_blank" class="inline-flex items-center text-sm font-medium hover:underline" style="color: #374269;">
-                                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                                             Download
                                                         </a>
                                                     @endif
-                                                    @if ($invoice->hosted_invoice_url)
-                                                        <a href="{{ $invoice->hosted_invoice_url }}" target="_blank" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
-                                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                                                            View
-                                                        </a>
-                                                    @endif
+                                                    <a href="{{ route('invoices.show', $invoice) }}" class="text-sm font-medium text-gray-500 hover:text-gray-700">
+                                                        View
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -79,7 +85,7 @@
                         {{-- Mobile Cards --}}
                         <div class="md:hidden space-y-3">
                             @foreach ($invoices as $invoice)
-                                <div class="border border-gray-200 rounded-lg p-4">
+                                <a href="{{ route('invoices.show', $invoice) }}" class="block border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
                                     <div class="flex items-center justify-between mb-2">
                                         <span class="text-sm font-medium text-gray-900">${{ number_format($invoice->amount_due, 2) }}</span>
                                         @php
@@ -89,18 +95,12 @@
                                             {{ ucfirst($invoice->status) }}
                                         </span>
                                     </div>
-                                    <p class="text-xs text-gray-500">{{ $invoice->number ?? $invoice->stripe_invoice_id }}</p>
+                                    <p class="text-xs text-gray-500">{{ $invoice->number ?? 'N/A' }}</p>
                                     <p class="text-xs text-gray-400">{{ $invoice->created_at->format('M j, Y') }}</p>
-                                    @if ($invoice->invoice_pdf_url)
-                                        <a href="{{ $invoice->invoice_pdf_url }}" target="_blank" class="mt-2 inline-flex items-center text-xs font-medium" style="color: #374269;">
-                                            Download PDF
-                                        </a>
-                                    @endif
-                                </div>
+                                </a>
                             @endforeach
                         </div>
 
-                        {{-- Pagination --}}
                         @if ($invoices->hasPages())
                             <div class="mt-6">
                                 {{ $invoices->links() }}

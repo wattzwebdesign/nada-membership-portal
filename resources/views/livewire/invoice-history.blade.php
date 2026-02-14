@@ -20,7 +20,6 @@
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -30,20 +29,15 @@
                                     @foreach ($invoices as $invoice)
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {{ $invoice->number ?? '-' }}
+                                                <a href="{{ route('invoices.show', $invoice) }}" class="hover:underline" style="color: #374269;">
+                                                    {{ $invoice->number ?? '-' }}
+                                                </a>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {{ $invoice->paid_at?->format('M d, Y') ?? $invoice->created_at->format('M d, Y') }}
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                @if ($invoice->period_start && $invoice->period_end)
-                                                    {{ $invoice->period_start->format('M d') }} - {{ $invoice->period_end->format('M d, Y') }}
-                                                @else
-                                                    -
-                                                @endif
+                                                {{ $invoice->created_at->format('M d, Y') }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                                                {{ $invoice->amount_paid_formatted }}
+                                                {{ $invoice->amount_due_formatted }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 @php
@@ -61,22 +55,18 @@
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm space-x-3">
-                                                @if ($invoice->hosted_invoice_url)
-                                                    <a href="{{ $invoice->hosted_invoice_url }}"
-                                                       target="_blank"
-                                                       class="font-medium hover:underline"
-                                                       style="color: #374269;">
-                                                        View
-                                                    </a>
-                                                @endif
-                                                @if ($invoice->invoice_pdf_url)
-                                                    <a href="{{ $invoice->invoice_pdf_url }}"
-                                                       target="_blank"
+                                                @if (in_array($invoice->status, ['open', 'draft']))
+                                                    <a href="{{ route('invoices.show', $invoice) }}"
                                                        class="font-medium hover:underline"
                                                        style="color: #d39c27;">
-                                                        Download PDF
+                                                        Pay Now
                                                     </a>
                                                 @endif
+                                                <a href="{{ route('invoices.show', $invoice) }}"
+                                                   class="font-medium hover:underline"
+                                                   style="color: #374269;">
+                                                    View
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach

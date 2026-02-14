@@ -16,4 +16,13 @@ class EditInvoice extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Recalculate amount_due from line items
+        $items = $data['items'] ?? [];
+        $data['amount_due'] = collect($items)->sum(fn ($item) => (float) ($item['total'] ?? 0));
+
+        return $data;
+    }
 }

@@ -120,32 +120,23 @@ class InvoiceResource extends Resource
                             ->defaultItems(1)
                             ->addActionLabel('Add Line Item')
                             ->reorderable(false)
-                            ->live()
-                            ->afterStateUpdated(function (Set $set, Get $get) {
-                                $items = $get('items') ?? [];
-                                $total = collect($items)->sum(fn ($item) => (float) ($item['total'] ?? 0));
-                                $set('amount_due', number_format($total, 2, '.', ''));
-                            }),
+                            ->live(),
                     ]),
 
                 Forms\Components\Section::make('Totals')
                     ->schema([
-                        Forms\Components\TextInput::make('amount_due')
-                            ->label('Amount Due ($)')
-                            ->numeric()
-                            ->prefix('$')
-                            ->default(0)
-                            ->readOnly()
-                            ->helperText('Calculated from line items'),
-                        Forms\Components\TextInput::make('amount_paid')
-                            ->label('Amount Paid ($)')
-                            ->numeric()
-                            ->prefix('$')
-                            ->default(0),
-                        Forms\Components\TextInput::make('currency')
-                            ->default('usd')
-                            ->maxLength(3),
-                    ])->columns(3),
+                        Forms\Components\Placeholder::make('calculated_total')
+                            ->label('Amount Due')
+                            ->content(function (Get $get): string {
+                                $items = $get('items') ?? [];
+                                $total = collect($items)->sum(fn ($item) => (float) ($item['total'] ?? 0));
+                                return '$' . number_format($total, 2);
+                            }),
+                        Forms\Components\Placeholder::make('amount_paid_display')
+                            ->label('Amount Paid')
+                            ->content(fn (?Invoice $record): string => '$' . number_format($record?->amount_paid ?? 0, 2))
+                            ->visibleOn('edit'),
+                    ])->columns(2),
 
                 Forms\Components\Section::make('Stripe Details')
                     ->schema([

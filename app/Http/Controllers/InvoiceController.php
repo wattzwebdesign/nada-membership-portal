@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class InvoiceController extends Controller
 {
+    public function __construct(
+        protected StripeService $stripeService,
+    ) {}
+
     /**
      * List all invoices for the authenticated user.
      */
@@ -16,7 +21,7 @@ class InvoiceController extends Controller
     {
         $invoices = $request->user()
             ->invoices()
-            ->orderByDesc('paid_at')
+            ->with('items')
             ->orderByDesc('created_at')
             ->paginate(15);
 
@@ -24,11 +29,114 @@ class InvoiceController extends Controller
     }
 
     /**
+     * Show a single invoice with line items.
+     */
+    public function show(Request $request, Invoice $invoice): View
+    {
+        if ($invoice->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        $invoice->load('items.plan');
+
+        return view('invoices.show', compact('invoice'));
+    }
+
+    /**
+     * Create a Stripe Checkout session to pay an open invoice.
+     */
+    public function pay(Request $request, Invoice $invoice): RedirectResponse
+    {
+        if ($invoice->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        if ($invoice->status === 'paid') {
+            return back()->with('info', 'This invoice has already been paid.');
+        }
+
+        if (!in_array($invoice->status, ['open', 'draft'])) {
+            return back()->with('error', 'This invoice cannot be paid.');
+        }
+
+        $invoice->load('items');
+        $user = $request->user();
+        $customer = $this->stripeService->getOrCreateCustomer($user);
+
+        $lineItems = $invoice->items->map(fn ($item) => [
+            'price_data' => [
+                'currency' => 'usd',
+                'unit_amount' => (int) round($item->unit_price * 100),
+                'product_data' => [
+                    'name' => $item->description,
+                ],
+            ],
+            'quantity' => $item->quantity,
+        ])->toArray();
+
+        $session = \Stripe\Checkout\Session::create([
+            'customer' => $customer->id,
+            'payment_method_types' => ['card'],
+            'line_items' => $lineItems,
+            'mode' => 'payment',
+            'success_url' => route('invoices.pay.success', $invoice) . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => route('invoices.show', $invoice),
+            'metadata' => [
+                'invoice_id' => $invoice->id,
+                'user_id' => $user->id,
+            ],
+        ]);
+
+        return redirect($session->url);
+    }
+
+    /**
+     * Handle successful payment callback from Stripe Checkout.
+     */
+    public function paySuccess(Request $request, Invoice $invoice): RedirectResponse
+    {
+        if ($invoice->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        $sessionId = $request->query('session_id');
+
+        if ($sessionId) {
+            try {
+                $session = \Stripe\Checkout\Session::retrieve($sessionId);
+
+                if ($session->payment_status === 'paid') {
+                    $invoice->update([
+                        'status' => 'paid',
+                        'amount_paid' => $invoice->amount_due,
+                        'paid_at' => now(),
+                        'stripe_invoice_id' => $session->payment_intent,
+                    ]);
+
+                    return redirect()
+                        ->route('invoices.show', $invoice)
+                        ->with('success', 'Payment successful! Thank you.');
+                }
+            } catch (\Exception $e) {
+                // Log but don't expose error to user
+                \Illuminate\Support\Facades\Log::error('Invoice payment verification failed', [
+                    'invoice_id' => $invoice->id,
+                    'session_id' => $sessionId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('invoices.show', $invoice)
+            ->with('warning', 'Payment is being processed. Your invoice will be updated shortly.');
+    }
+
+    /**
      * Redirect the user to the Stripe-hosted invoice PDF or show a download link.
      */
     public function download(Request $request, Invoice $invoice): RedirectResponse
     {
-        // Ensure the invoice belongs to the authenticated user
         if ($invoice->user_id !== $request->user()->id) {
             abort(403, 'You are not authorized to download this invoice.');
         }
@@ -41,7 +149,6 @@ class InvoiceController extends Controller
             return redirect($invoice->hosted_invoice_url);
         }
 
-        // Fallback: fetch URLs directly from Stripe if not stored locally
         if ($invoice->stripe_invoice_id) {
             try {
                 $stripeInvoice = \Stripe\Invoice::retrieve($invoice->stripe_invoice_id);
@@ -56,7 +163,7 @@ class InvoiceController extends Controller
                     return redirect($stripeInvoice->hosted_invoice_url);
                 }
             } catch (\Stripe\Exception\ApiErrorException $e) {
-                // Stripe lookup failed; fall through to error
+                // Stripe lookup failed
             }
         }
 

@@ -56,6 +56,9 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::get('/membership/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/membership/billing/payment-method', [BillingController::class, 'updatePaymentMethod'])->name('billing.update-payment-method');
     Route::get('/membership/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/membership/invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
+    Route::post('/membership/invoices/{invoice}/pay', [InvoiceController::class, 'pay'])->name('invoices.pay');
+    Route::get('/membership/invoices/{invoice}/pay/success', [InvoiceController::class, 'paySuccess'])->name('invoices.pay.success');
     Route::get('/membership/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
 
     // Certificates
