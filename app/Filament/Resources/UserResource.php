@@ -140,6 +140,11 @@ class UserResource extends Resource
                     ->counts('subscriptions')
                     ->label('Subs')
                     ->sortable(),
+                Tables\Columns\IconColumn::make('nda_accepted_at')
+                    ->label('NDA Signed')
+                    ->boolean()
+                    ->getStateUsing(fn (User $record): bool => $record->nda_accepted_at !== null)
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -155,6 +160,12 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload(),
+                Tables\Filters\TernaryFilter::make('nda_signed')
+                    ->label('NDA Signed')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('nda_accepted_at'),
+                        false: fn (Builder $query) => $query->whereNull('nda_accepted_at'),
+                    ),
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
