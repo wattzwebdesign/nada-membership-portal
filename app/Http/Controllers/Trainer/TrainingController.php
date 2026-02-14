@@ -31,8 +31,26 @@ class TrainingController extends Controller
     /**
      * Show the form for creating a new training.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
+        $user = $request->user();
+
+        if (!$user->canCreateTrainings()) {
+            $missing = [];
+            if (!$user->hasConnectedStripeAccount()) {
+                $missing[] = 'connect your Stripe account';
+            }
+            if (!$user->hasActiveTrainerPlan()) {
+                $missing[] = 'have an active Registered Trainer plan';
+            }
+
+            return view('trainer.trainings.create-blocked', [
+                'missing' => $missing,
+                'hasStripe' => $user->hasConnectedStripeAccount(),
+                'hasPlan' => $user->hasActiveTrainerPlan(),
+            ]);
+        }
+
         return view('trainer.trainings.create', [
             'trainingTypes' => TrainingType::cases(),
         ]);
@@ -43,6 +61,11 @@ class TrainingController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        if (!$request->user()->canCreateTrainings()) {
+            return redirect()->route('trainer.trainings.create')
+                ->with('error', 'You must have a connected Stripe account and an active trainer plan to create trainings.');
+        }
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],

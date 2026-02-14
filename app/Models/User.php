@@ -157,4 +157,22 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
     {
         return $this->discount_approved && $this->discount_type !== DiscountType::None;
     }
+
+    public function hasConnectedStripeAccount(): bool
+    {
+        return $this->stripeAccount && $this->stripeAccount->isFullyOnboarded();
+    }
+
+    public function hasActiveTrainerPlan(): bool
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->whereHas('plan', fn ($q) => $q->where('role_required', 'registered_trainer'))
+            ->exists();
+    }
+
+    public function canCreateTrainings(): bool
+    {
+        return $this->hasConnectedStripeAccount() && $this->hasActiveTrainerPlan();
+    }
 }
