@@ -28,6 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('NADA Admin')
+            ->brandLogo(asset('NADAWebsiteLogo.svg'))
+            ->brandLogoHeight('2.5rem')
             ->colors([
                 'primary' => Color::hex('#374269'),
                 'danger' => Color::Red,

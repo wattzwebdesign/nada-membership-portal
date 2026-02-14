@@ -14,7 +14,9 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="/" class="text-xl font-bold" style="color: #374269;">NADA</a>
+                        <a href="/">
+                            <img src="{{ asset('NADAWebsiteLogo.svg') }}" alt="NADA" class="h-10" />
+                        </a>
                     </div>
                     <div class="flex items-center space-x-4">
                         <a href="{{ route('public.pricing') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Pricing</a>

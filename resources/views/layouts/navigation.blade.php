@@ -3,8 +3,8 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="text-xl font-bold" style="color: #374269;">
-                        NADA
+                    <a href="{{ route('dashboard') }}">
+                        <img src="{{ asset('NADAWebsiteLogo.svg') }}" alt="NADA" class="h-10" />
                     </a>
                 </div>
 
