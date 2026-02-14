@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Agreement;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,8 +12,11 @@ class EnsureNdaSigned
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->user() && !$request->user()->hasSignedNda()) {
-            if (!$request->routeIs('nda.*') && !$request->routeIs('logout')) {
-                return redirect()->route('nda.show');
+            // Only enforce if there's actually an active NDA published
+            if (Agreement::getActiveNda()) {
+                if (!$request->routeIs('nda.*') && !$request->routeIs('logout')) {
+                    return redirect()->route('nda.show');
+                }
             }
         }
 

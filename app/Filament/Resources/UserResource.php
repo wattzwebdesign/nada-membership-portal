@@ -81,6 +81,13 @@ class UserResource extends Resource
                             ->helperText('Managed via Trainer Applications'),
                     ])->columns(2),
 
+                Forms\Components\Section::make('NDA Agreement')
+                    ->schema([
+                        Forms\Components\DateTimePicker::make('nda_accepted_at')
+                            ->label('NDA Accepted At')
+                            ->helperText('Clear this field to require the user to re-sign the NDA.'),
+                    ]),
+
                 Forms\Components\Section::make('Stripe')
                     ->schema([
                         Forms\Components\TextInput::make('stripe_customer_id')

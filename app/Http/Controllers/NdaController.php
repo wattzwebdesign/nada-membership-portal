@@ -13,10 +13,8 @@ class NdaController extends Controller
     {
         $agreement = Agreement::getActiveNda();
 
-        // If no active NDA exists, auto-accept and redirect to dashboard
+        // If no active NDA exists, just let them through
         if (!$agreement) {
-            $request->user()->update(['nda_accepted_at' => now()]);
-
             return redirect()->route('dashboard');
         }
 
@@ -34,8 +32,6 @@ class NdaController extends Controller
         $agreement = Agreement::getActiveNda();
 
         if (!$agreement) {
-            $request->user()->update(['nda_accepted_at' => now()]);
-
             return redirect()->route('dashboard');
         }
 
