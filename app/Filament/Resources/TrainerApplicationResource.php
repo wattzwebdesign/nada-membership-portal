@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TrainerApplicationResource\Pages;
 use App\Models\TrainerApplication;
+use App\Notifications\TrainerApplicationApprovedNotification;
+use App\Notifications\TrainerApplicationDeniedNotification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -146,6 +148,8 @@ class TrainerApplicationResource extends Resource
                             'trainer_approved_by' => auth()->id(),
                         ]);
 
+                        $record->user->notify(new TrainerApplicationApprovedNotification($record));
+
                         Notification::make()
                             ->title('Trainer Application Approved')
                             ->body('The user has been assigned the registered_trainer role.')
@@ -176,6 +180,8 @@ class TrainerApplicationResource extends Resource
                         $record->user->update([
                             'trainer_application_status' => 'denied',
                         ]);
+
+                        $record->user->notify(new TrainerApplicationDeniedNotification($record));
 
                         Notification::make()
                             ->title('Trainer Application Denied')

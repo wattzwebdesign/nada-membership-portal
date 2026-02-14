@@ -3,8 +3,11 @@
 namespace App\Livewire;
 
 use App\Models\Clinical;
+use App\Models\SiteSetting;
 use App\Models\User;
+use App\Notifications\ClinicalSubmittedNotification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -59,6 +62,9 @@ class ClinicalsForm extends Component
                 ->usingFileName($file->getClientOriginalName())
                 ->toMediaCollection('treatment_logs');
         }
+
+        Notification::route('mail', SiteSetting::adminEmail())
+            ->notify(new ClinicalSubmittedNotification($clinical));
 
         session()->flash('success', 'Your clinical submission has been received and is under review.');
 

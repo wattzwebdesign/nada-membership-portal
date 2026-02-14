@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\RegistrationStatus;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
+use App\Notifications\TrainingRegisteredNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -65,12 +66,14 @@ class TrainingRegistrationController extends Controller
             return back()->with('info', 'Paid training registration coming soon. Please contact support.');
         }
 
-        TrainingRegistration::create([
+        $registration = TrainingRegistration::create([
             'training_id' => $training->id,
             'user_id' => $user->id,
             'status' => RegistrationStatus::Registered->value,
             'amount_paid_cents' => 0,
         ]);
+
+        $user->notify(new TrainingRegisteredNotification($registration));
 
         return redirect()->route('trainings.my-registrations')
             ->with('success', 'You have been registered for "' . $training->title . '".');

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SiteSetting;
 use App\Models\TrainerApplication;
+use App\Notifications\TrainerApplicationSubmittedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\View\View;
 
 class TrainerApplicationController extends Controller
@@ -55,7 +58,11 @@ class TrainerApplicationController extends Controller
         // Update user's trainer application status
         $user->update(['trainer_application_status' => 'pending']);
 
-        // TODO: Send notification email to admins about the new application
+        $application = $user->trainerApplications()->where('status', 'pending')->first();
+        if ($application) {
+            Notification::route('mail', SiteSetting::adminEmail())
+                ->notify(new TrainerApplicationSubmittedNotification($application));
+        }
 
         return redirect()->route('trainer-application.create')
             ->with('success', 'Your trainer application has been submitted and is pending review.');

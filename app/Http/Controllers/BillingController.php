@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\PaymentMethodUpdatedNotification;
 use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -78,6 +79,8 @@ class BillingController extends Controller
                 $user->stripe_customer_id,
                 $request->input('payment_method_id'),
             );
+
+            $user->notify(new PaymentMethodUpdatedNotification());
 
             return redirect()->route('billing.index')
                 ->with('success', 'Your payment method has been updated.');

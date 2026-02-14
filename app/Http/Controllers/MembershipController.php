@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plan;
+use App\Notifications\SubscriptionCanceledNotification;
 use App\Services\StripeService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
@@ -123,6 +124,8 @@ class MembershipController extends Controller
         $subscription->update([
             'cancel_at_period_end' => true,
         ]);
+
+        $user->notify(new SubscriptionCanceledNotification($subscription));
 
         return redirect()->route('membership.index')
             ->with('success', 'Your subscription has been canceled and will remain active until ' . $subscription->current_period_end->format('F j, Y') . '.');

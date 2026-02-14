@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Enums\DiscountType;
 use App\Models\DiscountRequest;
+use App\Models\SiteSetting;
+use App\Notifications\DiscountRequestedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -67,7 +70,8 @@ class DiscountRequestController extends Controller
             }
         }
 
-        // TODO: Send notification email to admins with approve/deny links
+        Notification::route('mail', SiteSetting::adminEmail())
+            ->notify(new DiscountRequestedNotification($discountRequest));
 
         return redirect()->route('discount.request.status')
             ->with('success', 'Your discount request has been submitted and is pending review.');

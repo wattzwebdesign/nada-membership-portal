@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\User;
+use App\Notifications\PaymentFailedNotification;
+use App\Notifications\SubscriptionCanceledNotification;
+use App\Notifications\SubscriptionConfirmedNotification;
+use App\Notifications\SubscriptionRenewedNotification;
 use App\Services\CertificateService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
@@ -75,10 +80,14 @@ class StripeWebhookController extends Controller
             return response('User not found', 200);
         }
 
-        $this->subscriptionService->createFromStripe(
+        $localSubscription = $this->subscriptionService->createFromStripe(
             $this->objectToArray($subscription),
             $user
         );
+
+        if ($localSubscription) {
+            $user->notify(new SubscriptionConfirmedNotification($localSubscription));
+        }
 
         // Set the subscription's payment method as the customer's default
         $paymentMethodId = $subscription->default_payment_method ?? null;
@@ -127,6 +136,8 @@ class StripeWebhookController extends Controller
         if ($subscription->status === 'active') {
             $user->load('activeSubscription');
             $this->certificateService->syncExpirationFromSubscription($user);
+
+            $user->notify(new SubscriptionRenewedNotification($existingSub));
         }
 
         Log::info('Subscription updated from webhook.', [
@@ -159,6 +170,8 @@ class StripeWebhookController extends Controller
 
         // Expire all active certificates when membership is canceled.
         $this->certificateService->expireCertificatesForUser($user);
+
+        $user->notify(new SubscriptionCanceledNotification($existingSub));
 
         Log::info('Subscription deleted from webhook; certificates expired.', [
             'user_id' => $user->id,
@@ -225,6 +238,11 @@ class StripeWebhookController extends Controller
             $this->objectToArray($invoice),
             $user
         );
+
+        $localInvoice = Invoice::where('stripe_invoice_id', $invoice->id)->first();
+        if ($localInvoice) {
+            $user->notify(new PaymentFailedNotification($localInvoice));
+        }
 
         Log::warning('Invoice payment failed.', [
             'user_id' => $user->id,

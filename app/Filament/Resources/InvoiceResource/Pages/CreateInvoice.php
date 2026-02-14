@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\InvoiceResource\Pages;
 
 use App\Filament\Resources\InvoiceResource;
+use App\Notifications\InvoiceCreatedNotification;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateInvoice extends CreateRecord
@@ -19,7 +20,11 @@ class CreateInvoice extends CreateRecord
 
     protected function afterCreate(): void
     {
-        // Recalculate amount_due from the saved line items
         $this->record->recalculateTotal();
+
+        $this->record->load('user');
+        if ($this->record->user) {
+            $this->record->user->notify(new InvoiceCreatedNotification($this->record));
+        }
     }
 }

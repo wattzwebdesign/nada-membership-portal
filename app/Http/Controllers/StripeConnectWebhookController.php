@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StripeAccount;
 use App\Models\User;
+use App\Notifications\PayoutReceivedNotification;
 use App\Services\StripeConnectService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -130,6 +131,11 @@ class StripeConnectWebhookController extends Controller
             // Notify the trainer that their payout arrived.
             $user = $stripeAccount->user;
             if ($user) {
+                $user->notify(new PayoutReceivedNotification(
+                    amount: ($payout->amount ?? 0) / 100,
+                    currency: $currency,
+                ));
+
                 Log::info("Payout of {$currency} {$amountFormatted} arrived for trainer {$user->full_name}.", [
                     'user_id' => $user->id,
                     'payout_id' => $payout->id,

@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Enums\DiscountType;
 use App\Filament\Resources\DiscountRequestResource\Pages;
 use App\Models\DiscountRequest;
+use App\Notifications\DiscountApprovedNotification;
+use App\Notifications\DiscountDeniedNotification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -139,6 +141,8 @@ class DiscountRequestResource extends Resource
                             'discount_approved_by' => auth()->id(),
                         ]);
 
+                        $record->user->notify(new DiscountApprovedNotification($record));
+
                         Notification::make()
                             ->title('Discount Request Approved')
                             ->success()
@@ -164,6 +168,8 @@ class DiscountRequestResource extends Resource
                             'reviewed_by' => auth()->id(),
                             'reviewed_at' => now(),
                         ]);
+
+                        $record->user->notify(new DiscountDeniedNotification($record));
 
                         Notification::make()
                             ->title('Discount Request Denied')

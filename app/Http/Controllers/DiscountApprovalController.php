@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\DiscountRequest;
+use App\Notifications\DiscountApprovedNotification;
+use App\Notifications\DiscountDeniedNotification;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -37,7 +39,7 @@ class DiscountApprovalController extends Controller
             'discount_approved_at' => now(),
         ]);
 
-        // TODO: Send approval confirmation email to the user
+        $discountRequest->user->notify(new DiscountApprovedNotification($discountRequest));
 
         return view('discount-approvals.approved', [
             'discountRequest' => $discountRequest->load('user'),
@@ -66,7 +68,7 @@ class DiscountApprovalController extends Controller
             'token_expires_at' => null,
         ]);
 
-        // TODO: Send denial notification email to the user
+        $discountRequest->user->notify(new DiscountDeniedNotification($discountRequest));
 
         return view('discount-approvals.denied', [
             'discountRequest' => $discountRequest->load('user'),

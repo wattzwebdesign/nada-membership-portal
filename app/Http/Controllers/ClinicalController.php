@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clinical;
+use App\Models\SiteSetting;
 use App\Models\User;
+use App\Notifications\ClinicalSubmittedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\View\View;
 
 class ClinicalController extends Controller
@@ -59,6 +62,9 @@ class ClinicalController extends Controller
                 $clinical->addMedia($file)->toMediaCollection('treatment_logs');
             }
         }
+
+        Notification::route('mail', SiteSetting::adminEmail())
+            ->notify(new ClinicalSubmittedNotification($clinical));
 
         return redirect()->route('clinicals.index')
             ->with('success', 'Your clinical submission has been received and is under review.');
