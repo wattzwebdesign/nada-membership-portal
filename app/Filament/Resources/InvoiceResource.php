@@ -9,6 +9,8 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -160,6 +162,96 @@ class InvoiceResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Invoice Details')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('number')
+                            ->label('Invoice #')
+                            ->copyable(),
+                        Infolists\Components\TextEntry::make('user.email')
+                            ->label('User'),
+                        Infolists\Components\TextEntry::make('user.full_name')
+                            ->label('Name'),
+                        Infolists\Components\TextEntry::make('status')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'paid' => 'success',
+                                'open' => 'warning',
+                                'draft' => 'gray',
+                                'void' => 'danger',
+                                'uncollectible' => 'danger',
+                                default => 'gray',
+                            }),
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->label('Created')
+                            ->dateTime(),
+                        Infolists\Components\TextEntry::make('paid_at')
+                            ->label('Paid At')
+                            ->dateTime()
+                            ->placeholder('Unpaid'),
+                    ])->columns(3),
+
+                Infolists\Components\Section::make('Line Items')
+                    ->schema([
+                        Infolists\Components\RepeatableEntry::make('items')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('description')
+                                    ->columnSpan(2),
+                                Infolists\Components\TextEntry::make('plan.name')
+                                    ->label('Plan')
+                                    ->placeholder('—'),
+                                Infolists\Components\TextEntry::make('quantity'),
+                                Infolists\Components\TextEntry::make('unit_price')
+                                    ->label('Unit Price')
+                                    ->money('usd'),
+                                Infolists\Components\TextEntry::make('total')
+                                    ->money('usd'),
+                            ])
+                            ->columns(6),
+                    ]),
+
+                Infolists\Components\Section::make('Totals')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('amount_due')
+                            ->label('Amount Due')
+                            ->money('usd')
+                            ->size(Infolists\Components\TextEntry\TextEntrySize::Large),
+                        Infolists\Components\TextEntry::make('amount_paid')
+                            ->label('Amount Paid')
+                            ->money('usd')
+                            ->size(Infolists\Components\TextEntry\TextEntrySize::Large),
+                    ])->columns(2),
+
+                Infolists\Components\Section::make('Stripe Details')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('stripe_invoice_id')
+                            ->label('Stripe Invoice ID')
+                            ->copyable()
+                            ->placeholder('—'),
+                        Infolists\Components\TextEntry::make('stripe_subscription_id')
+                            ->label('Stripe Subscription ID')
+                            ->copyable()
+                            ->placeholder('—'),
+                        Infolists\Components\TextEntry::make('hosted_invoice_url')
+                            ->label('Hosted Invoice URL')
+                            ->url(fn (?string $state): ?string => $state)
+                            ->openUrlInNewTab()
+                            ->placeholder('—'),
+                        Infolists\Components\TextEntry::make('invoice_pdf_url')
+                            ->label('Invoice PDF URL')
+                            ->url(fn (?string $state): ?string => $state)
+                            ->openUrlInNewTab()
+                            ->placeholder('—'),
+                    ])
+                    ->columns(2)
+                    ->collapsible()
+                    ->collapsed(),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -215,6 +307,7 @@ class InvoiceResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('view_stripe')
                     ->label('View in Stripe')
@@ -241,6 +334,7 @@ class InvoiceResource extends Resource
         return [
             'index' => Pages\ListInvoices::route('/'),
             'create' => Pages\CreateInvoice::route('/create'),
+            'view' => Pages\ViewInvoice::route('/{record}'),
             'edit' => Pages\EditInvoice::route('/{record}/edit'),
         ];
     }

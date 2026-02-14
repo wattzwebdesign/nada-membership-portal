@@ -13,16 +13,14 @@ class EditInvoice extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
         ];
     }
 
-    protected function mutateFormDataBeforeSave(array $data): array
+    protected function afterSave(): void
     {
-        // Recalculate amount_due from line items
-        $items = $data['items'] ?? [];
-        $data['amount_due'] = collect($items)->sum(fn ($item) => (float) ($item['total'] ?? 0));
-
-        return $data;
+        // Recalculate amount_due from the saved line items
+        $this->record->recalculateTotal();
     }
 }
