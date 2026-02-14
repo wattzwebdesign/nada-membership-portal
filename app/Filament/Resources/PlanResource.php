@@ -145,6 +145,12 @@ class PlanResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ReplicateAction::make()
+                    ->excludeAttributes(['stripe_product_id', 'stripe_price_id'])
+                    ->beforeReplicaSaved(function (Plan $replica): void {
+                        $replica->name = $replica->name . ' (Copy)';
+                        $replica->slug = $replica->slug . '-copy-' . time();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
