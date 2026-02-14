@@ -24,7 +24,7 @@ class CertificateController extends Controller
             ->certificates()
             ->with('training')
             ->orderByDesc('date_issued')
-            ->get();
+            ->paginate(15);
 
         return view('certificates.index', compact('certificates'));
     }
