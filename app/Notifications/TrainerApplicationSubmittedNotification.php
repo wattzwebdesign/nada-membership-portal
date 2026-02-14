@@ -4,15 +4,12 @@ namespace App\Notifications;
 
 use App\Models\TrainerApplication;
 use App\Notifications\Concerns\UsesEmailTemplate;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\SerializesModels;
 
-class TrainerApplicationSubmittedNotification extends Notification implements ShouldQueue
+class TrainerApplicationSubmittedNotification extends Notification
 {
-    use Queueable, SerializesModels, UsesEmailTemplate;
+    use UsesEmailTemplate;
 
     public function __construct(
         public TrainerApplication $application,

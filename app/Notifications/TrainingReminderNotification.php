@@ -5,15 +5,12 @@ namespace App\Notifications;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
 use App\Notifications\Concerns\UsesEmailTemplate;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\SerializesModels;
 
-class TrainingReminderNotification extends Notification implements ShouldQueue
+class TrainingReminderNotification extends Notification
 {
-    use Queueable, SerializesModels, UsesEmailTemplate;
+    use UsesEmailTemplate;
 
     public function __construct(
         public Training $training,

@@ -3,15 +3,12 @@
 namespace App\Notifications;
 
 use App\Notifications\Concerns\UsesEmailTemplate;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\SerializesModels;
 
-class PayoutReceivedNotification extends Notification implements ShouldQueue
+class PayoutReceivedNotification extends Notification
 {
-    use Queueable, SerializesModels, UsesEmailTemplate;
+    use UsesEmailTemplate;
 
     public function __construct(
         public float $amount,

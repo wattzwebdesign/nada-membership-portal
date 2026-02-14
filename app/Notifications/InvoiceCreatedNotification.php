@@ -4,15 +4,12 @@ namespace App\Notifications;
 
 use App\Models\Invoice;
 use App\Notifications\Concerns\UsesEmailTemplate;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\SerializesModels;
 
-class InvoiceCreatedNotification extends Notification implements ShouldQueue
+class InvoiceCreatedNotification extends Notification
 {
-    use Queueable, SerializesModels, UsesEmailTemplate;
+    use UsesEmailTemplate;
 
     public function __construct(
         public Invoice $invoice,

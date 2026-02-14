@@ -4,15 +4,12 @@ namespace App\Notifications;
 
 use App\Models\Subscription;
 use App\Notifications\Concerns\UsesEmailTemplate;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\SerializesModels;
 
-class SubscriptionCanceledNotification extends Notification implements ShouldQueue
+class SubscriptionCanceledNotification extends Notification
 {
-    use Queueable, SerializesModels, UsesEmailTemplate;
+    use UsesEmailTemplate;
 
     public function __construct(
         public Subscription $subscription,
