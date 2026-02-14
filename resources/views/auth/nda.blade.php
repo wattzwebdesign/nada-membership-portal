@@ -31,22 +31,8 @@
                     {!! $agreement->content !!}
                 </div>
 
-                <p id="scroll-hint" class="text-xs text-amber-600 mb-4 text-center">
-                    Please scroll to the bottom of the agreement to continue.
-                </p>
-
                 <form method="POST" action="{{ route('nda.accept') }}">
                     @csrf
-
-                    <div class="mb-4">
-                        <label class="flex items-start gap-2">
-                            <input type="checkbox" id="nda-agree" name="agree" value="1" disabled class="rounded border-gray-300 shadow-sm focus:ring-indigo-500 mt-0.5 disabled:opacity-50 disabled:cursor-not-allowed" style="color: #374269;">
-                            <span id="agree-label" class="text-sm text-gray-400">I have read and agree to the above agreement</span>
-                        </label>
-                        @error('agree')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
 
                     <div class="flex items-center justify-between">
                         <button type="submit" id="nda-submit" disabled class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #374269;">
@@ -69,37 +55,25 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const content = document.getElementById('nda-content');
-                const checkbox = document.getElementById('nda-agree');
                 const submit = document.getElementById('nda-submit');
-                const hint = document.getElementById('scroll-hint');
-                const label = document.getElementById('agree-label');
 
                 function checkScrolledToBottom() {
-                    // Allow a small threshold for rounding
                     return content.scrollHeight - content.scrollTop - content.clientHeight < 10;
                 }
 
-                function enableForm() {
-                    checkbox.disabled = false;
-                    checkbox.classList.remove('disabled:opacity-50', 'disabled:cursor-not-allowed');
-                    label.classList.remove('text-gray-400');
-                    label.classList.add('text-gray-700');
-                    hint.style.display = 'none';
+                function enableButton() {
+                    submit.disabled = false;
                 }
 
                 // If content doesn't overflow (short agreement), enable immediately
                 if (content.scrollHeight <= content.clientHeight) {
-                    enableForm();
+                    enableButton();
                 }
 
                 content.addEventListener('scroll', function () {
                     if (checkScrolledToBottom()) {
-                        enableForm();
+                        enableButton();
                     }
-                });
-
-                checkbox.addEventListener('change', function () {
-                    submit.disabled = !this.checked;
                 });
             });
         </script>

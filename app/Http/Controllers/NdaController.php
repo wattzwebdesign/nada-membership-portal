@@ -25,10 +25,6 @@ class NdaController extends Controller
 
     public function accept(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate([
-            'agree' => 'required|accepted',
-        ]);
-
         $agreement = Agreement::getActiveNda();
 
         if (!$agreement) {
