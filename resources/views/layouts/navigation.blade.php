@@ -37,7 +37,12 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->full_name }}</div>
+                            <div class="flex items-center gap-2">
+                                <span>{{ Auth::user()->full_name }}</span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ Auth::user()->hasRole('admin') ? 'bg-red-100 text-red-700' : (Auth::user()->hasRole('registered_trainer') ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700') }}">
+                                    {{ Auth::user()->hasRole('admin') ? 'Admin' : (Auth::user()->hasRole('registered_trainer') ? 'Trainer' : 'Member') }}
+                                </span>
+                            </div>
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -101,7 +106,12 @@
 
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->full_name }}</div>
+                <div class="flex items-center gap-2">
+                    <span class="font-medium text-base text-gray-800">{{ Auth::user()->full_name }}</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ Auth::user()->hasRole('admin') ? 'bg-red-100 text-red-700' : (Auth::user()->hasRole('registered_trainer') ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700') }}">
+                        {{ Auth::user()->hasRole('admin') ? 'Admin' : (Auth::user()->hasRole('registered_trainer') ? 'Trainer' : 'Member') }}
+                    </span>
+                </div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
             </div>
 
