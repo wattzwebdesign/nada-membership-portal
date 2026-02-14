@@ -11,6 +11,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 
 class EmailTemplateResource extends Resource
 {
@@ -83,18 +84,22 @@ class EmailTemplateResource extends Resource
                     ->schema([
                         Forms\Components\Placeholder::make('variables_info')
                             ->label('')
-                            ->content(function (?EmailTemplate $record): string {
+                            ->content(function (?EmailTemplate $record): HtmlString {
                                 if (!$record || empty($record->available_variables)) {
-                                    return 'Save the template to see available variables.';
+                                    return new HtmlString('<span class="text-sm text-gray-500">Save the template to see available variables.</span>');
                                 }
 
-                                return collect($record->available_variables)
-                                    ->map(fn ($var) => '{{' . $var . '}}')
-                                    ->implode('   ');
+                                $badges = collect($record->available_variables)
+                                    ->map(fn ($var) => '<button type="button" x-on:click="
+                                        window.navigator.clipboard.writeText(\'{{' . $var . '}}\');
+                                        $tooltip(\'Copied!\', { timeout: 1500 });
+                                    " class="fi-badge flex items-center justify-center gap-x-1 rounded-md text-xs font-medium ring-1 ring-inset px-2 min-w-[theme(spacing.6)] py-1 fi-color-custom bg-custom-50 text-custom-600 ring-custom-600/10 dark:bg-custom-400/10 dark:text-custom-400 dark:ring-custom-400/30 cursor-pointer hover:bg-custom-100 dark:hover:bg-custom-400/20 transition" style="--c-50:var(--info-50);--c-100:var(--info-100);--c-400:var(--info-400);--c-600:var(--info-600);" x-tooltip>{{' . $var . '}}</button>')
+                                    ->implode(' ');
+
+                                return new HtmlString('<div class="flex flex-wrap gap-2">' . $badges . '</div>');
                             }),
                     ])
-                    ->collapsible()
-                    ->collapsed(),
+                    ->collapsible(),
             ]);
     }
 
@@ -140,15 +145,23 @@ class EmailTemplateResource extends Resource
                     ->schema([
                         Infolists\Components\TextEntry::make('available_variables')
                             ->label('')
-                            ->formatStateUsing(function (?array $state): string {
-                                if (empty($state)) {
-                                    return 'None';
+                            ->html()
+                            ->formatStateUsing(function ($state): HtmlString {
+                                $variables = is_array($state) ? $state : (is_string($state) ? json_decode($state, true) : []);
+
+                                if (empty($variables)) {
+                                    return new HtmlString('<span class="text-sm text-gray-500">None</span>');
                                 }
-                                return collect($state)->map(fn ($var) => '{{' . $var . '}}')->implode('   ');
-                            })
-                            ->badge()
-                            ->separator('   ')
-                            ->color('info'),
+
+                                $badges = collect($variables)
+                                    ->map(fn ($var) => '<button type="button" x-on:click="
+                                        window.navigator.clipboard.writeText(\'{{' . $var . '}}\');
+                                        $tooltip(\'Copied!\', { timeout: 1500 });
+                                    " class="fi-badge flex items-center justify-center gap-x-1 rounded-md text-xs font-medium ring-1 ring-inset px-2 min-w-[theme(spacing.6)] py-1 fi-color-custom bg-custom-50 text-custom-600 ring-custom-600/10 dark:bg-custom-400/10 dark:text-custom-400 dark:ring-custom-400/30 cursor-pointer hover:bg-custom-100 dark:hover:bg-custom-400/20 transition" style="--c-50:var(--info-50);--c-100:var(--info-100);--c-400:var(--info-400);--c-600:var(--info-600);" x-tooltip>{{' . $var . '}}</button>')
+                                    ->implode(' ');
+
+                                return new HtmlString('<div class="flex flex-wrap gap-2">' . $badges . '</div>');
+                            }),
                     ])
                     ->collapsible(),
             ]);
