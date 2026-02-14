@@ -43,6 +43,6 @@ class Agreement extends Model
 
     public static function getActiveNda(): ?self
     {
-        return static::active()->where('slug', 'nda')->first();
+        return static::active()->latest('published_at')->first();
     }
 }
