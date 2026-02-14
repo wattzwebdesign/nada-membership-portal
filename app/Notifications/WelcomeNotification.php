@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use App\Notifications\Concerns\UsesEmailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class WelcomeNotification extends Notification implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, UsesEmailTemplate;
 
     public function __construct(
         public User $user,
@@ -24,12 +25,15 @@ class WelcomeNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        return $this->buildFromTemplate('welcome', [
+            'user_name' => $this->user->name,
+            'user_email' => $this->user->email,
+        ], fn () => (new MailMessage)
             ->subject('Welcome to NADA!')
             ->greeting("Hello {$this->user->name}!")
             ->line('Welcome to the National Acupuncture Detoxification Association membership portal.')
             ->line('We are thrilled to have you join our community of dedicated practitioners.')
             ->action('Visit Your Dashboard', url('/dashboard'))
-            ->line('If you have any questions, please do not hesitate to reach out to our support team.');
+            ->line('If you have any questions, please do not hesitate to reach out to our support team.'));
     }
 }

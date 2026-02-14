@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\TrainerApplication;
+use App\Notifications\Concerns\UsesEmailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class TrainerApplicationSubmittedNotification extends Notification implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, UsesEmailTemplate;
 
     public function __construct(
         public TrainerApplication $application,
@@ -24,13 +25,17 @@ class TrainerApplicationSubmittedNotification extends Notification implements Sh
 
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        return $this->buildFromTemplate('trainer_application_submitted', [
+            'applicant_name' => $this->application->user->name,
+            'applicant_email' => $this->application->user->email,
+            'application_id' => $this->application->id,
+        ], fn () => (new MailMessage)
             ->subject('New Trainer Application')
             ->greeting('Hello Admin,')
             ->line('A new trainer application has been submitted and requires your review.')
             ->line("Applicant: {$this->application->user->name}")
             ->line("Email: {$this->application->user->email}")
             ->action('Review Application', url("/admin/trainer-applications/{$this->application->id}"))
-            ->line('Please review and process this application.');
+            ->line('Please review and process this application.'));
     }
 }

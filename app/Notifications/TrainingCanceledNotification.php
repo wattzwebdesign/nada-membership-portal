@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Training;
+use App\Notifications\Concerns\UsesEmailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class TrainingCanceledNotification extends Notification implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, UsesEmailTemplate;
 
     public function __construct(
         public Training $training,
@@ -24,7 +25,11 @@ class TrainingCanceledNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        return $this->buildFromTemplate('training_canceled', [
+            'user_name' => $notifiable->name,
+            'training_title' => $this->training->title,
+            'training_date' => $this->training->start_date->format('F j, Y'),
+        ], fn () => (new MailMessage)
             ->subject('Training Canceled')
             ->greeting("Hello {$notifiable->name},")
             ->line('We regret to inform you that the following training session has been canceled.')
@@ -32,6 +37,6 @@ class TrainingCanceledNotification extends Notification implements ShouldQueue
             ->line("Originally scheduled: {$this->training->start_date->format('F j, Y')}")
             ->line('If you have already paid, a refund will be processed automatically.')
             ->action('Browse Trainings', url('/trainings'))
-            ->line('We apologize for any inconvenience.');
+            ->line('We apologize for any inconvenience.'));
     }
 }

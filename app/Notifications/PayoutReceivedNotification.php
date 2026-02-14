@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Concerns\UsesEmailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -10,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 
 class PayoutReceivedNotification extends Notification implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, UsesEmailTemplate;
 
     public function __construct(
         public float $amount,
@@ -26,13 +27,16 @@ class PayoutReceivedNotification extends Notification implements ShouldQueue
     {
         $formattedAmount = number_format($this->amount, 2);
 
-        return (new MailMessage)
+        return $this->buildFromTemplate('payout_received', [
+            'user_name' => $notifiable->name,
+            'amount' => '$' . $formattedAmount . ' ' . $this->currency,
+        ], fn () => (new MailMessage)
             ->subject('Payout Received!')
             ->greeting("Hello {$notifiable->name}!")
             ->line('A payout has been processed to your account.')
             ->line("Amount: \${$formattedAmount} {$this->currency}")
             ->line('The funds should appear in your bank account within a few business days.')
             ->action('View Payout History', url('/dashboard'))
-            ->line('Thank you for being a valued NADA trainer!');
+            ->line('Thank you for being a valued NADA trainer!'));
     }
 }

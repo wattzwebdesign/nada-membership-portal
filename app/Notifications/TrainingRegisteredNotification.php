@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\TrainingRegistration;
+use App\Notifications\Concerns\UsesEmailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class TrainingRegisteredNotification extends Notification implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, UsesEmailTemplate;
 
     public function __construct(
         public TrainingRegistration $registration,
@@ -26,7 +27,13 @@ class TrainingRegisteredNotification extends Notification implements ShouldQueue
     {
         $training = $this->registration->training;
 
-        return (new MailMessage)
+        return $this->buildFromTemplate('training_registered', [
+            'user_name' => $notifiable->name,
+            'training_title' => $training->title,
+            'training_date' => $training->start_date->format('F j, Y'),
+            'training_location' => $training->location,
+            'training_id' => $training->id,
+        ], fn () => (new MailMessage)
             ->subject('Training Registration Confirmed')
             ->greeting("Hello {$notifiable->name}!")
             ->line('Your training registration has been confirmed.')
@@ -34,6 +41,6 @@ class TrainingRegisteredNotification extends Notification implements ShouldQueue
             ->line("Date: {$training->start_date->format('F j, Y')}")
             ->line("Location: {$training->location}")
             ->action('View Training Details', url("/trainings/{$training->id}"))
-            ->line('We look forward to seeing you there!');
+            ->line('We look forward to seeing you there!'));
     }
 }

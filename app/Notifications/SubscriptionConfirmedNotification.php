@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Subscription;
+use App\Notifications\Concerns\UsesEmailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class SubscriptionConfirmedNotification extends Notification implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, UsesEmailTemplate;
 
     public function __construct(
         public Subscription $subscription,
@@ -24,13 +25,16 @@ class SubscriptionConfirmedNotification extends Notification implements ShouldQu
 
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        return $this->buildFromTemplate('subscription_confirmed', [
+            'user_name' => $notifiable->name,
+            'plan_name' => $this->subscription->plan->name,
+        ], fn () => (new MailMessage)
             ->subject('Subscription Confirmed')
             ->greeting("Hello {$notifiable->name}!")
             ->line('Your NADA membership subscription has been confirmed.')
             ->line("Plan: {$this->subscription->plan->name}")
-            ->line("Status: Active")
+            ->line('Status: Active')
             ->action('View Membership', url('/membership'))
-            ->line('Thank you for becoming a NADA member!');
+            ->line('Thank you for becoming a NADA member!'));
     }
 }
