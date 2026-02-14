@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/pricing', [PublicPricingController::class, 'index'])->name('public.pricing');
