@@ -53,9 +53,6 @@ class PlanResource extends Resource
                             ->prefix('$')
                             ->formatStateUsing(fn (?int $state): ?string => $state !== null ? number_format($state / 100, 2, '.', '') : null)
                             ->dehydrateStateUsing(fn (?string $state): ?int => $state !== null ? (int) round((float) $state * 100) : null),
-                        Forms\Components\TextInput::make('currency')
-                            ->default('usd')
-                            ->maxLength(3),
                         Forms\Components\Select::make('billing_interval')
                             ->options([
                                 'month' => 'Month',
