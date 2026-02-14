@@ -142,6 +142,60 @@ class StripeService
         return $invoices->data;
     }
 
+    // Product & Price Sync
+
+    public function createStripeProductAndPrice(Plan $plan): void
+    {
+        $product = Product::create([
+            'name' => $plan->name,
+            'description' => $plan->description,
+            'metadata' => ['plan_id' => $plan->id],
+        ]);
+
+        $price = Price::create([
+            'product' => $product->id,
+            'unit_amount' => $plan->price_cents,
+            'currency' => $plan->currency,
+            'recurring' => [
+                'interval' => $plan->billing_interval,
+                'interval_count' => $plan->billing_interval_count,
+            ],
+            'metadata' => ['plan_id' => $plan->id],
+        ]);
+
+        $plan->update([
+            'stripe_product_id' => $product->id,
+            'stripe_price_id' => $price->id,
+        ]);
+    }
+
+    public function updateStripeProduct(Plan $plan): void
+    {
+        Product::update($plan->stripe_product_id, [
+            'name' => $plan->name,
+            'description' => $plan->description ?? '',
+        ]);
+    }
+
+    public function replaceStripePrice(Plan $plan): void
+    {
+        // Archive the old price (Stripe prices are immutable)
+        Price::update($plan->stripe_price_id, ['active' => false]);
+
+        $price = Price::create([
+            'product' => $plan->stripe_product_id,
+            'unit_amount' => $plan->price_cents,
+            'currency' => $plan->currency,
+            'recurring' => [
+                'interval' => $plan->billing_interval,
+                'interval_count' => $plan->billing_interval_count,
+            ],
+            'metadata' => ['plan_id' => $plan->id],
+        ]);
+
+        $plan->update(['stripe_price_id' => $price->id]);
+    }
+
     // Products & Prices (for migration)
 
     public function listProducts(array $params = []): array
