@@ -47,11 +47,12 @@ class PlanResource extends Resource
                 Forms\Components\Section::make('Pricing')
                     ->schema([
                         Forms\Components\TextInput::make('price_cents')
-                            ->label('Price (cents)')
+                            ->label('Price')
                             ->numeric()
                             ->required()
-                            ->suffix('cents')
-                            ->helperText('Enter price in cents (e.g., 9999 = $99.99)'),
+                            ->prefix('$')
+                            ->formatStateUsing(fn (?int $state): ?string => $state !== null ? number_format($state / 100, 2, '.', '') : null)
+                            ->dehydrateStateUsing(fn (?string $state): ?int => $state !== null ? (int) round((float) $state * 100) : null),
                         Forms\Components\TextInput::make('currency')
                             ->default('usd')
                             ->maxLength(3),
@@ -68,14 +69,6 @@ class PlanResource extends Resource
                             ->default(1)
                             ->required()
                             ->minValue(1),
-                    ])->columns(2),
-
-                Forms\Components\Section::make('Stripe')
-                    ->schema([
-                        Forms\Components\TextInput::make('stripe_product_id')
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('stripe_price_id')
-                            ->maxLength(255),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Access Control')
