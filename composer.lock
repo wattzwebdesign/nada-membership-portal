@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "68601e70f0d367a6f807521959047433",
+    "content-hash": "e8706f0bd079ff1d42495f2096746278",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -9007,6 +9007,74 @@
             "time": "2025-12-02T11:56:42+00:00"
         },
         {
+            "name": "tosend/tosend-laravel",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/tosend",
+                "reference": "c2fec369596b361c75d93a1c65ccf766d2374f6b"
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "illuminate/mail": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0|^9.0",
+                "phpunit/phpunit": "^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ToSend\\Laravel\\ToSendServiceProvider"
+                    ],
+                    "aliases": {
+                        "ToSend": "ToSend\\Laravel\\Facades\\ToSend"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ToSend\\Laravel\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "ToSend\\Laravel\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ToSend",
+                    "email": "support@tosend.com"
+                }
+            ],
+            "description": "Official Laravel SDK for the ToSend email API",
+            "homepage": "https://github.com/tosend/tosend-laravel",
+            "keywords": [
+                "api",
+                "email",
+                "laravel",
+                "mail",
+                "tosend",
+                "transactional"
+            ],
+            "support": {
+                "issues": "https://github.com/tosend/tosend-laravel/issues",
+                "source": "https://github.com/tosend/tosend-laravel"
+            },
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "vlucas/phpdotenv",
             "version": "v5.6.3",
             "source": {
@@ -11606,7 +11674,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "tosend/tosend-laravel": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
