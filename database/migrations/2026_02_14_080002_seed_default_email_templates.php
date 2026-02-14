@@ -29,6 +29,7 @@ return new class extends Migration
             ['key' => 'trainer_application_denied', 'name' => 'Trainer Application Denied', 'description' => 'Sent when a trainer application is denied.', 'subject' => 'Trainer Application Update', 'greeting' => 'Hello {{user_name}},', 'body' => "We have reviewed your trainer application and unfortunately we are unable to approve it at this time.\nThis may be due to insufficient training hours or other requirements that have not yet been met.\nYou are welcome to reapply once you have completed the necessary requirements.", 'action_text' => 'View Requirements', 'action_url' => '/trainers/apply', 'outro' => 'Thank you for your interest in becoming a NADA trainer.', 'available_variables' => json_encode(['user_name'])],
             ['key' => 'clinical_submitted', 'name' => 'Clinical Submitted (Admin)', 'description' => 'Sent to admins when a clinical submission is received.', 'subject' => 'New Clinical Submission', 'greeting' => 'Hello Admin,', 'body' => "A new clinical submission has been received and requires your review.\nSubmitted by: {{submitter_name}}\nEmail: {{submitter_email}}", 'action_text' => 'Review Submission', 'action_url' => '/admin/clinicals/{{clinical_id}}', 'outro' => 'Please review this clinical submission at your earliest convenience.', 'available_variables' => json_encode(['submitter_name', 'submitter_email', 'clinical_id'])],
             ['key' => 'payout_received', 'name' => 'Payout Received', 'description' => 'Sent to trainers when a payout is processed.', 'subject' => 'Payout Received!', 'greeting' => 'Hello {{user_name}}!', 'body' => "A payout has been processed to your account.\nAmount: {{amount}}\nThe funds should appear in your bank account within a few business days.", 'action_text' => 'View Payout History', 'action_url' => '/trainer/payouts', 'outro' => 'Thank you for being a valued NADA trainer!', 'available_variables' => json_encode(['user_name', 'amount'])],
+            ['key' => 'invoice_created', 'name' => 'New Invoice', 'description' => 'Sent to members when a new invoice is created.', 'subject' => 'New Invoice {{invoice_number}}', 'greeting' => 'Hello {{user_name}},', 'body' => "A new invoice has been created for your account.\nInvoice: {{invoice_number}}\nAmount Due: {{amount_due}}\nPlease review and submit payment at your earliest convenience.", 'action_text' => 'View Invoice', 'action_url' => '/invoices/{{invoice_id}}', 'outro' => 'If you have any questions about this invoice, please contact our support team.', 'available_variables' => json_encode(['user_name', 'invoice_number', 'amount_due', 'invoice_id'])],
         ];
 
         foreach ($templates as $template) {
@@ -53,7 +54,7 @@ return new class extends Migration
             'training_completed', 'training_canceled', 'certificate_ready', 'discount_requested',
             'discount_approved', 'discount_denied', 'trainer_application_submitted',
             'trainer_application_approved', 'trainer_application_denied', 'clinical_submitted',
-            'payout_received',
+            'payout_received', 'invoice_created',
         ])->delete();
     }
 };
