@@ -44,10 +44,10 @@
                                         'unpaid' => 'bg-red-100 text-red-800',
                                         'paused' => 'bg-gray-100 text-gray-800',
                                     ];
-                                    $statusColor = $statusColors[$subscription->status] ?? 'bg-gray-100 text-gray-800';
+                                    $statusColor = $statusColors[$subscription->status->value ?? $subscription->status] ?? 'bg-gray-100 text-gray-800';
                                 @endphp
                                 <span class="mt-1 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $statusColor }}">
-                                    {{ ucfirst(str_replace('_', ' ', $subscription->status)) }}
+                                    {{ ucfirst(str_replace('_', ' ', $subscription->status->value ?? $subscription->status)) }}
                                 </span>
                             </div>
 
