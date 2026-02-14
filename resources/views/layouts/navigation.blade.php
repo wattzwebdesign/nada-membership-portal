@@ -15,6 +15,9 @@
                     <x-nav-link :href="route('membership.index')" :active="request()->routeIs('membership.*')">
                         Membership
                     </x-nav-link>
+                    <x-nav-link :href="route('invoices.index')" :active="request()->routeIs('invoices.*')">
+                        Invoices
+                    </x-nav-link>
                     <x-nav-link :href="route('certificates.index')" :active="request()->routeIs('certificates.*')">
                         Certificates
                     </x-nav-link>
@@ -86,6 +89,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('membership.index')" :active="request()->routeIs('membership.*')">
                 Membership
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('invoices.index')" :active="request()->routeIs('invoices.*')">
+                Invoices
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('certificates.index')" :active="request()->routeIs('certificates.*')">
                 Certificates
