@@ -57,11 +57,12 @@ class PlanResource extends Resource
                             ->dehydrateStateUsing(fn (?string $state): ?int => $state !== null ? (int) round((float) $state * 100) : null),
                         Forms\Components\Select::make('billing_interval')
                             ->options([
-                                'month' => 'Month',
                                 'year' => 'Year',
+                                'month' => 'Month',
                                 'week' => 'Week',
                                 'day' => 'Day',
                             ])
+                            ->default('year')
                             ->required(),
                         Forms\Components\TextInput::make('billing_interval_count')
                             ->numeric()
