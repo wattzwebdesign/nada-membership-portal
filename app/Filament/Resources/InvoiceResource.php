@@ -4,8 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\InvoiceResource\Pages;
 use App\Models\Invoice;
+use App\Models\Plan;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -34,6 +37,8 @@ class InvoiceResource extends Resource
                             ->preload()
                             ->required(),
                         Forms\Components\TextInput::make('number')
+                            ->placeholder('Auto-generated')
+                            ->helperText('Leave blank to auto-generate (e.g., NADA-00001)')
                             ->maxLength(255),
                         Forms\Components\Select::make('status')
                             ->options([
@@ -43,31 +48,103 @@ class InvoiceResource extends Resource
                                 'void' => 'Void',
                                 'uncollectible' => 'Uncollectible',
                             ])
+                            ->default('draft')
                             ->required(),
+                        Forms\Components\DateTimePicker::make('paid_at')
+                            ->label('Paid At')
+                            ->visible(fn (Get $get): bool => $get('status') === 'paid'),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Amounts')
+                Forms\Components\Section::make('Line Items')
                     ->schema([
-                        Forms\Components\TextInput::make('amount_due_cents')
-                            ->label('Amount Due (cents)')
+                        Forms\Components\Repeater::make('items')
+                            ->relationship()
+                            ->schema([
+                                Forms\Components\Select::make('plan_id')
+                                    ->label('Plan')
+                                    ->options(
+                                        Plan::where('is_active', true)
+                                            ->get()
+                                            ->mapWithKeys(fn (Plan $plan) => [
+                                                $plan->id => "{$plan->name} ({$plan->price_formatted})",
+                                            ])
+                                    )
+                                    ->searchable()
+                                    ->placeholder('Select a plan (optional)')
+                                    ->live()
+                                    ->afterStateUpdated(function (Set $set, ?string $state) {
+                                        if ($state) {
+                                            $plan = Plan::find($state);
+                                            if ($plan) {
+                                                $set('description', $plan->name);
+                                                $set('unit_price', number_format($plan->price_cents / 100, 2, '.', ''));
+                                                $set('quantity', 1);
+                                                $set('total', number_format($plan->price_cents / 100, 2, '.', ''));
+                                            }
+                                        }
+                                    }),
+                                Forms\Components\TextInput::make('description')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->columnSpan(2),
+                                Forms\Components\TextInput::make('quantity')
+                                    ->numeric()
+                                    ->default(1)
+                                    ->minValue(1)
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (Set $set, Get $get) {
+                                        $qty = (int) ($get('quantity') ?: 1);
+                                        $price = (float) ($get('unit_price') ?: 0);
+                                        $set('total', number_format($qty * $price, 2, '.', ''));
+                                    }),
+                                Forms\Components\TextInput::make('unit_price')
+                                    ->label('Unit Price ($)')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (Set $set, Get $get) {
+                                        $qty = (int) ($get('quantity') ?: 1);
+                                        $price = (float) ($get('unit_price') ?: 0);
+                                        $set('total', number_format($qty * $price, 2, '.', ''));
+                                    }),
+                                Forms\Components\TextInput::make('total')
+                                    ->label('Total ($)')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->required()
+                                    ->readOnly(),
+                            ])
+                            ->columns(5)
+                            ->defaultItems(1)
+                            ->addActionLabel('Add Line Item')
+                            ->reorderable(false)
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, Get $get) {
+                                $items = $get('items') ?? [];
+                                $total = collect($items)->sum(fn ($item) => (float) ($item['total'] ?? 0));
+                                $set('amount_due', number_format($total, 2, '.', ''));
+                            }),
+                    ]),
+
+                Forms\Components\Section::make('Totals')
+                    ->schema([
+                        Forms\Components\TextInput::make('amount_due')
+                            ->label('Amount Due ($)')
                             ->numeric()
-                            ->required()
-                            ->suffix('cents')
-                            ->helperText('Enter amount in cents (e.g., 9999 = $99.99)'),
-                        Forms\Components\TextInput::make('amount_paid_cents')
-                            ->label('Amount Paid (cents)')
+                            ->prefix('$')
+                            ->default(0)
+                            ->readOnly()
+                            ->helperText('Calculated from line items'),
+                        Forms\Components\TextInput::make('amount_paid')
+                            ->label('Amount Paid ($)')
                             ->numeric()
-                            ->suffix('cents'),
+                            ->prefix('$')
+                            ->default(0),
                         Forms\Components\TextInput::make('currency')
                             ->default('usd')
                             ->maxLength(3),
-                    ])->columns(3),
-
-                Forms\Components\Section::make('Billing Period')
-                    ->schema([
-                        Forms\Components\DateTimePicker::make('period_start'),
-                        Forms\Components\DateTimePicker::make('period_end'),
-                        Forms\Components\DateTimePicker::make('paid_at'),
                     ])->columns(3),
 
                 Forms\Components\Section::make('Stripe Details')
@@ -84,7 +161,11 @@ class InvoiceResource extends Resource
                             ->label('Invoice PDF URL')
                             ->url()
                             ->maxLength(500),
-                    ])->columns(2)->collapsible(),
+                    ])
+                    ->columns(2)
+                    ->collapsible()
+                    ->collapsed()
+                    ->hiddenOn('create'),
             ]);
     }
 
@@ -92,9 +173,6 @@ class InvoiceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('number')
                     ->label('Invoice #')
                     ->searchable()
@@ -113,30 +191,22 @@ class InvoiceResource extends Resource
                         'uncollectible' => 'danger',
                         default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('amount_due_cents')
+                Tables\Columns\TextColumn::make('items_count')
+                    ->label('Items')
+                    ->counts('items')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('amount_due')
                     ->label('Amount Due')
-                    ->formatStateUsing(fn (?int $state): string => '$' . number_format(($state ?? 0) / 100, 2))
+                    ->money('usd')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('amount_paid_cents')
+                Tables\Columns\TextColumn::make('amount_paid')
                     ->label('Amount Paid')
-                    ->formatStateUsing(fn (?int $state): string => '$' . number_format(($state ?? 0) / 100, 2))
+                    ->money('usd')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('period_start')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('period_end')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('paid_at')
                     ->dateTime()
                     ->sortable()
                     ->placeholder('Unpaid'),
-                Tables\Columns\TextColumn::make('stripe_invoice_id')
-                    ->label('Stripe ID')
-                    ->copyable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -39,7 +39,7 @@
                                                 {{ $invoice->paid_at ? $invoice->paid_at->format('M d, Y') : ($invoice->created_at ? $invoice->created_at->format('M d, Y') : 'N/A') }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                ${{ number_format(($invoice->amount_cents ?? 0) / 100, 2) }}
+                                                ${{ number_format($invoice->amount_due, 2) }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 @php

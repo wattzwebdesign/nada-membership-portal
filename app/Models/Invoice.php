@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Invoice extends Model
 {
@@ -13,8 +14,8 @@ class Invoice extends Model
         'stripe_subscription_id',
         'number',
         'status',
-        'amount_due_cents',
-        'amount_paid_cents',
+        'amount_due',
+        'amount_paid',
         'currency',
         'period_start',
         'period_end',
@@ -26,12 +27,32 @@ class Invoice extends Model
     protected function casts(): array
     {
         return [
-            'amount_due_cents' => 'integer',
-            'amount_paid_cents' => 'integer',
+            'amount_due' => 'decimal:2',
+            'amount_paid' => 'decimal:2',
             'period_start' => 'datetime',
             'period_end' => 'datetime',
             'paid_at' => 'datetime',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Invoice $invoice) {
+            if (empty($invoice->number)) {
+                $invoice->number = static::generateNextNumber();
+            }
+        });
+    }
+
+    public static function generateNextNumber(): string
+    {
+        $latest = static::where('number', 'like', 'NADA-%')
+            ->orderByRaw("CAST(SUBSTRING(number, 6) AS UNSIGNED) DESC")
+            ->value('number');
+
+        $next = $latest ? ((int) substr($latest, 5)) + 1 : 1;
+
+        return 'NADA-' . str_pad($next, 5, '0', STR_PAD_LEFT);
     }
 
     public function user(): BelongsTo
@@ -39,13 +60,25 @@ class Invoice extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function items(): HasMany
+    {
+        return $this->hasMany(InvoiceItem::class);
+    }
+
     public function getAmountDueFormattedAttribute(): string
     {
-        return '$' . number_format($this->amount_due_cents / 100, 2);
+        return '$' . number_format($this->amount_due, 2);
     }
 
     public function getAmountPaidFormattedAttribute(): string
     {
-        return '$' . number_format($this->amount_paid_cents / 100, 2);
+        return '$' . number_format($this->amount_paid, 2);
+    }
+
+    public function recalculateTotal(): void
+    {
+        $this->update([
+            'amount_due' => $this->items()->sum('total'),
+        ]);
     }
 }

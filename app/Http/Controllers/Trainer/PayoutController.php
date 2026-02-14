@@ -42,11 +42,26 @@ class PayoutController extends Controller
 
     /**
      * Show Stripe Connect onboarding or initiate the connection flow.
+     * If the trainer already has a fully onboarded account, generate a login link
+     * so they can access their existing Stripe Express dashboard.
      */
     public function connectStripe(Request $request): RedirectResponse
     {
         $trainer = $request->user();
         $stripeAccount = $trainer->stripeAccount;
+
+        // If the trainer already has a fully onboarded account, send them to the Express dashboard
+        if ($stripeAccount && $stripeAccount->isFullyOnboarded()) {
+            try {
+                $loginLink = $this->stripeConnectService->createLoginLink(
+                    $stripeAccount->stripe_connect_account_id
+                );
+
+                return redirect($loginLink->url);
+            } catch (\Exception $e) {
+                // Login link failed — fall through to onboarding link as fallback
+            }
+        }
 
         // Create a new Stripe Express account if the trainer doesn't have one yet
         if (!$stripeAccount) {

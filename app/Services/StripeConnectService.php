@@ -49,6 +49,11 @@ class StripeConnectService
         ]);
     }
 
+    public function createLoginLink(string $accountId): \Stripe\LoginLink
+    {
+        return Account::createLoginLink($accountId);
+    }
+
     public function retrieveAccount(string $accountId): Account
     {
         return Account::retrieve($accountId);

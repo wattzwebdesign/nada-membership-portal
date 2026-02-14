@@ -30,8 +30,8 @@ class DashboardStatsWidget extends StatsOverviewWidget
         $newThisMonth = User::where('created_at', '>=', Carbon::now()->startOfMonth())->count();
 
         $revenueThisMonth = Invoice::where('paid_at', '>=', Carbon::now()->startOfMonth())
-            ->sum('amount_paid_cents');
-        $formattedRevenue = '$' . number_format($revenueThisMonth / 100, 2);
+            ->sum('amount_paid');
+        $formattedRevenue = '$' . number_format($revenueThisMonth, 2);
 
         $pendingDiscounts = DiscountRequest::pending()->count();
 

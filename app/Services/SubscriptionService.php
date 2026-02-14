@@ -72,8 +72,8 @@ class SubscriptionService
                 'stripe_subscription_id' => $invoiceData['subscription'] ?? null,
                 'number' => $invoiceData['number'] ?? null,
                 'status' => $invoiceData['status'],
-                'amount_due_cents' => $invoiceData['amount_due'],
-                'amount_paid_cents' => $invoiceData['amount_paid'],
+                'amount_due' => ($invoiceData['amount_due'] ?? 0) / 100,
+                'amount_paid' => ($invoiceData['amount_paid'] ?? 0) / 100,
                 'currency' => $invoiceData['currency'] ?? 'usd',
                 'period_start' => isset($invoiceData['period_start'])
                     ? \Carbon\Carbon::createFromTimestamp($invoiceData['period_start'])

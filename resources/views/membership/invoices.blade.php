@@ -37,7 +37,7 @@
                                                 {{ $invoice->number ?? $invoice->stripe_invoice_id }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                ${{ number_format($invoice->amount_due_cents / 100, 2) }} {{ strtoupper($invoice->currency) }}
+                                                ${{ number_format($invoice->amount_due, 2) }} {{ strtoupper($invoice->currency) }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 @php
@@ -81,7 +81,7 @@
                             @foreach ($invoices as $invoice)
                                 <div class="border border-gray-200 rounded-lg p-4">
                                     <div class="flex items-center justify-between mb-2">
-                                        <span class="text-sm font-medium text-gray-900">${{ number_format($invoice->amount_due_cents / 100, 2) }}</span>
+                                        <span class="text-sm font-medium text-gray-900">${{ number_format($invoice->amount_due, 2) }}</span>
                                         @php
                                             $invoiceColor = $invoiceStatusColors[$invoice->status] ?? 'bg-gray-100 text-gray-800';
                                         @endphp
