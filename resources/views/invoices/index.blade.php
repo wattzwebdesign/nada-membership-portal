@@ -57,7 +57,15 @@
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                                @if ($invoice->invoice_pdf_url || $invoice->hosted_invoice_url || $invoice->stripe_invoice_id)
+                                                @if ($invoice->hosted_invoice_url)
+                                                    <a href="{{ $invoice->hosted_invoice_url }}" target="_blank" rel="noopener" class="font-medium hover:underline" style="color: #374269;">
+                                                        View Invoice
+                                                    </a>
+                                                @elseif ($invoice->invoice_pdf_url)
+                                                    <a href="{{ $invoice->invoice_pdf_url }}" target="_blank" rel="noopener" class="font-medium hover:underline" style="color: #374269;">
+                                                        Download PDF
+                                                    </a>
+                                                @elseif ($invoice->stripe_invoice_id)
                                                     <a href="{{ route('invoices.download', $invoice) }}" target="_blank" rel="noopener" class="font-medium hover:underline" style="color: #374269;">
                                                         Download
                                                     </a>
