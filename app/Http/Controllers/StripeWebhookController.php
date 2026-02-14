@@ -292,10 +292,28 @@ class StripeWebhookController extends Controller
             $user->update(['stripe_customer_id' => $session->customer]);
         }
 
-        // For subscription checkouts, the subscription is created via the
-        // customer.subscription.created event. However, if the user has no
-        // certificate yet and the subscription is now active, issue one.
+        // For subscription checkouts, set the payment method as the customer's default.
         if ($session->mode === 'subscription' && isset($session->subscription)) {
+            try {
+                $stripeSubscription = \Stripe\Subscription::retrieve([
+                    'id' => $session->subscription,
+                    'expand' => ['default_payment_method'],
+                ]);
+                $pmId = $stripeSubscription->default_payment_method->id
+                    ?? $stripeSubscription->default_payment_method
+                    ?? null;
+                if ($pmId && $user->stripe_customer_id) {
+                    \Stripe\Customer::update($user->stripe_customer_id, [
+                        'invoice_settings' => ['default_payment_method' => $pmId],
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::warning('Failed to set default payment method after checkout.', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
             $user->load('activeSubscription');
 
             if ($user->activeSubscription && $user->certificates()->where('status', 'active')->doesntExist()) {
