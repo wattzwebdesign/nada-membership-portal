@@ -41,6 +41,25 @@ class InvoiceController extends Controller
             return redirect($invoice->hosted_invoice_url);
         }
 
+        // Fallback: fetch URLs directly from Stripe if not stored locally
+        if ($invoice->stripe_invoice_id) {
+            try {
+                $stripeInvoice = \Stripe\Invoice::retrieve($invoice->stripe_invoice_id);
+
+                if ($stripeInvoice->invoice_pdf) {
+                    $invoice->update(['invoice_pdf_url' => $stripeInvoice->invoice_pdf]);
+                    return redirect($stripeInvoice->invoice_pdf);
+                }
+
+                if ($stripeInvoice->hosted_invoice_url) {
+                    $invoice->update(['hosted_invoice_url' => $stripeInvoice->hosted_invoice_url]);
+                    return redirect($stripeInvoice->hosted_invoice_url);
+                }
+            } catch (\Stripe\Exception\ApiErrorException $e) {
+                // Stripe lookup failed; fall through to error
+            }
+        }
+
         return back()->with('error', 'No downloadable invoice is available for this record.');
     }
 }

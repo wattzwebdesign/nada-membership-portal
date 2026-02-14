@@ -77,7 +77,7 @@
                             <div id="card-errors" class="mt-2 text-sm text-red-600" role="alert"></div>
                         </div>
 
-                        <input type="hidden" name="payment_method" id="payment-method-input">
+                        <input type="hidden" name="payment_method_id" id="payment-method-input">
 
                         <div class="flex items-center justify-between">
                             <button type="submit" id="submit-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
