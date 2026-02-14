@@ -176,37 +176,39 @@ class UserResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('impersonate')
-                    ->label('Impersonate')
-                    ->icon('heroicon-o-finger-print')
-                    ->color('warning')
-                    ->requiresConfirmation()
-                    ->url(fn (User $record): string => route('filament.admin.auth.login') . '?impersonate=' . $record->id)
-                    ->openUrlInNewTab(),
-                Tables\Actions\Action::make('assign_comped_plan')
-                    ->label('Assign Comped Plan')
-                    ->icon('heroicon-o-gift')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->modalHeading('Assign Comped Plan')
-                    ->modalDescription('This will create a comped subscription for this user.')
-                    ->action(function (User $record) {
-                        // Placeholder: implement comped plan assignment logic
-                    }),
-                Tables\Actions\Action::make('issue_certificate')
-                    ->label('Issue Certificate')
-                    ->icon('heroicon-o-document-check')
-                    ->color('info')
-                    ->form([
-                        Forms\Components\Select::make('training_id')
-                            ->label('Training')
-                            ->relationship('trainingRegistrations.training', 'title')
-                            ->required(),
-                    ])
-                    ->action(function (User $record, array $data) {
-                        // Placeholder: implement certificate issuance logic
-                    }),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('impersonate')
+                        ->label('Impersonate')
+                        ->icon('heroicon-o-finger-print')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->url(fn (User $record): string => route('filament.admin.auth.login') . '?impersonate=' . $record->id)
+                        ->openUrlInNewTab(),
+                    Tables\Actions\Action::make('assign_comped_plan')
+                        ->label('Assign Comped Plan')
+                        ->icon('heroicon-o-gift')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('Assign Comped Plan')
+                        ->modalDescription('This will create a comped subscription for this user.')
+                        ->action(function (User $record) {
+                            // Placeholder: implement comped plan assignment logic
+                        }),
+                    Tables\Actions\Action::make('issue_certificate')
+                        ->label('Issue Certificate')
+                        ->icon('heroicon-o-document-check')
+                        ->color('info')
+                        ->form([
+                            Forms\Components\Select::make('training_id')
+                                ->label('Training')
+                                ->relationship('trainingRegistrations.training', 'title')
+                                ->required(),
+                        ])
+                        ->action(function (User $record, array $data) {
+                            // Placeholder: implement certificate issuance logic
+                        }),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
