@@ -72,12 +72,18 @@ class PlanResource extends Resource
 
                 Forms\Components\Section::make('Access Control')
                     ->schema([
-                        Forms\Components\TextInput::make('role_required')
-                            ->maxLength(255)
-                            ->helperText('Role required to see this plan (e.g., registered_trainer)'),
-                        Forms\Components\TextInput::make('discount_required')
-                            ->maxLength(255)
-                            ->helperText('Discount type required (e.g., student, senior)'),
+                        Forms\Components\Select::make('role_required')
+                            ->options([
+                                'member' => 'Member',
+                                'registered_trainer' => 'Registered Trainer',
+                            ])
+                            ->placeholder('Anyone'),
+                        Forms\Components\Select::make('discount_required')
+                            ->options([
+                                'student' => 'Student',
+                                'senior' => 'Senior',
+                            ])
+                            ->placeholder('None'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Visibility')
