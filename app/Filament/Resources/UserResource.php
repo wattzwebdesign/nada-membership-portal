@@ -91,10 +91,9 @@ class UserResource extends Resource
 
                 Forms\Components\Section::make('Roles')
                     ->schema([
-                        Forms\Components\Select::make('roles')
-                            ->multiple()
+                        Forms\Components\CheckboxList::make('roles')
                             ->relationship('roles', 'name')
-                            ->preload(),
+                            ->getOptionLabelFromRecordUsing(fn ($record) => ucwords(str_replace('_', ' ', $record->name))),
                     ]),
             ]);
     }
@@ -135,6 +134,7 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
+                    ->formatStateUsing(fn (string $state) => ucwords(str_replace('_', ' ', $state)))
                     ->separator(','),
                 Tables\Columns\TextColumn::make('subscriptions_count')
                     ->counts('subscriptions')
