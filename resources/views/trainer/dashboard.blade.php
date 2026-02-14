@@ -1,0 +1,189 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Trainer Dashboard') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+
+            @if (session('success'))
+                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            {{-- Stats Row --}}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 p-3 rounded-lg" style="background-color: rgba(55, 66, 105, 0.1);">
+                                <svg class="w-6 h-6" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">Upcoming Trainings</p>
+                                <p class="text-2xl font-bold" style="color: #374269;">{{ $upcomingTrainings->count() }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-green-50">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">Total Completions</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ $totalCompletions }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 p-3 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
+                                <svg class="w-6 h-6" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">Total Earnings</p>
+                                <p class="text-2xl font-bold" style="color: #d39c27;">${{ number_format(($earnings['trainer_earnings'] ?? 0) / 100, 2) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {{-- Upcoming Trainings --}}
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold" style="color: #374269;">Upcoming Trainings</h3>
+                            <a href="{{ route('trainer.trainings.create') }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white" style="background-color: #374269;">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                New Training
+                            </a>
+                        </div>
+
+                        @forelse ($upcomingTrainings as $training)
+                            <div class="border-b border-gray-100 py-3 last:border-0">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <a href="{{ route('trainer.trainings.edit', $training) }}" class="text-sm font-medium hover:underline" style="color: #374269;">
+                                            {{ $training->title }}
+                                        </a>
+                                        <p class="text-xs text-gray-500 mt-0.5">{{ $training->start_date->format('M j, Y \a\t g:i A') }}</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {{ $training->registrations_count ?? 0 }} registered
+                                        </span>
+                                        <a href="{{ route('trainer.attendees.index', $training) }}" class="text-gray-400 hover:text-gray-600" title="View attendees">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-6">
+                                <svg class="mx-auto h-10 w-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                                <p class="mt-2 text-sm text-gray-500">No upcoming trainings.</p>
+                            </div>
+                        @endforelse
+
+                        @if ($upcomingTrainings->count() > 0)
+                            <div class="mt-4">
+                                <a href="{{ route('trainer.trainings.index') }}" class="text-sm font-medium hover:underline" style="color: #d39c27;">View All Trainings</a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Quick Actions --}}
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Quick Actions</h3>
+
+                        <div class="space-y-3">
+                            <a href="{{ route('trainer.trainings.create') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <div class="flex-shrink-0 p-2 rounded-lg" style="background-color: rgba(55, 66, 105, 0.1);">
+                                    <svg class="w-5 h-5" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Create New Training</p>
+                                    <p class="text-xs text-gray-500">Set up in-person, virtual, or hybrid trainings</p>
+                                </div>
+                            </a>
+
+                            <a href="{{ route('trainer.trainings.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <div class="flex-shrink-0 p-2 rounded-lg bg-blue-50">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Manage Trainings</p>
+                                    <p class="text-xs text-gray-500">Edit, publish, or cancel your trainings</p>
+                                </div>
+                            </a>
+
+                            <a href="{{ route('trainer.payouts.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <div class="flex-shrink-0 p-2 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
+                                    <svg class="w-5 h-5" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">View Payouts</p>
+                                    <p class="text-xs text-gray-500">Check your Stripe Connect earnings</p>
+                                </div>
+                            </a>
+
+                            <a href="{{ route('trainer.payouts.reports') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <div class="flex-shrink-0 p-2 rounded-lg bg-purple-50">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Earnings Reports</p>
+                                    <p class="text-xs text-gray-500">Detailed per-training breakdown</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Recent Completions --}}
+            @if (isset($recentCompletions) && $recentCompletions->count() > 0)
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Recent Completions</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendee</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Training</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach ($recentCompletions->take(5) as $completion)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $completion->user->full_name ?? 'N/A' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $completion->training->title ?? 'N/A' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $completion->completed_at ? $completion->completed_at->format('M j, Y') : 'N/A' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+        </div>
+    </div>
+</x-app-layout>
