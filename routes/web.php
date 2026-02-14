@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicCertificateController;
 use App\Http\Controllers\PublicPricingController;
 use App\Http\Controllers\TrainerApplicationController;
+use App\Http\Controllers\NdaController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\TrainingRegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -29,8 +30,14 @@ Route::get('/verify/{certificate_code?}', [PublicCertificateController::class, '
 Route::get('/admin/discount-requests/{token}/approve', [DiscountApprovalController::class, 'approve'])->name('discount.approve');
 Route::get('/admin/discount-requests/{token}/deny', [DiscountApprovalController::class, 'deny'])->name('discount.deny');
 
+// NDA Agreement (auth required, but before verified/nda middleware)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/nda', [NdaController::class, 'show'])->name('nda.show');
+    Route::post('/nda', [NdaController::class, 'accept'])->name('nda.accept');
+});
+
 // Authenticated Member Routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -80,7 +87,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Trainer Routes
-Route::middleware(['auth', 'verified', 'trainer'])->prefix('trainer')->name('trainer.')->group(function () {
+Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->name('trainer.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Trainer\DashboardController::class, 'index'])->name('dashboard');
 
     // Training Management

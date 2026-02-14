@@ -14,6 +14,41 @@
                 </div>
             @endif
 
+            {{-- Trainer Setup Notices --}}
+            @php
+                $hasStripe = auth()->user()->hasConnectedStripeAccount();
+                $hasPlan = auth()->user()->hasActiveTrainerPlan();
+            @endphp
+            @if(!$hasStripe || !$hasPlan)
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                    <div class="flex items-start gap-3">
+                        <svg class="h-6 w-6 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                        </svg>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-semibold text-amber-800">Complete your Trainer setup</h3>
+                            <p class="text-sm text-amber-700 mt-1">You need to complete the following before you can create and manage trainings:</p>
+                            <ul class="mt-3 space-y-2">
+                                @if(!$hasStripe)
+                                    <li class="flex items-center gap-2 text-sm">
+                                        <svg class="h-4 w-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        <span class="text-amber-800">Connect your Stripe account for payouts</span>
+                                        <a href="{{ route('trainer.payouts.index') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white" style="background-color: #374269;">Connect Stripe</a>
+                                    </li>
+                                @endif
+                                @if(!$hasPlan)
+                                    <li class="flex items-center gap-2 text-sm">
+                                        <svg class="h-4 w-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        <span class="text-amber-800">Subscribe to a Registered Trainer plan</span>
+                                        <a href="{{ route('membership.plans') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white" style="background-color: #374269;">View Plans</a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             {{-- Stats Row --}}
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -52,7 +87,7 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-500">Total Earnings</p>
-                                <p class="text-2xl font-bold" style="color: #d39c27;">${{ number_format(($earnings['trainer_earnings'] ?? 0) / 100, 2) }}</p>
+                                <p class="text-2xl font-bold" style="color: #d39c27;">${{ number_format(($earningsSummary['trainer_earnings'] ?? 0) / 100, 2) }}</p>
                             </div>
                         </div>
                     </div>

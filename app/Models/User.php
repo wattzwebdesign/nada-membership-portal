@@ -40,6 +40,7 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         'trainer_approved_at',
         'trainer_approved_by',
         'profile_photo_path',
+        'nda_accepted_at',
     ];
 
     protected $hidden = [
@@ -56,6 +57,7 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
             'discount_approved' => 'boolean',
             'discount_approved_at' => 'datetime',
             'trainer_approved_at' => 'datetime',
+            'nda_accepted_at' => 'datetime',
             'deleted_at' => 'datetime',
         ];
     }
@@ -136,6 +138,11 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return $this->hasMany(TrainerApplication::class);
     }
 
+    public function agreementSignatures(): HasMany
+    {
+        return $this->hasMany(AgreementSignature::class);
+    }
+
     // Scopes & Helpers
 
     public function isTrainer(): bool
@@ -174,5 +181,10 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
     public function canCreateTrainings(): bool
     {
         return $this->hasConnectedStripeAccount() && $this->hasActiveTrainerPlan();
+    }
+
+    public function hasSignedNda(): bool
+    {
+        return $this->nda_accepted_at !== null;
     }
 }
