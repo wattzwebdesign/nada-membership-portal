@@ -23,7 +23,7 @@ Route::get('/', function () {
 });
 
 Route::get('/pricing', [PublicPricingController::class, 'index'])->name('public.pricing');
-Route::get('/verify/{certificate_code}', [PublicCertificateController::class, 'verify'])->name('public.verify');
+Route::get('/verify/{certificate_code?}', [PublicCertificateController::class, 'verify'])->name('public.verify');
 
 // Admin Discount Approval (token-based, no auth required — links sent via email)
 Route::get('/admin/discount-requests/{token}/approve', [DiscountApprovalController::class, 'approve'])->name('discount.approve');

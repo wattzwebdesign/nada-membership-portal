@@ -8,24 +8,22 @@ use Illuminate\View\View;
 
 class PublicCertificateController extends Controller
 {
-    /**
-     * Public certificate verification page.
-     * Allows anyone to look up a certificate by its code and verify its validity.
-     */
-    public function verify(Request $request): View
+    public function verify(Request $request, ?string $certificate_code = null): View
     {
         $certificate = null;
         $searched = false;
 
-        if ($request->filled('code')) {
+        $code = $certificate_code ?? $request->input('code');
+
+        if ($code) {
             $searched = true;
-            $code = trim($request->input('code'));
+            $code = trim($code);
 
             $certificate = Certificate::with('user:id,first_name,last_name')
                 ->where('certificate_code', $code)
                 ->first();
         }
 
-        return view('public.certificate-verify', compact('certificate', 'searched'));
+        return view('public.certificate-verify', compact('certificate', 'searched', 'code'));
     }
 }
