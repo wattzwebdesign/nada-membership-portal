@@ -76,24 +76,86 @@
                             </div>
 
                             {{-- File Upload --}}
-                            <div>
-                                <label for="treatment_logs" class="block text-sm font-medium text-gray-700">Treatment Log Files *</label>
+                            <div x-data="{
+                                dragging: false,
+                                files: [],
+                                handleFiles(fileList) {
+                                    const input = $refs.fileInput;
+                                    const dt = new DataTransfer();
+                                    // Keep existing files
+                                    for (const f of this.files) { dt.items.add(f); }
+                                    // Add new files
+                                    for (const f of fileList) { dt.items.add(f); }
+                                    input.files = dt.files;
+                                    this.files = Array.from(dt.files);
+                                },
+                                removeFile(index) {
+                                    this.files.splice(index, 1);
+                                    const dt = new DataTransfer();
+                                    for (const f of this.files) { dt.items.add(f); }
+                                    $refs.fileInput.files = dt.files;
+                                },
+                                formatSize(bytes) {
+                                    if (bytes < 1024) return bytes + ' B';
+                                    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                                    return (bytes / 1048576).toFixed(1) + ' MB';
+                                }
+                            }">
+                                <label class="block text-sm font-medium text-gray-700">Treatment Log Files *</label>
                                 <p class="text-xs text-gray-500 mb-2">Upload your treatment logs. Accepted formats: PDF, JPG, PNG, DOC, DOCX. Max 10MB per file.</p>
-                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+
+                                <div
+                                    x-on:click="$refs.fileInput.click()"
+                                    x-on:dragover.prevent="dragging = true"
+                                    x-on:dragleave.prevent="dragging = false"
+                                    x-on:drop.prevent="dragging = false; handleFiles($event.dataTransfer.files)"
+                                    :class="dragging ? 'border-[#374269] bg-blue-50' : 'border-gray-300'"
+                                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md cursor-pointer hover:border-gray-400 transition-colors"
+                                >
                                     <div class="space-y-1 text-center">
                                         <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                         <div class="flex text-sm text-gray-600">
-                                            <label for="treatment_logs" class="relative cursor-pointer rounded-md font-medium hover:underline" style="color: #374269;">
-                                                <span>Upload files</span>
-                                                <input id="treatment_logs" name="treatment_logs[]" type="file" class="sr-only" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-                                            </label>
+                                            <span class="font-medium hover:underline" style="color: #374269;">Upload files</span>
                                             <p class="pl-1">or drag and drop</p>
                                         </div>
                                         <p class="text-xs text-gray-500">PDF, JPG, PNG, DOC, DOCX up to 10MB each</p>
                                     </div>
                                 </div>
+
+                                <input
+                                    x-ref="fileInput"
+                                    name="treatment_logs[]"
+                                    type="file"
+                                    class="hidden"
+                                    multiple
+                                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                                    x-on:change="handleFiles($event.target.files)"
+                                >
+
+                                {{-- Selected files list --}}
+                                <template x-if="files.length > 0">
+                                    <ul class="mt-3 space-y-2">
+                                        <template x-for="(file, index) in files" :key="index">
+                                            <li class="flex items-center justify-between text-sm bg-gray-50 rounded-md px-3 py-2">
+                                                <div class="flex items-center min-w-0">
+                                                    <svg class="w-4 h-4 mr-2 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                    </svg>
+                                                    <span class="text-gray-700 truncate" x-text="file.name"></span>
+                                                    <span class="ml-2 text-gray-400 text-xs shrink-0" x-text="formatSize(file.size)"></span>
+                                                </div>
+                                                <button type="button" x-on:click.stop="removeFile(index)" class="ml-3 text-gray-400 hover:text-red-500 shrink-0">
+                                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
+
                                 @error('treatment_logs')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
