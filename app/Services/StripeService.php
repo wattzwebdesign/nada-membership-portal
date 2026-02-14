@@ -155,7 +155,7 @@ class StripeService
         $price = Price::create([
             'product' => $product->id,
             'unit_amount' => $plan->price_cents,
-            'currency' => $plan->currency,
+            'currency' => $plan->currency ?? 'usd',
             'recurring' => [
                 'interval' => $plan->billing_interval,
                 'interval_count' => $plan->billing_interval_count,
@@ -185,7 +185,7 @@ class StripeService
         $price = Price::create([
             'product' => $plan->stripe_product_id,
             'unit_amount' => $plan->price_cents,
-            'currency' => $plan->currency,
+            'currency' => $plan->currency ?? 'usd',
             'recurring' => [
                 'interval' => $plan->billing_interval,
                 'interval_count' => $plan->billing_interval_count,
