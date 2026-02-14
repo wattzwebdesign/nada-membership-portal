@@ -128,8 +128,6 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('discount_type')
                     ->badge()
                     ->formatStateUsing(fn (DiscountType $state) => $state->label()),
-                Tables\Columns\IconColumn::make('discount_approved')
-                    ->boolean(),
                 Tables\Columns\TextColumn::make('trainer_application_status')
                     ->badge()
                     ->color(fn (?string $state): string => match ($state) {
