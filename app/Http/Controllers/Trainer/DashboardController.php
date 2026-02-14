@@ -46,6 +46,14 @@ class DashboardController extends Controller
             ->sortByDesc('completed_at')
             ->take(15);
 
+        // Total completions across all trainings
+        $totalCompletions = $trainer->trainings()
+            ->withCount(['registrations as completions_count' => function ($query) {
+                $query->where('status', RegistrationStatus::Completed);
+            }])
+            ->get()
+            ->sum('completions_count');
+
         // Earnings summary from the PayoutService
         $earningsSummary = $this->payoutService->getEarningsReport($trainer);
 
@@ -53,6 +61,7 @@ class DashboardController extends Controller
             'trainer' => $trainer,
             'upcomingTrainings' => $upcomingTrainings,
             'recentCompletions' => $recentCompletions,
+            'totalCompletions' => $totalCompletions,
             'earningsSummary' => $earningsSummary,
         ]);
     }
