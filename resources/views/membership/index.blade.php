@@ -120,7 +120,7 @@
                                 Invoice History
                             </a>
 
-                            @if (!$subscription->cancel_at_period_end && $subscription->status === 'active')
+                            @if (!$subscription->cancel_at_period_end && ($subscription->status->value ?? $subscription->status) === 'active')
                                 <form method="POST" action="{{ route('membership.cancel') }}" onsubmit="return confirm('Are you sure you want to cancel your membership? Your access will continue until the end of the current billing period.');">
                                     @csrf
                                     <button type="submit" class="inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 hover:bg-red-50">

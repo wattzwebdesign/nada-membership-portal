@@ -80,6 +80,21 @@ class StripeWebhookController extends Controller
             $user
         );
 
+        // Set the subscription's payment method as the customer's default
+        $paymentMethodId = $subscription->default_payment_method ?? null;
+        if ($paymentMethodId && $user->stripe_customer_id) {
+            try {
+                \Stripe\Customer::update($user->stripe_customer_id, [
+                    'invoice_settings' => ['default_payment_method' => $paymentMethodId],
+                ]);
+            } catch (\Exception $e) {
+                Log::warning('Failed to set default payment method from subscription.', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         Log::info('Subscription created from webhook.', [
             'user_id' => $user->id,
             'stripe_subscription_id' => $subscription->id,
