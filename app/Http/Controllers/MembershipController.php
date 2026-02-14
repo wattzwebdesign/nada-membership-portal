@@ -57,6 +57,16 @@ class MembershipController extends Controller
             return back()->with('error', 'You already have an active subscription. Please switch plans instead.');
         }
 
+        // Auto-sync to Stripe if the plan was created before Stripe integration
+        if (!$plan->stripe_price_id) {
+            try {
+                $this->stripeService->createStripeProductAndPrice($plan);
+                $plan->refresh();
+            } catch (\Stripe\Exception\ApiErrorException $e) {
+                return back()->with('error', 'Unable to process this plan. Please contact support.');
+            }
+        }
+
         $checkoutSession = $this->stripeService->createSubscriptionCheckout(
             $user,
             $plan,
