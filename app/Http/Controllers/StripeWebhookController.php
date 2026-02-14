@@ -314,16 +314,6 @@ class StripeWebhookController extends Controller
                 ]);
             }
 
-            $user->load('activeSubscription');
-
-            if ($user->activeSubscription && $user->certificates()->where('status', 'active')->doesntExist()) {
-                $this->certificateService->issueCertificate($user);
-
-                Log::info('Certificate issued after checkout completion.', [
-                    'user_id' => $user->id,
-                    'stripe_subscription_id' => $session->subscription,
-                ]);
-            }
         }
 
         Log::info('Checkout session completed.', [
