@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Log;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -141,7 +142,11 @@ class DiscountRequestResource extends Resource
                             'discount_approved_by' => auth()->id(),
                         ]);
 
-                        $record->user->notify(new DiscountApprovedNotification($record));
+                        try {
+                            $record->user->notify(new DiscountApprovedNotification($record));
+                        } catch (\Throwable $e) {
+                            Log::error('Failed to send notification: DiscountApprovedNotification', ['error' => $e->getMessage()]);
+                        }
 
                         Notification::make()
                             ->title('Discount Request Approved')
@@ -169,7 +174,11 @@ class DiscountRequestResource extends Resource
                             'reviewed_at' => now(),
                         ]);
 
-                        $record->user->notify(new DiscountDeniedNotification($record));
+                        try {
+                            $record->user->notify(new DiscountDeniedNotification($record));
+                        } catch (\Throwable $e) {
+                            Log::error('Failed to send notification: DiscountDeniedNotification', ['error' => $e->getMessage()]);
+                        }
 
                         Notification::make()
                             ->title('Discount Request Denied')

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\PaymentMethodUpdatedNotification;
 use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
@@ -10,6 +11,8 @@ use Illuminate\View\View;
 
 class BillingController extends Controller
 {
+    use SafelyNotifies;
+
     public function __construct(
         protected StripeService $stripeService,
     ) {}
@@ -80,7 +83,7 @@ class BillingController extends Controller
                 $request->input('payment_method_id'),
             );
 
-            $user->notify(new PaymentMethodUpdatedNotification());
+            $this->safeNotify($user, new PaymentMethodUpdatedNotification());
 
             return redirect()->route('billing.index')
                 ->with('success', 'Your payment method has been updated.');

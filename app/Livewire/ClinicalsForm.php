@@ -6,8 +6,8 @@ use App\Models\Clinical;
 use App\Models\SiteSetting;
 use App\Models\User;
 use App\Notifications\ClinicalSubmittedNotification;
+use App\Notifications\Concerns\SafelyNotifies;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -15,6 +15,7 @@ use Livewire\WithFileUploads;
 #[Layout('layouts.app')]
 class ClinicalsForm extends Component
 {
+    use SafelyNotifies;
     use WithFileUploads;
 
     public string $first_name = '';
@@ -63,8 +64,7 @@ class ClinicalsForm extends Component
                 ->toMediaCollection('treatment_logs');
         }
 
-        Notification::route('mail', SiteSetting::adminEmail())
-            ->notify(new ClinicalSubmittedNotification($clinical));
+        $this->safeNotifyRoute(SiteSetting::adminEmail(), new ClinicalSubmittedNotification($clinical));
 
         session()->flash('success', 'Your clinical submission has been received and is under review.');
 

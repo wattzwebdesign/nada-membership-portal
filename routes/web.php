@@ -73,6 +73,7 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::delete('/trainings/{training}/cancel-registration', [TrainingRegistrationController::class, 'destroy'])->name('trainings.cancel-registration');
 
     // Clinicals
+    Route::get('/clinicals', fn () => redirect()->route('clinicals.index'));
     Route::get('/clinicals/submit', [ClinicalController::class, 'create'])->name('clinicals.create');
     Route::post('/clinicals', [ClinicalController::class, 'store'])->name('clinicals.store');
     Route::get('/clinicals/history', [ClinicalController::class, 'index'])->name('clinicals.index');

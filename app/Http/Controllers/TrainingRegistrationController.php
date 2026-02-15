@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\RegistrationStatus;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
+use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\TrainingRegisteredNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Illuminate\View\View;
 
 class TrainingRegistrationController extends Controller
 {
+    use SafelyNotifies;
     /**
      * List all training registrations for the authenticated user.
      */
@@ -73,7 +75,7 @@ class TrainingRegistrationController extends Controller
             'amount_paid_cents' => 0,
         ]);
 
-        $user->notify(new TrainingRegisteredNotification($registration));
+        $this->safeNotify($user, new TrainingRegisteredNotification($registration));
 
         return redirect()->route('trainings.my-registrations')
             ->with('success', 'You have been registered for "' . $training->title . '".');

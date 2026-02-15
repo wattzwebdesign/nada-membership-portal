@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\WelcomeNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -15,6 +16,8 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
+    use SafelyNotifies;
+
     public function create(): View
     {
         return view('auth.register');
@@ -40,7 +43,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        $user->notify(new WelcomeNotification($user));
+        $this->safeNotify($user, new WelcomeNotification($user));
 
         Auth::login($user);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StripeAccount;
 use App\Models\User;
+use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\PayoutReceivedNotification;
 use App\Services\StripeConnectService;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Stripe\Webhook;
 
 class StripeConnectWebhookController extends Controller
 {
+    use SafelyNotifies;
     public function __construct(
         protected StripeConnectService $stripeConnectService,
     ) {}
@@ -131,7 +133,7 @@ class StripeConnectWebhookController extends Controller
             // Notify the trainer that their payout arrived.
             $user = $stripeAccount->user;
             if ($user) {
-                $user->notify(new PayoutReceivedNotification(
+                $this->safeNotify($user, new PayoutReceivedNotification(
                     amount: ($payout->amount ?? 0) / 100,
                     currency: $currency,
                 ));

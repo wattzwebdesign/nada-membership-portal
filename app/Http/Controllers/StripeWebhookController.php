@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\User;
+use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\PaymentFailedNotification;
 use App\Notifications\SubscriptionCanceledNotification;
 use App\Notifications\SubscriptionConfirmedNotification;
@@ -17,6 +18,7 @@ use Stripe\Webhook;
 
 class StripeWebhookController extends Controller
 {
+    use SafelyNotifies;
     public function __construct(
         protected SubscriptionService $subscriptionService,
         protected CertificateService $certificateService,
@@ -86,7 +88,7 @@ class StripeWebhookController extends Controller
         );
 
         if ($localSubscription) {
-            $user->notify(new SubscriptionConfirmedNotification($localSubscription));
+            $this->safeNotify($user, new SubscriptionConfirmedNotification($localSubscription));
         }
 
         // Set the subscription's payment method as the customer's default
@@ -137,7 +139,7 @@ class StripeWebhookController extends Controller
             $user->load('activeSubscription');
             $this->certificateService->syncExpirationFromSubscription($user);
 
-            $user->notify(new SubscriptionRenewedNotification($existingSub));
+            $this->safeNotify($user, new SubscriptionRenewedNotification($existingSub));
         }
 
         Log::info('Subscription updated from webhook.', [
@@ -171,7 +173,7 @@ class StripeWebhookController extends Controller
         // Expire all active certificates when membership is canceled.
         $this->certificateService->expireCertificatesForUser($user);
 
-        $user->notify(new SubscriptionCanceledNotification($existingSub));
+        $this->safeNotify($user, new SubscriptionCanceledNotification($existingSub));
 
         Log::info('Subscription deleted from webhook; certificates expired.', [
             'user_id' => $user->id,
@@ -241,7 +243,7 @@ class StripeWebhookController extends Controller
 
         $localInvoice = Invoice::where('stripe_invoice_id', $invoice->id)->first();
         if ($localInvoice) {
-            $user->notify(new PaymentFailedNotification($localInvoice));
+            $this->safeNotify($user, new PaymentFailedNotification($localInvoice));
         }
 
         Log::warning('Invoice payment failed.', [

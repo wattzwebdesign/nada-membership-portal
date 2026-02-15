@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DiscountRequest;
+use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\DiscountApprovedNotification;
 use App\Notifications\DiscountDeniedNotification;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\View\View;
 
 class DiscountApprovalController extends Controller
 {
+    use SafelyNotifies;
     /**
      * Approve a discount request via a token-based link (from admin email).
      */
@@ -39,7 +41,7 @@ class DiscountApprovalController extends Controller
             'discount_approved_at' => now(),
         ]);
 
-        $discountRequest->user->notify(new DiscountApprovedNotification($discountRequest));
+        $this->safeNotify($discountRequest->user, new DiscountApprovedNotification($discountRequest));
 
         return view('discount-approvals.approved', [
             'discountRequest' => $discountRequest->load('user'),
@@ -68,7 +70,7 @@ class DiscountApprovalController extends Controller
             'token_expires_at' => null,
         ]);
 
-        $discountRequest->user->notify(new DiscountDeniedNotification($discountRequest));
+        $this->safeNotify($discountRequest->user, new DiscountDeniedNotification($discountRequest));
 
         return view('discount-approvals.denied', [
             'discountRequest' => $discountRequest->load('user'),

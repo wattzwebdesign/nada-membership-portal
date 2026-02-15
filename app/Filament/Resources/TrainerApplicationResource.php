@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Log;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -148,7 +149,11 @@ class TrainerApplicationResource extends Resource
                             'trainer_approved_by' => auth()->id(),
                         ]);
 
-                        $record->user->notify(new TrainerApplicationApprovedNotification($record));
+                        try {
+                            $record->user->notify(new TrainerApplicationApprovedNotification($record));
+                        } catch (\Throwable $e) {
+                            Log::error('Failed to send notification: TrainerApplicationApprovedNotification', ['error' => $e->getMessage()]);
+                        }
 
                         Notification::make()
                             ->title('Trainer Application Approved')
@@ -181,7 +186,11 @@ class TrainerApplicationResource extends Resource
                             'trainer_application_status' => 'denied',
                         ]);
 
-                        $record->user->notify(new TrainerApplicationDeniedNotification($record));
+                        try {
+                            $record->user->notify(new TrainerApplicationDeniedNotification($record));
+                        } catch (\Throwable $e) {
+                            Log::error('Failed to send notification: TrainerApplicationDeniedNotification', ['error' => $e->getMessage()]);
+                        }
 
                         Notification::make()
                             ->title('Trainer Application Denied')

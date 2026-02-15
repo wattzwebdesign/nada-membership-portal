@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\SiteSetting;
 use App\Models\TrainerApplication;
+use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\TrainerApplicationSubmittedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\View\View;
 
 class TrainerApplicationController extends Controller
 {
+    use SafelyNotifies;
     /**
      * Show the trainer application form.
      */
@@ -60,8 +61,7 @@ class TrainerApplicationController extends Controller
 
         $application = $user->trainerApplications()->where('status', 'pending')->first();
         if ($application) {
-            Notification::route('mail', SiteSetting::adminEmail())
-                ->notify(new TrainerApplicationSubmittedNotification($application));
+            $this->safeNotifyRoute(SiteSetting::adminEmail(), new TrainerApplicationSubmittedNotification($application));
         }
 
         return redirect()->route('trainer-application.create')
