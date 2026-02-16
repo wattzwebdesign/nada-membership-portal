@@ -27,9 +27,6 @@
                     <x-nav-link :href="route('clinicals.index')" :active="request()->routeIs('clinicals.*')">
                         Clinicals
                     </x-nav-link>
-                    <x-nav-link :href="route('discount.request.status')" :active="request()->routeIs('discount.*')">
-                        Discount
-                    </x-nav-link>
 
                     @if(auth()->user()->isTrainer())
                         <x-nav-link :href="route('trainer.dashboard')" :active="request()->routeIs('trainer.*')" class="text-amber-600">
@@ -63,6 +60,9 @@
                         </x-dropdown-link>
                         <x-dropdown-link :href="route('profile.edit')">
                             Profile
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('discount.request.status')">
+                            Discount Request
                         </x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -105,9 +105,6 @@
             <x-responsive-nav-link :href="route('clinicals.index')" :active="request()->routeIs('clinicals.*')">
                 Clinicals
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('discount.request.status')" :active="request()->routeIs('discount.*')">
-                Discount
-            </x-responsive-nav-link>
 
             @if(auth()->user()->isTrainer())
                 <x-responsive-nav-link :href="route('trainer.dashboard')" :active="request()->routeIs('trainer.*')">
@@ -133,6 +130,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('profile.edit')">
                     Profile
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('discount.request.status')">
+                    Discount Request
                 </x-responsive-nav-link>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
