@@ -13,11 +13,27 @@
     <div class="sticky top-0 z-20 bg-white border-b border-gray-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <form method="GET" action="{{ route('public.trainers.index') }}" class="flex flex-col sm:flex-row gap-3">
-                <div class="flex-1">
-                    <input type="text" name="search" value="{{ $search }}" placeholder="Search by name, city, state, or keyword..." class="w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                <div class="flex-1 flex flex-col sm:flex-row gap-2">
+                    <input type="text" name="search" value="{{ $search }}" placeholder="Name or keyword..." class="w-full sm:w-1/2 rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                    <div class="flex gap-2 flex-1">
+                        <div class="relative flex-1">
+                            <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <input type="text" name="location" value="{{ $location }}" placeholder="City, state, or zip..." class="w-full pl-8 rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                        </div>
+                        <select name="radius" class="rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                            <option value="" {{ !$radius ? 'selected' : '' }}>Any distance</option>
+                            <option value="25" {{ $radius == '25' ? 'selected' : '' }}>Within 25 mi</option>
+                            <option value="50" {{ $radius == '50' ? 'selected' : '' }}>Within 50 mi</option>
+                            <option value="100" {{ $radius == '100' ? 'selected' : '' }}>Within 100 mi</option>
+                            <option value="250" {{ $radius == '250' ? 'selected' : '' }}>Within 250 mi</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="flex gap-2">
                     <select name="sort" class="rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                        @if ($searchLat)
+                            <option value="nearest" {{ $sort === 'nearest' ? 'selected' : '' }}>Nearest</option>
+                        @endif
                         <option value="name_asc" {{ $sort === 'name_asc' ? 'selected' : '' }}>Name (A-Z)</option>
                         <option value="name_desc" {{ $sort === 'name_desc' ? 'selected' : '' }}>Name (Z-A)</option>
                         <option value="city" {{ $sort === 'city' ? 'selected' : '' }}>City</option>
@@ -39,7 +55,12 @@
         <div class="flex flex-col lg:flex-row gap-6">
             {{-- Left Panel: Trainer Cards --}}
             <div class="w-full lg:w-1/4">
-                <p class="text-sm text-gray-500 mb-3">{{ $trainers->total() }} trainer{{ $trainers->total() !== 1 ? 's' : '' }} found</p>
+                <p class="text-sm text-gray-500 mb-3">
+                    {{ $trainers->total() }} trainer{{ $trainers->total() !== 1 ? 's' : '' }} found
+                    @if ($location && $searchLat)
+                        near <span class="font-medium text-gray-700">{{ $location }}</span>
+                    @endif
+                </p>
 
                 <div class="space-y-3 lg:max-h-[calc(100vh-220px)] lg:overflow-y-auto lg:pr-2">
                     @forelse ($trainers as $trainer)
@@ -64,12 +85,18 @@
                                             <span class="truncate">{{ $trainer->location_display }}</span>
                                         </p>
                                     @endif
+                                    @if (isset($trainer->distance) && $trainer->distance !== null)
+                                        <p class="text-xs mt-0.5 font-medium" style="color: #d39c27;">{{ round($trainer->distance, 1) }} mi away</p>
+                                    @endif
                                 </div>
                             </div>
                         </a>
                     @empty
                         <div class="text-center py-8 text-gray-500">
                             <p class="text-sm">No trainers found matching your search.</p>
+                            @if ($radius)
+                                <p class="text-xs mt-1">Try increasing the distance or removing the radius filter.</p>
+                            @endif
                         </div>
                     @endforelse
                 </div>
@@ -117,18 +144,43 @@
                 },
 
                 initMap() {
+                    const searchLat = {{ $searchLat ?? 'null' }};
+                    const searchLng = {{ $searchLng ?? 'null' }};
+
                     const mapEl = document.getElementById('trainer-map');
                     this.map = new google.maps.Map(mapEl, {
-                        center: { lat: 39.8283, lng: -98.5795 },
-                        zoom: 4,
+                        center: searchLat ? { lat: searchLat, lng: searchLng } : { lat: 39.8283, lng: -98.5795 },
+                        zoom: searchLat ? 8 : 4,
                         mapTypeControl: false,
                         streetViewControl: false,
                     });
 
                     this.infoWindow = new google.maps.InfoWindow();
 
+                    // Add search location marker if location was searched
+                    if (searchLat) {
+                        new google.maps.Marker({
+                            position: { lat: searchLat, lng: searchLng },
+                            map: this.map,
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 10,
+                                fillColor: '#d39c27',
+                                fillOpacity: 0.9,
+                                strokeColor: '#ffffff',
+                                strokeWeight: 2,
+                            },
+                            title: 'Search location',
+                            zIndex: 1000,
+                        });
+                    }
+
                     const trainers = @json($mapMarkers);
                     const bounds = new google.maps.LatLngBounds();
+
+                    if (searchLat) {
+                        bounds.extend({ lat: searchLat, lng: searchLng });
+                    }
 
                     trainers.forEach(trainer => {
                         const position = { lat: trainer.lat, lng: trainer.lng };
@@ -138,11 +190,14 @@
                             title: trainer.name,
                         });
 
+                        const distanceHtml = trainer.distance !== null ? `<p style="color: #d39c27; font-size: 0.75rem; font-weight: 600; margin: 0 0 6px;">${trainer.distance} mi away</p>` : '';
+
                         marker.addListener('click', () => {
                             this.infoWindow.setContent(`
                                 <div style="min-width: 150px;">
                                     <p style="font-weight: 600; margin: 0 0 4px;">${trainer.name}</p>
-                                    ${trainer.location ? `<p style="color: #6b7280; font-size: 0.875rem; margin: 0 0 8px;">${trainer.location}</p>` : ''}
+                                    ${trainer.location ? `<p style="color: #6b7280; font-size: 0.875rem; margin: 0 0 4px;">${trainer.location}</p>` : ''}
+                                    ${distanceHtml}
                                     <a href="${trainer.url}" style="color: #374269; font-size: 0.875rem; font-weight: 500; text-decoration: none;">View Profile &rarr;</a>
                                 </div>
                             `);
@@ -154,9 +209,11 @@
                         bounds.extend(position);
                     });
 
-                    if (trainers.length > 0) {
+                    if (trainers.length > 0 || searchLat) {
                         this.map.fitBounds(bounds);
-                        if (trainers.length <= 2) {
+
+                        const markerCount = trainers.length + (searchLat ? 1 : 0);
+                        if (markerCount <= 2) {
                             google.maps.event.addListenerOnce(this.map, 'bounds_changed', () => {
                                 if (this.map.getZoom() > 10) {
                                     this.map.setZoom(10);
