@@ -72,10 +72,10 @@
                                                         'no_show' => 'bg-red-100 text-red-800',
                                                         'canceled' => 'bg-gray-100 text-gray-800',
                                                     ];
-                                                    $regStatusColor = $regStatusColors[$registration->status] ?? 'bg-gray-100 text-gray-800';
+                                                    $regStatusColor = $regStatusColors[$registration->status->value] ?? 'bg-gray-100 text-gray-800';
                                                 @endphp
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $regStatusColor }}">
-                                                    {{ ucfirst(str_replace('_', ' ', $registration->status)) }}
+                                                    {{ $registration->status->label() }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -113,10 +113,10 @@
                                             {{ $registration->training->title }}
                                         </a>
                                         @php
-                                            $regStatusColor = $regStatusColors[$registration->status] ?? 'bg-gray-100 text-gray-800';
+                                            $regStatusColor = $regStatusColors[$registration->status->value] ?? 'bg-gray-100 text-gray-800';
                                         @endphp
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $regStatusColor }}">
-                                            {{ ucfirst(str_replace('_', ' ', $registration->status)) }}
+                                            {{ $registration->status->label() }}
                                         </span>
                                     </div>
                                     <p class="text-xs text-gray-500">{{ $registration->training->start_date->format('M j, Y \a\t g:i A') }}</p>
