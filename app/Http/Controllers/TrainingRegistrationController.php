@@ -31,14 +31,9 @@ class TrainingRegistrationController extends Controller
     /**
      * Register the authenticated user for a training.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, Training $training): RedirectResponse
     {
-        $request->validate([
-            'training_id' => ['required', 'exists:trainings,id'],
-        ]);
-
         $user = $request->user();
-        $training = Training::findOrFail($request->input('training_id'));
 
         // Check if already registered
         $existing = TrainingRegistration::where('training_id', $training->id)
