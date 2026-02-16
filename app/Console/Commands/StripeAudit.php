@@ -61,13 +61,14 @@ class StripeAudit extends Command
             }
             $subs = \Stripe\Subscription::all($params);
             foreach ($subs->data as $sub) {
+                $item = $sub->items->data[0] ?? null;
                 $report['subscriptions'][] = [
                     'id' => $sub->id,
                     'customer' => $sub->customer,
-                    'price_id' => $sub->items->data[0]->price->id ?? null,
+                    'price_id' => $item->price->id ?? null,
                     'status' => $sub->status,
-                    'current_period_start' => $sub->current_period_start,
-                    'current_period_end' => $sub->current_period_end,
+                    'current_period_start' => $item->current_period_start ?? null,
+                    'current_period_end' => $item->current_period_end ?? null,
                 ];
                 $startingAfter = $sub->id;
             }
