@@ -14,6 +14,7 @@
             font-size: 58px; font-weight: 400; color: #313131;
             text-align: center; letter-spacing: 1.5px;
             padding-top: 8%; line-height: 49px; margin: 0;
+            word-break: break-all;
         }
 
         .sub-header h3 {
