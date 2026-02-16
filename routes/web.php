@@ -97,6 +97,10 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
 Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->name('trainer.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Trainer\DashboardController::class, 'index'])->name('dashboard');
 
+    // Public Profile
+    Route::get('/profile', [App\Http\Controllers\Trainer\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\Trainer\ProfileController::class, 'update'])->name('profile.update');
+
     // Training Management
     Route::get('/trainings', [App\Http\Controllers\Trainer\TrainingController::class, 'index'])->name('trainings.index');
     Route::get('/trainings/create', [App\Http\Controllers\Trainer\TrainingController::class, 'create'])->name('trainings.create');
