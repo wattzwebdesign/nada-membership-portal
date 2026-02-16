@@ -33,6 +33,14 @@ class TrainingController extends Controller
             $query->where('type', $request->input('type'));
         }
 
+        // Optional: filter by date range
+        if ($request->filled('date_from')) {
+            $query->whereDate('start_date', '>=', $request->input('date_from'));
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('start_date', '<=', $request->input('date_to'));
+        }
+
         $trainings = $query->orderBy('start_date', 'asc')->paginate(12);
 
         return view('trainings.index', compact('trainings'));

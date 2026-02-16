@@ -17,9 +17,9 @@
             {{-- Filters --}}
             <div class="mb-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-4">
-                    <form method="GET" action="{{ route('trainings.index') }}" class="flex flex-col sm:flex-row gap-3">
-                        <div class="flex-1">
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search trainings..." class="w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 text-sm" style="focus:border-color: #374269; focus:ring-color: #374269;">
+                    <form method="GET" action="{{ route('trainings.index') }}" class="flex flex-col sm:flex-row flex-wrap gap-3">
+                        <div class="flex-1 min-w-[180px]">
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search trainings..." class="w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 text-sm">
                         </div>
                         <div>
                             <select name="type" class="w-full sm:w-auto rounded-md border-gray-300 shadow-sm text-sm">
@@ -36,9 +36,19 @@
                                 <option value="paid" {{ request('price') === 'paid' ? 'selected' : '' }}>Paid</option>
                             </select>
                         </div>
+                        <div class="flex items-center gap-2">
+                            <input type="date" name="date_from" value="{{ request('date_from') }}" class="w-full sm:w-auto rounded-md border-gray-300 shadow-sm text-sm" placeholder="From">
+                            <span class="text-gray-400 text-sm">to</span>
+                            <input type="date" name="date_to" value="{{ request('date_to') }}" class="w-full sm:w-auto rounded-md border-gray-300 shadow-sm text-sm" placeholder="To">
+                        </div>
                         <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
                             Filter
                         </button>
+                        @if(request()->hasAny(['search', 'type', 'price', 'date_from', 'date_to']))
+                            <a href="{{ route('trainings.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Clear
+                            </a>
+                        @endif
                     </form>
                 </div>
             </div>
