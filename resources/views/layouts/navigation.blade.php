@@ -24,7 +24,7 @@
                     <x-nav-link :href="route('trainings.index')" :active="request()->routeIs('trainings.*')">
                         Trainings
                     </x-nav-link>
-                    <x-nav-link :href="route('clinicals.create')" :active="request()->routeIs('clinicals.*')">
+                    <x-nav-link :href="route('clinicals.index')" :active="request()->routeIs('clinicals.*')">
                         Clinicals
                     </x-nav-link>
 
@@ -99,7 +99,7 @@
             <x-responsive-nav-link :href="route('trainings.index')" :active="request()->routeIs('trainings.*')">
                 Trainings
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('clinicals.create')" :active="request()->routeIs('clinicals.*')">
+            <x-responsive-nav-link :href="route('clinicals.index')" :active="request()->routeIs('clinicals.*')">
                 Clinicals
             </x-responsive-nav-link>
 
