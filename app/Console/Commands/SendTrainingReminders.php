@@ -18,8 +18,8 @@ class SendTrainingReminders extends Command
         $tomorrow = now()->addDay();
         $trainings = Training::published()
             ->whereBetween('start_date', [
-                $tomorrow->startOfDay(),
-                $tomorrow->endOfDay(),
+                $tomorrow->copy()->startOfDay(),
+                $tomorrow->copy()->endOfDay(),
             ])
             ->with('registrations.user')
             ->get();

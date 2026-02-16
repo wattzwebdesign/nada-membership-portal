@@ -25,14 +25,14 @@ class TrainingReminderNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return $this->buildFromTemplate('training_reminder', [
-            'user_name' => $notifiable->name,
+            'user_name' => $notifiable->full_name,
             'training_title' => $this->training->title,
             'training_date' => $this->training->start_date->format('F j, Y'),
             'training_location' => $this->training->location,
             'training_id' => $this->training->id,
         ], fn () => (new MailMessage)
             ->subject('Training Reminder - Tomorrow!')
-            ->greeting("Hello {$notifiable->name}!")
+            ->greeting("Hello {$notifiable->full_name}!")
             ->line('This is a friendly reminder that your NADA training session is tomorrow.')
             ->line("Training: {$this->training->title}")
             ->line("Date: {$this->training->start_date->format('F j, Y')}")
