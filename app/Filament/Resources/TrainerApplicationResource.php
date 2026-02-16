@@ -281,7 +281,7 @@ class TrainerApplicationResource extends Resource
 
                         Notification::make()
                             ->title('Trainer Application Approved')
-                            ->body('The user has been assigned the registered_trainer role.')
+                            ->body('The user has been assigned the Registered Trainer role.')
                             ->success()
                             ->send();
                     }),
