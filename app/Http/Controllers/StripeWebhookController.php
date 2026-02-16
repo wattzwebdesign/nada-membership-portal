@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RegistrationStatus;
 use App\Models\Invoice;
+use App\Models\Training;
+use App\Models\TrainingRegistration;
 use App\Models\User;
 use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\PaymentFailedNotification;
 use App\Notifications\SubscriptionCanceledNotification;
 use App\Notifications\SubscriptionConfirmedNotification;
 use App\Notifications\SubscriptionRenewedNotification;
+use App\Notifications\TrainingRegisteredNotification;
 use App\Services\CertificateService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
@@ -310,6 +314,38 @@ class StripeWebhookController extends Controller
         // Ensure the Stripe customer ID is stored on the user.
         if (isset($session->customer) && $user->stripe_customer_id !== $session->customer) {
             $user->update(['stripe_customer_id' => $session->customer]);
+        }
+
+        // Handle training registration payment
+        $type = $session->metadata->type ?? null;
+        if ($type === 'training_registration' && $session->payment_status === 'paid') {
+            $trainingId = $session->metadata->training_id ?? null;
+            $training = $trainingId ? Training::find($trainingId) : null;
+
+            if ($training) {
+                $existing = TrainingRegistration::where('training_id', $training->id)
+                    ->where('user_id', $user->id)
+                    ->where('status', '!=', RegistrationStatus::Canceled->value)
+                    ->first();
+
+                if (! $existing) {
+                    $registration = TrainingRegistration::create([
+                        'training_id' => $training->id,
+                        'user_id' => $user->id,
+                        'status' => RegistrationStatus::Registered->value,
+                        'stripe_payment_intent_id' => $session->payment_intent,
+                        'amount_paid_cents' => $session->amount_total,
+                    ]);
+
+                    $this->safeNotify($user, new TrainingRegisteredNotification($registration));
+
+                    Log::info('Training registration created from webhook.', [
+                        'user_id' => $user->id,
+                        'training_id' => $training->id,
+                        'payment_intent' => $session->payment_intent,
+                    ]);
+                }
+            }
         }
 
         // For subscription checkouts, set the payment method as the customer's default.

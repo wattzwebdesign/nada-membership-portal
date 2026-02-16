@@ -73,6 +73,7 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::get('/trainings/my-registrations', [TrainingRegistrationController::class, 'index'])->name('trainings.my-registrations');
     Route::get('/trainings/{training}', [TrainingController::class, 'show'])->name('trainings.show');
     Route::post('/trainings/{training}/register', [TrainingRegistrationController::class, 'store'])->name('trainings.register');
+    Route::get('/trainings/{training}/payment/success', [TrainingRegistrationController::class, 'paymentSuccess'])->name('trainings.payment.success');
     Route::delete('/trainings/{training}/cancel-registration', [TrainingRegistrationController::class, 'destroy'])->name('trainings.cancel-registration');
 
     // Clinicals

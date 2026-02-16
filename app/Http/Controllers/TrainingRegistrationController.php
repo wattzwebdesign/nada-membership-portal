@@ -3,17 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RegistrationStatus;
+use App\Models\PayoutSetting;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
 use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\TrainingRegisteredNotification;
+use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Stripe\Checkout\Session as CheckoutSession;
+use Stripe\Stripe;
 
 class TrainingRegistrationController extends Controller
 {
     use SafelyNotifies;
+
+    public function __construct(
+        protected StripeService $stripeService,
+    ) {}
+
     /**
      * List all training registrations for the authenticated user.
      */
@@ -55,14 +65,12 @@ class TrainingRegistrationController extends Controller
             return back()->with('error', 'Registration for this training has closed.');
         }
 
-        // TODO: If training is paid, redirect to Stripe Checkout for payment
-        // For now, register directly for free trainings
+        // Paid training: redirect to Stripe Checkout
         if ($training->is_paid) {
-            // Paid training registration will be handled via Stripe Checkout
-            // Placeholder: redirect back with notice
-            return back()->with('info', 'Paid training registration coming soon. Please contact support.');
+            return $this->createPaidCheckout($user, $training);
         }
 
+        // Free training: register directly
         $registration = TrainingRegistration::create([
             'training_id' => $training->id,
             'user_id' => $user->id,
@@ -74,6 +82,64 @@ class TrainingRegistrationController extends Controller
 
         return redirect()->route('trainings.my-registrations')
             ->with('success', 'You have been registered for "' . $training->title . '".');
+    }
+
+    /**
+     * Handle return from successful Stripe Checkout for training payment.
+     */
+    public function paymentSuccess(Request $request, Training $training): RedirectResponse
+    {
+        $sessionId = $request->query('session_id');
+        $user = $request->user();
+
+        if (! $sessionId) {
+            return redirect()->route('trainings.show', $training)
+                ->with('error', 'Payment session not found.');
+        }
+
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
+            $session = CheckoutSession::retrieve($sessionId);
+
+            if ($session->payment_status !== 'paid') {
+                return redirect()->route('trainings.show', $training)
+                    ->with('error', 'Payment was not completed. Please try again.');
+            }
+
+            // Check for existing registration (idempotency — webhook may have created it)
+            $existing = TrainingRegistration::where('training_id', $training->id)
+                ->where('user_id', $user->id)
+                ->where('status', '!=', RegistrationStatus::Canceled->value)
+                ->first();
+
+            if ($existing) {
+                return redirect()->route('trainings.my-registrations')
+                    ->with('success', 'You are registered for "' . $training->title . '".');
+            }
+
+            $registration = TrainingRegistration::create([
+                'training_id' => $training->id,
+                'user_id' => $user->id,
+                'status' => RegistrationStatus::Registered->value,
+                'stripe_payment_intent_id' => $session->payment_intent,
+                'amount_paid_cents' => $session->amount_total,
+            ]);
+
+            $this->safeNotify($user, new TrainingRegisteredNotification($registration));
+
+            return redirect()->route('trainings.my-registrations')
+                ->with('success', 'Payment confirmed! You are registered for "' . $training->title . '".');
+        } catch (\Exception $e) {
+            Log::error('Training payment verification failed', [
+                'user_id' => $user->id,
+                'training_id' => $training->id,
+                'session_id' => $sessionId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->route('trainings.show', $training)
+                ->with('error', 'We could not verify your payment. Please contact support if you were charged.');
+        }
     }
 
     /**
@@ -100,5 +166,69 @@ class TrainingRegistrationController extends Controller
 
         return redirect()->route('trainings.my-registrations')
             ->with('success', 'Your registration has been canceled.');
+    }
+
+    /**
+     * Create a Stripe Checkout Session for a paid training and redirect.
+     */
+    protected function createPaidCheckout($user, Training $training): RedirectResponse
+    {
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
+
+            $customer = $this->stripeService->getOrCreateCustomer($user);
+
+            $trainer = $training->trainer;
+            $stripeAccount = $trainer->stripeAccount;
+
+            $checkoutParams = [
+                'customer' => $customer->id,
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => $training->currency ?? 'usd',
+                        'unit_amount' => $training->price_cents,
+                        'product_data' => [
+                            'name' => $training->title,
+                            'description' => 'Training registration — ' . $training->start_date->format('M j, Y'),
+                        ],
+                    ],
+                    'quantity' => 1,
+                ]],
+                'mode' => 'payment',
+                'success_url' => route('trainings.payment.success', $training) . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('trainings.show', $training),
+                'metadata' => [
+                    'user_id' => $user->id,
+                    'training_id' => $training->id,
+                    'type' => 'training_registration',
+                ],
+            ];
+
+            // Route payment through trainer's connected Stripe account if available
+            if ($stripeAccount && $stripeAccount->isFullyOnboarded()) {
+                $payoutSettings = PayoutSetting::getForTrainer($trainer->id);
+                $applicationFee = (int) round($training->price_cents * ($payoutSettings->platform_percentage / 100));
+
+                $checkoutParams['payment_intent_data'] = [
+                    'application_fee_amount' => $applicationFee,
+                    'transfer_data' => [
+                        'destination' => $stripeAccount->stripe_connect_account_id,
+                    ],
+                ];
+            }
+
+            $session = CheckoutSession::create($checkoutParams);
+
+            return redirect($session->url);
+        } catch (\Exception $e) {
+            Log::error('Failed to create training checkout session', [
+                'user_id' => $user->id,
+                'training_id' => $training->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Unable to start payment. Please try again or contact support.');
+        }
     }
 }
