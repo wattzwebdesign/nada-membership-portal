@@ -193,10 +193,10 @@
                                                     'virtual' => 'bg-purple-100 text-purple-800',
                                                     'hybrid' => 'bg-indigo-100 text-indigo-800',
                                                 ];
-                                                $typeBadgeColor = $typeBadgeColors[$registration->training->type] ?? 'bg-gray-100 text-gray-800';
+                                                $typeBadgeColor = $typeBadgeColors[$registration->training->type->value] ?? 'bg-gray-100 text-gray-800';
                                             @endphp
                                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $typeBadgeColor }}">
-                                                {{ ucfirst(str_replace('_', ' ', $registration->training->type)) }}
+                                                {{ $registration->training->type->label() }}
                                             </span>
                                         </div>
                                     </div>
