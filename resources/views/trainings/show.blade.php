@@ -33,10 +33,10 @@
                                         'virtual' => 'bg-purple-100 text-purple-800',
                                         'hybrid' => 'bg-indigo-100 text-indigo-800',
                                     ];
-                                    $typeBadgeColor = $typeBadgeColors[$training->type] ?? 'bg-gray-100 text-gray-800';
+                                    $typeBadgeColor = $typeBadgeColors[$training->type->value] ?? 'bg-gray-100 text-gray-800';
                                 @endphp
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $typeBadgeColor }}">
-                                    {{ ucfirst(str_replace('_', ' ', $training->type)) }}
+                                    {{ $training->type->label() }}
                                 </span>
                                 @if ($training->is_paid)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style="background-color: #fef3c7; color: #92400e;">
@@ -70,7 +70,7 @@
                                 </div>
 
                                 {{-- Location --}}
-                                @if ($training->type !== 'virtual')
+                                @if ($training->type !== App\Enums\TrainingType::Virtual)
                                     <div class="flex items-start">
                                         <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                         <div>
@@ -86,7 +86,7 @@
                                 @endif
 
                                 {{-- Virtual Link --}}
-                                @if (in_array($training->type, ['virtual', 'hybrid']) && $training->virtual_link)
+                                @if (in_array($training->type, [App\Enums\TrainingType::Virtual, App\Enums\TrainingType::Hybrid]) && $training->virtual_link)
                                     <div class="flex items-start">
                                         <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                         <div>
