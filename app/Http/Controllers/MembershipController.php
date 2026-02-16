@@ -37,7 +37,9 @@ class MembershipController extends Controller
     public function plans(Request $request): View
     {
         $user = $request->user();
-        $plans = Plan::forUser($user)->orderBy('sort_order')->get();
+        $plans = Plan::forUser($user)->orderBy('sort_order')->get()
+            ->sortByDesc(fn ($plan) => $plan->discount_required !== null)
+            ->values();
         $currentSubscription = $user->activeSubscription?->load('plan');
         $currentPlan = $currentSubscription?->plan;
 

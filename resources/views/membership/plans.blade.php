@@ -21,7 +21,16 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse ($plans as $plan)
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-2 {{ $currentPlan && $currentPlan->id === $plan->id ? 'border-amber-400' : 'border-transparent hover:border-gray-200' }} transition-colors">
+                    <div class="relative bg-white overflow-hidden shadow-sm sm:rounded-lg border-2 {{ $currentPlan && $currentPlan->id === $plan->id ? 'border-amber-400' : ($plan->discount_required ? 'border-green-400' : 'border-transparent hover:border-gray-200') }} transition-colors">
+                        {{-- Discount ribbon --}}
+                        @if ($plan->discount_required)
+                            <div class="absolute top-0 right-0 w-24 h-24 overflow-hidden">
+                                <div class="absolute top-[10px] right-[-30px] w-[140px] text-center rotate-45 bg-green-500 text-white text-[10px] font-bold uppercase tracking-wider py-1 shadow-sm">
+                                    {{ ucfirst($plan->discount_required) }}
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="p-6">
                             @if ($currentPlan && $currentPlan->id === $plan->id)
                                 <div class="mb-4">
