@@ -48,18 +48,32 @@ class DiscountRequestController extends Controller
             return back()->with('error', 'You already have a pending discount request. Please wait for it to be reviewed.');
         }
 
-        $validated = $request->validate([
+        $rules = [
             'discount_type' => ['required', Rule::in([DiscountType::Student->value, DiscountType::Senior->value])],
             'proof_description' => ['nullable', 'string', 'max:2000'],
-            'proof_documents' => ['nullable', 'array'],
+            'proof_documents' => ['required', 'array', 'min:1'],
             'proof_documents.*' => ['file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,doc,docx'],
-        ]);
+        ];
+
+        if ($request->input('discount_type') === DiscountType::Student->value) {
+            $rules['school_name'] = ['required', 'string', 'max:255'];
+            $rules['years_remaining'] = ['required', 'integer', 'min:1', 'max:10'];
+        }
+
+        if ($request->input('discount_type') === DiscountType::Senior->value) {
+            $rules['date_of_birth'] = ['required', 'date'];
+        }
+
+        $validated = $request->validate($rules);
 
         $discountRequest = DiscountRequest::create([
             'user_id' => $user->id,
             'discount_type' => $validated['discount_type'],
             'status' => 'pending',
             'proof_description' => $validated['proof_description'] ?? null,
+            'school_name' => $validated['school_name'] ?? null,
+            'years_remaining' => $validated['years_remaining'] ?? null,
+            'date_of_birth' => $validated['date_of_birth'] ?? null,
             'approval_token' => bin2hex(random_bytes(32)),
             'token_expires_at' => now()->addDays(30),
         ]);

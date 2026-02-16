@@ -17,6 +17,9 @@ class DiscountRequest extends Model implements HasMedia
         'discount_type',
         'status',
         'proof_description',
+        'school_name',
+        'years_remaining',
+        'date_of_birth',
         'admin_notes',
         'reviewed_by',
         'reviewed_at',
@@ -28,6 +31,7 @@ class DiscountRequest extends Model implements HasMedia
     {
         return [
             'discount_type' => DiscountType::class,
+            'date_of_birth' => 'date',
             'reviewed_at' => 'datetime',
             'token_expires_at' => 'datetime',
         ];
