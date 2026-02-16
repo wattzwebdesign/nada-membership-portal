@@ -37,9 +37,9 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <input type="date" name="date_from" value="{{ request('date_from') }}" class="w-full sm:w-auto rounded-md border-gray-300 shadow-sm text-sm" placeholder="From">
+                            <input type="text" name="date_from" value="{{ request('date_from') }}" class="w-full sm:w-auto rounded-md border-gray-300 shadow-sm text-sm" placeholder="From" data-datepicker='{"altInput":true,"altFormat":"M j, Y","dateFormat":"Y-m-d"}'>
                             <span class="text-gray-400 text-sm">to</span>
-                            <input type="date" name="date_to" value="{{ request('date_to') }}" class="w-full sm:w-auto rounded-md border-gray-300 shadow-sm text-sm" placeholder="To">
+                            <input type="text" name="date_to" value="{{ request('date_to') }}" class="w-full sm:w-auto rounded-md border-gray-300 shadow-sm text-sm" placeholder="To" data-datepicker='{"altInput":true,"altFormat":"M j, Y","dateFormat":"Y-m-d"}'>
                         </div>
                         <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
                             Filter

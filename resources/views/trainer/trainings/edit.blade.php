@@ -100,11 +100,11 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date & Time *</label>
-                                    <input type="datetime-local" name="start_date" id="start_date" value="{{ old('start_date', $training->start_date->format('Y-m-d\TH:i')) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                    <input type="text" name="start_date" id="start_date" value="{{ old('start_date', $training->start_date->format('Y-m-d H:i')) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"enableTime":true,"time_24hr":false,"minuteIncrement":15,"altInput":true,"altFormat":"M j, Y h:i K","dateFormat":"Y-m-d H:i"}'>
                                 </div>
                                 <div>
                                     <label for="end_date" class="block text-sm font-medium text-gray-700">End Date & Time *</label>
-                                    <input type="datetime-local" name="end_date" id="end_date" value="{{ old('end_date', $training->end_date->format('Y-m-d\TH:i')) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                    <input type="text" name="end_date" id="end_date" value="{{ old('end_date', $training->end_date->format('Y-m-d H:i')) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"enableTime":true,"time_24hr":false,"minuteIncrement":15,"altInput":true,"altFormat":"M j, Y h:i K","dateFormat":"Y-m-d H:i"}'>
                                 </div>
                             </div>
 

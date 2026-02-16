@@ -17,6 +17,11 @@
         <!-- Stripe.js for payment method updates -->
         <script src="https://js.stripe.com/v3/" defer></script>
 
+        <!-- Flatpickr Date Picker -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
+
         @stack('styles')
     </head>
     <body class="font-sans antialiased">
@@ -39,5 +44,13 @@
         </div>
 
         @stack('scripts')
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('[data-datepicker]').forEach(function(el) {
+                    flatpickr(el, JSON.parse(el.dataset.datepicker || '{}'));
+                });
+            });
+        </script>
     </body>
 </html>

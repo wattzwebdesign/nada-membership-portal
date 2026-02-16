@@ -15,11 +15,11 @@
                     <form method="GET" action="{{ route('trainer.payouts.reports') }}" class="flex flex-col sm:flex-row items-end gap-4">
                         <div class="flex-1 w-full sm:w-auto">
                             <label for="from" class="block text-sm font-medium text-gray-700">From</label>
-                            <input type="date" name="from" id="from" value="{{ request('from') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                            <input type="text" name="from" id="from" value="{{ request('from') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"altInput":true,"altFormat":"M j, Y","dateFormat":"Y-m-d"}'>
                         </div>
                         <div class="flex-1 w-full sm:w-auto">
                             <label for="to" class="block text-sm font-medium text-gray-700">To</label>
-                            <input type="date" name="to" id="to" value="{{ request('to') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                            <input type="text" name="to" id="to" value="{{ request('to') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"altInput":true,"altFormat":"M j, Y","dateFormat":"Y-m-d"}'>
                         </div>
                         <div class="flex gap-2">
                             <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">

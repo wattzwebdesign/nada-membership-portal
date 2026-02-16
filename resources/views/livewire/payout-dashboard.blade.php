@@ -12,16 +12,18 @@
                     <form wire:submit="loadReport" class="flex flex-col sm:flex-row items-end gap-4">
                         <div class="flex-1">
                             <label for="dateFrom" class="block text-sm font-medium text-gray-700 mb-1">From</label>
-                            <input type="date" id="dateFrom" wire:model="dateFrom"
-                                   class="w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 text-sm">
+                            <input type="text" id="dateFrom" wire:model="dateFrom"
+                                   class="w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 text-sm"
+                                   x-data x-init="flatpickr($el, {altInput:true,altFormat:'M j, Y',dateFormat:'Y-m-d',onChange:(d,s)=>{$wire.set('dateFrom',s)}})">
                             @error('dateFrom')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
                         <div class="flex-1">
                             <label for="dateTo" class="block text-sm font-medium text-gray-700 mb-1">To</label>
-                            <input type="date" id="dateTo" wire:model="dateTo"
-                                   class="w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 text-sm">
+                            <input type="text" id="dateTo" wire:model="dateTo"
+                                   class="w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 text-sm"
+                                   x-data x-init="flatpickr($el, {altInput:true,altFormat:'M j, Y',dateFormat:'Y-m-d',onChange:(d,s)=>{$wire.set('dateTo',s)}})">
                             @error('dateTo')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
