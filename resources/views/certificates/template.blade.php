@@ -53,9 +53,12 @@
         .footer img { width: 260px; margin: auto; }
     </style>
 </head>
+@php
+    $img = fn($file) => 'data:image/png;base64,' . base64_encode(file_get_contents(public_path("images/certificates/{$file}")));
+@endphp
 <body>
-    <img class="left-ribbon" src="{{ public_path('images/certificates/left-ribbon.png') }}" />
-    <img class="right-ribbon" src="{{ public_path('images/certificates/right-ribbon.png') }}" />
+    <img class="left-ribbon" src="{{ $img('left-ribbon.png') }}" />
+    <img class="right-ribbon" src="{{ $img('right-ribbon.png') }}" />
 
     <div class="header">
         <h1>NATIONAL ACUPUNCTURE<br>DETOXIFICATION ASSOCIATION</h1>
@@ -65,7 +68,7 @@
     </div>
     <div class="recipient-name">
         <h1>{{ $certificate->user->full_name }}</h1>
-        <img src="{{ public_path('images/certificates/middle-line.png') }}" />
+        <img src="{{ $img('middle-line.png') }}" />
     </div>
     <div class="description">
         <p>has successfully completed all training and satisfied competencies for all</p>
@@ -73,11 +76,11 @@
         <p>Detoxification Association</p>
     </div>
     <div class="signatures">
-        <img src="{{ public_path('images/certificates/president.png') }}" />
-        <img src="{{ public_path('images/certificates/vice-president.png') }}" />
+        <img src="{{ $img('president.png') }}" />
+        <img src="{{ $img('vice-president.png') }}" />
     </div>
     <div class="footer">
-        <img src="{{ public_path('images/certificates/nada-logo.png') }}" />
+        <img src="{{ $img('nada-logo.png') }}" />
     </div>
     <div class="cert-meta">
         <p>Date Issued: <span>{{ $certificate->date_issued->format('F j, Y') }}</span></p>
