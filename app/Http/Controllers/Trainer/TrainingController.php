@@ -78,9 +78,14 @@ class TrainingController extends Controller
             'timezone' => ['required', 'string', 'max:50'],
             'max_attendees' => ['nullable', 'integer', 'min:1'],
             'is_paid' => ['boolean'],
-            'price_cents' => ['required_if:is_paid,true', 'nullable', 'integer', 'min:0'],
+            'price' => ['required_if:is_paid,true', 'nullable', 'numeric', 'min:0'],
             'currency' => ['nullable', 'string', 'size:3'],
         ]);
+
+        if (!empty($validated['price'])) {
+            $validated['price_cents'] = (int) round($validated['price'] * 100);
+        }
+        unset($validated['price']);
 
         $validated['trainer_id'] = $request->user()->id;
         $validated['status'] = TrainingStatus::Draft;
@@ -124,9 +129,14 @@ class TrainingController extends Controller
             'timezone' => ['required', 'string', 'max:50'],
             'max_attendees' => ['nullable', 'integer', 'min:1'],
             'is_paid' => ['boolean'],
-            'price_cents' => ['required_if:is_paid,true', 'nullable', 'integer', 'min:0'],
+            'price' => ['required_if:is_paid,true', 'nullable', 'numeric', 'min:0'],
             'currency' => ['nullable', 'string', 'size:3'],
         ]);
+
+        if (!empty($validated['price'])) {
+            $validated['price_cents'] = (int) round($validated['price'] * 100);
+        }
+        unset($validated['price']);
 
         $training->update($validated);
 
