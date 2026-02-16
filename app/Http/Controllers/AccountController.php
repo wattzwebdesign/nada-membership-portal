@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\GeocodingService;
 use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ class AccountController extends Controller
 {
     public function __construct(
         protected StripeService $stripeService,
+        protected GeocodingService $geocodingService,
     ) {}
 
     /**
@@ -42,11 +44,30 @@ class AccountController extends Controller
             'state' => ['nullable', 'string', 'max:255'],
             'zip' => ['nullable', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'size:2'],
+            'bio' => ['nullable', 'string', 'max:2000'],
         ]);
 
         $emailChanged = $user->email !== $validated['email'];
 
         $user->update($validated);
+
+        // Geocode if address fields changed
+        if ($user->wasChanged(['city', 'state', 'zip', 'country'])) {
+            $address = $this->geocodingService->buildAddressString(
+                $user->city,
+                $user->state,
+                $user->zip,
+                $user->country,
+            );
+
+            if ($address) {
+                $coordinates = $this->geocodingService->geocode($address);
+                $user->update([
+                    'latitude' => $coordinates['latitude'] ?? null,
+                    'longitude' => $coordinates['longitude'] ?? null,
+                ]);
+            }
+        }
 
         // If the email changed, mark it as unverified and sync with Stripe
         if ($emailChanged) {

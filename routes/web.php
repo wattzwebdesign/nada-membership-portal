@@ -12,6 +12,7 @@ use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicCertificateController;
 use App\Http\Controllers\PublicPricingController;
+use App\Http\Controllers\PublicTrainerController;
 use App\Http\Controllers\TrainerApplicationController;
 use App\Http\Controllers\NdaController;
 use App\Http\Controllers\TrainingController;
@@ -24,6 +25,8 @@ Route::get('/', function () {
 });
 
 Route::get('/pricing', [PublicPricingController::class, 'index'])->name('public.pricing');
+Route::get('/trainers', [PublicTrainerController::class, 'index'])->name('public.trainers.index');
+Route::get('/trainers/{user}', [PublicTrainerController::class, 'show'])->name('public.trainers.show');
 Route::get('/verify/{certificate_code?}', [PublicCertificateController::class, 'verify'])->name('public.verify');
 
 // Admin Discount Approval (token-based, no auth required — links sent via email)

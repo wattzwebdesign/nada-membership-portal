@@ -81,6 +81,25 @@ class UserResource extends Resource
                             ->helperText('Managed via Trainer Applications'),
                     ])->columns(2),
 
+                Forms\Components\Section::make('Trainer Profile')
+                    ->schema([
+                        Forms\Components\Textarea::make('bio')
+                            ->label('Bio')
+                            ->rows(4)
+                            ->maxLength(2000)
+                            ->helperText('Public bio displayed on the trainer directory.'),
+                        Forms\Components\TextInput::make('latitude')
+                            ->label('Latitude')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->helperText('Auto-populated from address via geocoding.'),
+                        Forms\Components\TextInput::make('longitude')
+                            ->label('Longitude')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->helperText('Auto-populated from address via geocoding.'),
+                    ])->columns(2)->collapsible(),
+
                 Forms\Components\Section::make('NDA Agreement')
                     ->schema([
                         Forms\Components\DateTimePicker::make('nda_accepted_at')

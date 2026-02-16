@@ -8,6 +8,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @stack('styles')
     </head>
     <body class="font-sans antialiased bg-gray-50">
         <nav class="bg-white shadow-sm border-b border-gray-200">
@@ -19,6 +20,7 @@
                         </a>
                     </div>
                     <div class="flex items-center space-x-4">
+                        <a href="{{ route('public.trainers.index') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Trainers</a>
                         <a href="{{ route('public.pricing') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Pricing</a>
                         @auth
                             <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Dashboard</a>
@@ -36,5 +38,6 @@
                 &copy; {{ date('Y') }} National Acupuncture Detoxification Association. All rights reserved.
             </div>
         </footer>
+        @stack('scripts')
     </body>
 </html>

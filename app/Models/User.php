@@ -41,6 +41,9 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         'trainer_approved_by',
         'profile_photo_path',
         'nda_accepted_at',
+        'latitude',
+        'longitude',
+        'bio',
     ];
 
     protected $hidden = [
@@ -59,6 +62,8 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
             'trainer_approved_at' => 'datetime',
             'nda_accepted_at' => 'datetime',
             'deleted_at' => 'datetime',
+            'latitude' => 'decimal:8',
+            'longitude' => 'decimal:8',
         ];
     }
 
@@ -186,5 +191,45 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
     public function hasSignedNda(): bool
     {
         return $this->nda_accepted_at !== null;
+    }
+
+    // Public Trainer Directory Scopes
+
+    public function scopeTrainersPublic($query)
+    {
+        return $query->role('registered_trainer');
+    }
+
+    public function scopeTrainersWithLocation($query)
+    {
+        return $query->trainersPublic()->whereNotNull('latitude')->whereNotNull('longitude');
+    }
+
+    // Public Trainer Directory Accessors
+
+    public function getLocationDisplayAttribute(): string
+    {
+        return collect([$this->city, $this->state])->filter()->implode(', ');
+    }
+
+    public function hasCoordinates(): bool
+    {
+        return $this->latitude !== null && $this->longitude !== null;
+    }
+
+    public function getProfilePhotoUrlAttribute(): ?string
+    {
+        if ($this->profile_photo_path) {
+            return asset('storage/' . $this->profile_photo_path);
+        }
+
+        return null;
+    }
+
+    public function getInitialsAttribute(): string
+    {
+        return strtoupper(
+            mb_substr($this->first_name ?? '', 0, 1) . mb_substr($this->last_name ?? '', 0, 1)
+        );
     }
 }
