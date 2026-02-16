@@ -8,6 +8,8 @@ use App\Notifications\TrainerApplicationApprovedNotification;
 use App\Notifications\TrainerApplicationDeniedNotification;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Log;
@@ -103,6 +105,93 @@ class TrainerApplicationResource extends Resource
                             ->maxLength(2000)
                             ->columnSpanFull(),
                     ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Applicant')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('user.full_name')
+                            ->label('Name'),
+                        Infolists\Components\TextEntry::make('user.email')
+                            ->label('Email'),
+                        Infolists\Components\TextEntry::make('user.phone')
+                            ->label('Phone')
+                            ->placeholder('Not provided'),
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->label('Applied At')
+                            ->dateTime(),
+                    ])
+                    ->columns(2),
+
+                Infolists\Components\Section::make('Uploaded Documents')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('letter_of_nomination_file')
+                            ->label('Letter of Nomination')
+                            ->state(function (TrainerApplication $record): string {
+                                $media = $record->getFirstMedia('letter_of_nomination');
+                                return $media ? $media->file_name : 'No file uploaded';
+                            })
+                            ->url(fn (TrainerApplication $record) => $record->getFirstMedia('letter_of_nomination')?->getUrl())
+                            ->openUrlInNewTab()
+                            ->color(fn (TrainerApplication $record) => $record->getFirstMedia('letter_of_nomination') ? 'primary' : 'gray'),
+                        Infolists\Components\TextEntry::make('application_submission_file')
+                            ->label('Application Submission')
+                            ->state(function (TrainerApplication $record): string {
+                                $media = $record->getFirstMedia('application_submission');
+                                return $media ? $media->file_name : 'No file uploaded';
+                            })
+                            ->url(fn (TrainerApplication $record) => $record->getFirstMedia('application_submission')?->getUrl())
+                            ->openUrlInNewTab()
+                            ->color(fn (TrainerApplication $record) => $record->getFirstMedia('application_submission') ? 'primary' : 'gray'),
+                    ])
+                    ->columns(2),
+
+                Infolists\Components\Section::make('Payment')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('amount_paid_cents')
+                            ->label('Amount Paid')
+                            ->formatStateUsing(fn ($state): string => '$' . number_format($state / 100, 2)),
+                        Infolists\Components\TextEntry::make('stripe_payment_intent_id')
+                            ->label('Stripe Payment Intent')
+                            ->placeholder('N/A'),
+                        Infolists\Components\TextEntry::make('invoice.number')
+                            ->label('Invoice')
+                            ->url(fn (TrainerApplication $record) => $record->invoice_id
+                                ? route('filament.admin.resources.invoices.edit', $record->invoice_id)
+                                : null)
+                            ->color('primary')
+                            ->placeholder('No invoice'),
+                    ])
+                    ->columns(3)
+                    ->visible(fn (TrainerApplication $record): bool => (bool) $record->stripe_payment_intent_id),
+
+                Infolists\Components\Section::make('Review Status')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('status')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'pending' => 'warning',
+                                'approved' => 'success',
+                                'denied' => 'danger',
+                                default => 'gray',
+                            }),
+                        Infolists\Components\TextEntry::make('reviewer.email')
+                            ->label('Reviewed By')
+                            ->placeholder('Pending'),
+                        Infolists\Components\TextEntry::make('reviewed_at')
+                            ->label('Reviewed At')
+                            ->dateTime()
+                            ->placeholder('Pending'),
+                        Infolists\Components\TextEntry::make('admin_notes')
+                            ->label('Admin Notes')
+                            ->placeholder('None')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(3),
             ]);
     }
 
@@ -250,6 +339,7 @@ class TrainerApplicationResource extends Resource
         return [
             'index' => Pages\ListTrainerApplications::route('/'),
             'create' => Pages\CreateTrainerApplication::route('/create'),
+            'view' => Pages\ViewTrainerApplication::route('/{record}'),
             'edit' => Pages\EditTrainerApplication::route('/{record}/edit'),
         ];
     }
