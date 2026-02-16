@@ -53,14 +53,14 @@
                                 </div>
                                 <div class="flex justify-between">
                                     <dt class="font-medium text-gray-600">Issued</dt>
-                                    <dd class="text-gray-900">{{ $certificate->issued_at?->format('F j, Y') ?? 'N/A' }}</dd>
+                                    <dd class="text-gray-900">{{ $certificate->date_issued?->format('F j, Y') ?? 'N/A' }}</dd>
                                 </div>
                                 <div class="flex justify-between">
                                     <dt class="font-medium text-gray-600">Expires</dt>
                                     <dd class="text-gray-900">
-                                        @if($certificate->expires_at)
-                                            {{ $certificate->expires_at->format('F j, Y') }}
-                                            @if($certificate->expires_at->isPast())
+                                        @if($certificate->expiration_date)
+                                            {{ $certificate->expiration_date->format('F j, Y') }}
+                                            @if($certificate->expiration_date->isPast())
                                                 <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">Expired</span>
                                             @endif
                                         @else
@@ -71,9 +71,9 @@
                                 <div class="flex justify-between">
                                     <dt class="font-medium text-gray-600">Status</dt>
                                     <dd>
-                                        @if($certificate->revoked_at)
+                                        @if($certificate->status === 'revoked')
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">Revoked</span>
-                                        @elseif($certificate->expires_at?->isPast())
+                                        @elseif($certificate->expiration_date?->isPast())
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">Expired</span>
                                         @else
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">Active</span>
