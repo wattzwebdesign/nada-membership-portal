@@ -24,9 +24,9 @@
                     <div class="relative bg-white overflow-hidden shadow-sm sm:rounded-lg border-2 {{ $currentPlan && $currentPlan->id === $plan->id ? 'border-amber-400' : ($plan->discount_required ? 'border-[#374269]' : 'border-transparent hover:border-gray-200') }} transition-colors">
                         {{-- Discount ribbon --}}
                         @if ($plan->discount_required)
-                            <div class="absolute top-0 right-0 w-28 h-28 overflow-hidden pointer-events-none">
-                                <div class="absolute top-[14px] right-[-34px] w-[160px] text-center rotate-45 py-1.5 shadow-sm" style="background-color: #374269;">
-                                    <span class="text-white text-[11px] font-bold uppercase tracking-wider">{{ ucfirst($plan->discount_required) }}</span>
+                            <div style="position:absolute;top:0;right:0;width:130px;height:130px;overflow:hidden;pointer-events:none;">
+                                <div style="position:absolute;top:20px;right:-36px;width:170px;text-align:center;transform:rotate(45deg);background-color:#374269;padding:6px 0;box-shadow:0 1px 3px rgba(0,0,0,.15);">
+                                    <span style="color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">{{ ucfirst($plan->discount_required) }}</span>
                                 </div>
                             </div>
                         @endif
