@@ -52,8 +52,19 @@
                             <h3 class="text-2xl font-bold text-gray-900 mb-4">{{ $training->title }}</h3>
 
                             @if ($training->description)
-                                <div class="prose max-w-none text-gray-600 mb-6">
-                                    {!! nl2br(e($training->description)) !!}
+                                <div x-data="{ expanded: false }" class="mb-6">
+                                    <div class="prose max-w-none text-gray-600 relative" :class="{ 'max-h-[7.5rem] overflow-hidden': !expanded }" id="description-container">
+                                        {!! nl2br(e($training->description)) !!}
+                                        <div x-show="!expanded" class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
+                                    </div>
+                                    <button
+                                        x-show="$el.parentElement.querySelector('#description-container').scrollHeight > 120"
+                                        x-cloak
+                                        @click="expanded = !expanded"
+                                        class="mt-2 text-sm font-medium hover:underline"
+                                        style="color: #374269;"
+                                        x-text="expanded ? 'Show less' : 'See more'"
+                                    ></button>
                                 </div>
                             @endif
 
