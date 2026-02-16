@@ -55,6 +55,7 @@
                                     <div>
                                         <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
                                         <input type="email" id="email" value="{{ $user->email }}" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-gray-500 shadow-sm sm:text-sm cursor-not-allowed">
+                                        <input type="hidden" name="email" value="{{ $user->email }}">
                                         <p class="mt-1 text-xs text-gray-400">Contact support to change your email address.</p>
                                     </div>
 
@@ -67,10 +68,10 @@
                                         @enderror
                                     </div>
 
-                                    {{-- Address --}}
+                                    {{-- Address with Google Places Autocomplete --}}
                                     <div>
-                                        <label for="address_line_1" class="block text-sm font-medium text-gray-700">Address Line 1</label>
-                                        <input type="text" name="address_line_1" id="address_line_1" value="{{ old('address_line_1', $user->address_line_1) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="123 Main Street">
+                                        <label for="address_line_1" class="block text-sm font-medium text-gray-700">Address</label>
+                                        <input type="text" name="address_line_1" id="address_line_1" value="{{ old('address_line_1', $user->address_line_1) }}" autocomplete="off" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="Start typing your address...">
                                         @error('address_line_1')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
@@ -78,7 +79,7 @@
 
                                     <div>
                                         <label for="address_line_2" class="block text-sm font-medium text-gray-700">Address Line 2</label>
-                                        <input type="text" name="address_line_2" id="address_line_2" value="{{ old('address_line_2', $user->address_line_2) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="Suite 100">
+                                        <input type="text" name="address_line_2" id="address_line_2" value="{{ old('address_line_2', $user->address_line_2) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="Apt, Suite, Unit, etc.">
                                     </div>
 
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -192,4 +193,97 @@
 
         </div>
     </div>
+    @push('scripts')
+    @if (config('services.google.maps_api_key'))
+    <script>
+        function initAddressAutocomplete() {
+            const input = document.getElementById('address_line_1');
+            if (!input) return;
+
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                types: ['address'],
+                fields: ['address_components'],
+            });
+
+            autocomplete.addListener('place_changed', function () {
+                const place = autocomplete.getPlace();
+                if (!place.address_components) return;
+
+                let streetNumber = '';
+                let route = '';
+                let city = '';
+                let state = '';
+                let zip = '';
+                let country = '';
+
+                place.address_components.forEach(function (component) {
+                    const type = component.types[0];
+                    switch (type) {
+                        case 'street_number':
+                            streetNumber = component.long_name;
+                            break;
+                        case 'route':
+                            route = component.long_name;
+                            break;
+                        case 'locality':
+                            city = component.long_name;
+                            break;
+                        case 'administrative_area_level_1':
+                            state = component.short_name;
+                            break;
+                        case 'postal_code':
+                            zip = component.long_name;
+                            break;
+                        case 'country':
+                            country = component.short_name;
+                            break;
+                    }
+                });
+
+                input.value = (streetNumber + ' ' + route).trim();
+                document.getElementById('city').value = city;
+                document.getElementById('state').value = state;
+                document.getElementById('zip').value = zip;
+
+                const countrySelect = document.getElementById('country');
+                for (let i = 0; i < countrySelect.options.length; i++) {
+                    if (countrySelect.options[i].value === country) {
+                        countrySelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            });
+
+            // Prevent form submission on Enter when autocomplete is open
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    const pacContainer = document.querySelector('.pac-container');
+                    if (pacContainer && pacContainer.style.display !== 'none') {
+                        e.preventDefault();
+                    }
+                }
+            });
+        }
+
+        function loadGooglePlaces() {
+            if (window.google && window.google.maps && window.google.maps.places) {
+                initAddressAutocomplete();
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://maps.googleapis.com/maps/api/js?key={{ config("services.google.maps_api_key") }}&libraries=places&callback=initAddressAutocomplete';
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadGooglePlaces);
+        } else {
+            loadGooglePlaces();
+        }
+    </script>
+    @endif
+    @endpush
 </x-app-layout>
