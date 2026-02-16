@@ -85,14 +85,20 @@
                                                     Free
                                                 @endif
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                                @if ($registration->status === 'registered' && $registration->training->start_date->isFuture())
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-3">
+                                                @if ($registration->status === App\Enums\RegistrationStatus::Registered && $registration->training->start_date->isFuture())
                                                     <form method="POST" action="{{ route('trainings.cancel-registration', $registration->training) }}" onsubmit="return confirm('Cancel your registration?');" class="inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">Cancel</button>
                                                     </form>
-                                                @elseif ($registration->certificate_id)
+                                                @endif
+                                                @if ($registration->invoice_id)
+                                                    <a href="{{ route('invoices.show', $registration->invoice_id) }}" class="text-sm font-medium" style="color: #374269;">
+                                                        View Invoice
+                                                    </a>
+                                                @endif
+                                                @if ($registration->certificate_id)
                                                     <a href="{{ route('certificates.download', $registration->certificate_id) }}" class="text-sm font-medium" style="color: #374269;">
                                                         Download Certificate
                                                     </a>
@@ -124,6 +130,25 @@
                                     @if ($registration->amount_paid_cents > 0)
                                         <p class="text-xs text-gray-500 mt-1">Paid: ${{ number_format($registration->amount_paid_cents / 100, 2) }}</p>
                                     @endif
+                                    <div class="flex items-center gap-3 mt-3 pt-2 border-t border-gray-100">
+                                        @if ($registration->status === App\Enums\RegistrationStatus::Registered && $registration->training->start_date->isFuture())
+                                            <form method="POST" action="{{ route('trainings.cancel-registration', $registration->training) }}" onsubmit="return confirm('Cancel your registration?');" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-800 text-xs font-medium">Cancel</button>
+                                            </form>
+                                        @endif
+                                        @if ($registration->invoice_id)
+                                            <a href="{{ route('invoices.show', $registration->invoice_id) }}" class="text-xs font-medium" style="color: #374269;">
+                                                View Invoice
+                                            </a>
+                                        @endif
+                                        @if ($registration->certificate_id)
+                                            <a href="{{ route('certificates.download', $registration->certificate_id) }}" class="text-xs font-medium" style="color: #374269;">
+                                                Download Certificate
+                                            </a>
+                                        @endif
+                                    </div>
                                 </div>
                             @endforeach
                         </div>

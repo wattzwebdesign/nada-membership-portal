@@ -17,6 +17,7 @@ class TrainingRegistration extends Model
         'stripe_payment_intent_id',
         'amount_paid_cents',
         'certificate_id',
+        'invoice_id',
     ];
 
     protected function casts(): array
@@ -46,5 +47,10 @@ class TrainingRegistration extends Model
     public function certificate(): BelongsTo
     {
         return $this->belongsTo(Certificate::class);
+    }
+
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class);
     }
 }

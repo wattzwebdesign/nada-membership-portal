@@ -92,6 +92,8 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::put('/account', [AccountController::class, 'update'])->name('account.update');
     Route::get('/account/upgrade-to-trainer', [TrainerApplicationController::class, 'create'])->name('trainer-application.create');
     Route::post('/account/upgrade-to-trainer', [TrainerApplicationController::class, 'store'])->name('trainer-application.store');
+    Route::get('/account/upgrade-to-trainer/payment/success', [TrainerApplicationController::class, 'paymentSuccess'])->name('trainer-application.payment.success');
+    Route::get('/account/upgrade-to-trainer/payment/cancel', [TrainerApplicationController::class, 'paymentCancel'])->name('trainer-application.payment.cancel');
 });
 
 // Trainer Routes

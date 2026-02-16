@@ -37,21 +37,56 @@ class TrainerApplicationResource extends Resource
                             ->required(),
                     ]),
 
-                Forms\Components\Section::make('Application Details')
+                Forms\Components\Section::make('Uploaded Documents')
                     ->schema([
-                        Forms\Components\Textarea::make('credentials')
-                            ->required()
-                            ->maxLength(5000)
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('experience_description')
-                            ->label('Experience Description')
-                            ->required()
-                            ->maxLength(5000)
-                            ->columnSpanFull(),
-                        Forms\Components\TextInput::make('license_number')
-                            ->label('License Number')
-                            ->maxLength(255),
-                    ]),
+                        Forms\Components\Placeholder::make('letter_of_nomination_download')
+                            ->label('Letter of Nomination')
+                            ->content(function (TrainerApplication $record): string {
+                                $media = $record->getFirstMedia('letter_of_nomination');
+                                if ($media) {
+                                    return new \Illuminate\Support\HtmlString(
+                                        '<a href="' . $media->getUrl() . '" target="_blank" class="text-primary-600 hover:underline">' .
+                                        e($media->file_name) . ' (' . number_format($media->size / 1024, 1) . ' KB)</a>'
+                                    );
+                                }
+                                return 'No file uploaded';
+                            }),
+                        Forms\Components\Placeholder::make('application_submission_download')
+                            ->label('Application Submission')
+                            ->content(function (TrainerApplication $record): string {
+                                $media = $record->getFirstMedia('application_submission');
+                                if ($media) {
+                                    return new \Illuminate\Support\HtmlString(
+                                        '<a href="' . $media->getUrl() . '" target="_blank" class="text-primary-600 hover:underline">' .
+                                        e($media->file_name) . ' (' . number_format($media->size / 1024, 1) . ' KB)</a>'
+                                    );
+                                }
+                                return 'No file uploaded';
+                            }),
+                    ])
+                    ->visible(fn (?TrainerApplication $record): bool => $record !== null),
+
+                Forms\Components\Section::make('Payment Information')
+                    ->schema([
+                        Forms\Components\TextInput::make('stripe_payment_intent_id')
+                            ->label('Stripe Payment Intent')
+                            ->disabled(),
+                        Forms\Components\Placeholder::make('amount_display')
+                            ->label('Amount Paid')
+                            ->content(fn (TrainerApplication $record): string => '$' . number_format($record->amount_paid_cents / 100, 2)),
+                        Forms\Components\Placeholder::make('invoice_link')
+                            ->label('Invoice')
+                            ->content(function (TrainerApplication $record): string {
+                                if ($record->invoice) {
+                                    return new \Illuminate\Support\HtmlString(
+                                        '<a href="' . route('filament.admin.resources.invoices.edit', $record->invoice_id) . '" class="text-primary-600 hover:underline">' .
+                                        e($record->invoice->number) . '</a>'
+                                    );
+                                }
+                                return 'No invoice';
+                            }),
+                    ])
+                    ->visible(fn (?TrainerApplication $record): bool => $record !== null && $record->stripe_payment_intent_id),
 
                 Forms\Components\Section::make('Review')
                     ->schema([
@@ -82,12 +117,11 @@ class TrainerApplicationResource extends Resource
                     ->label('Applicant')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('credentials')
-                    ->limit(40)
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('license_number')
-                    ->label('License #')
-                    ->searchable()
+                Tables\Columns\TextColumn::make('user.full_name')
+                    ->label('Name'),
+                Tables\Columns\TextColumn::make('amount_paid_cents')
+                    ->label('Paid')
+                    ->formatStateUsing(fn ($state): string => '$' . number_format($state / 100, 2))
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
@@ -120,6 +154,7 @@ class TrainerApplicationResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('approve')
                     ->label('Approve')

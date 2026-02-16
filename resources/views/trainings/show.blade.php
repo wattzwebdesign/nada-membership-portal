@@ -102,7 +102,7 @@
                                         <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                         <div>
                                             <p class="text-sm font-medium text-gray-900">Virtual Meeting</p>
-                                            @if (isset($isRegistered) && $isRegistered)
+                                            @if ($userRegistration)
                                                 <a href="{{ $training->virtual_link }}" target="_blank" class="text-sm hover:underline" style="color: #374269;">Join Meeting</a>
                                             @else
                                                 <p class="text-sm text-gray-500">Link available after registration</p>
@@ -152,7 +152,7 @@
                                 </div>
                             @endif
 
-                            @if (isset($isRegistered) && $isRegistered)
+                            @if ($userRegistration)
                                 <div class="bg-green-50 border border-green-200 rounded-md p-3 mb-4">
                                     <p class="text-sm text-green-700 font-medium text-center">You are registered for this training.</p>
                                 </div>
@@ -163,6 +163,13 @@
                                         Cancel Registration
                                     </button>
                                 </form>
+                            @elseif (auth()->check() && ! auth()->user()->hasActiveSubscription())
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-md p-3 mb-4">
+                                    <p class="text-sm text-yellow-700 font-medium text-center">An active membership plan is required to register for trainings.</p>
+                                </div>
+                                <a href="{{ route('membership.index') }}" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition" style="background-color: #374269;">
+                                    View Membership Plans
+                                </a>
                             @elseif ($training->max_attendees && ($training->registrations_count ?? 0) >= $training->max_attendees)
                                 <div class="bg-yellow-50 border border-yellow-200 rounded-md p-3 mb-4">
                                     <p class="text-sm text-yellow-700 font-medium text-center">This training is full.</p>

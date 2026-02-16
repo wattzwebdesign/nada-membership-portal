@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RegistrationStatus;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use App\Models\PayoutSetting;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
+use App\Models\User;
 use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\TrainingRegisteredNotification;
 use App\Services\StripeService;
@@ -31,7 +34,7 @@ class TrainingRegistrationController extends Controller
     {
         $registrations = $request->user()
             ->trainingRegistrations()
-            ->with('training.trainer')
+            ->with(['training.trainer', 'invoice'])
             ->orderByDesc('created_at')
             ->paginate(15);
 
@@ -44,6 +47,11 @@ class TrainingRegistrationController extends Controller
     public function store(Request $request, Training $training): RedirectResponse
     {
         $user = $request->user();
+
+        // Require active membership plan
+        if (! $user->hasActiveSubscription()) {
+            return back()->with('error', 'You need an active membership plan to register for trainings. Please subscribe first.');
+        }
 
         // Check if already registered
         $existing = TrainingRegistration::where('training_id', $training->id)
@@ -117,12 +125,33 @@ class TrainingRegistrationController extends Controller
                     ->with('success', 'You are registered for "' . $training->title . '".');
             }
 
+            $amountDollars = $session->amount_total / 100;
+
+            $invoice = Invoice::create([
+                'user_id' => $user->id,
+                'stripe_invoice_id' => $session->payment_intent,
+                'status' => 'paid',
+                'amount_due' => $amountDollars,
+                'amount_paid' => $amountDollars,
+                'currency' => $session->currency ?? 'usd',
+                'paid_at' => now(),
+            ]);
+
+            InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'description' => 'Training registration: ' . $training->title . ' — ' . $training->start_date->format('M j, Y'),
+                'quantity' => 1,
+                'unit_price' => $amountDollars,
+                'total' => $amountDollars,
+            ]);
+
             $registration = TrainingRegistration::create([
                 'training_id' => $training->id,
                 'user_id' => $user->id,
                 'status' => RegistrationStatus::Registered->value,
                 'stripe_payment_intent_id' => $session->payment_intent,
                 'amount_paid_cents' => $session->amount_total,
+                'invoice_id' => $invoice->id,
             ]);
 
             $this->safeNotify($user, new TrainingRegisteredNotification($registration));
