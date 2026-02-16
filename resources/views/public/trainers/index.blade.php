@@ -156,8 +156,12 @@
 
                     if (trainers.length > 0) {
                         this.map.fitBounds(bounds);
-                        if (trainers.length === 1) {
-                            this.map.setZoom(12);
+                        if (trainers.length <= 2) {
+                            google.maps.event.addListenerOnce(this.map, 'bounds_changed', () => {
+                                if (this.map.getZoom() > 10) {
+                                    this.map.setZoom(10);
+                                }
+                            });
                         }
                     }
 
