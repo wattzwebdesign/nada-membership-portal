@@ -168,7 +168,8 @@ class ImportSubscriptions extends Command
 
     /**
      * Build a mapping of old Stripe price IDs → local Plan records.
-     * Matches by plan_type + price_cents + billing_interval_count.
+     * Matches by price_cents + billing_interval_count. When multiple plans
+     * match (student/senior same price), defaults to student.
      */
     private function buildPriceMap($subscriptions, $prices): array
     {
@@ -187,29 +188,54 @@ class ImportSubscriptions extends Command
                     'interval_count' => null,
                     'plan_id' => null,
                     'plan_name' => null,
+                    'note' => 'not in audit',
                 ];
                 continue;
             }
 
             $productName = $price['product_name'] ?? 'Unknown';
-            $planType = $this->inferPlanType($productName);
+            $isTrainer = str_contains(strtolower($productName), 'trainer');
             $amount = $price['unit_amount'] ?? 0;
-            $intervalCount = $price['recurring_interval_count'] ?? 1;
 
-            // Match to a local Plan by type + amount + interval
-            $plan = Plan::where('plan_type', $planType)
-                ->where('price_cents', $amount)
-                ->where('billing_interval_count', $intervalCount)
-                ->first();
+            // Normalize month-based intervals to years
+            $interval = $price['recurring_interval'] ?? 'year';
+            $intervalCount = $price['recurring_interval_count'] ?? 1;
+            if ($interval === 'month') {
+                $intervalCount = (int) round($intervalCount / 12);
+            }
+
+            // Match by price + interval, scoped to trainer vs non-trainer
+            $query = Plan::where('price_cents', $amount)
+                ->where('billing_interval_count', $intervalCount);
+
+            if ($isTrainer) {
+                $query->where('plan_type', 'trainer');
+            } else {
+                $query->where('plan_type', '!=', 'trainer');
+            }
+
+            $matches = $query->get();
+            $plan = null;
+            $note = null;
+
+            if ($matches->count() === 1) {
+                $plan = $matches->first();
+            } elseif ($matches->count() > 1) {
+                // Ambiguous (student/senior) — default to student
+                $plan = $matches->where('discount_required', 'student')->first()
+                    ?? $matches->first();
+                $note = 'ambiguous → defaulted to student';
+            }
 
             $priceMap[$priceId] = [
                 'price_id' => $priceId,
                 'product_name' => $productName,
-                'plan_type' => $planType,
+                'plan_type' => $plan?->plan_type?->value,
                 'amount' => $amount,
                 'interval_count' => $intervalCount,
                 'plan_id' => $plan?->id,
                 'plan_name' => $plan?->name,
+                'note' => $note,
             ];
         }
 
@@ -226,32 +252,17 @@ class ImportSubscriptions extends Command
             $rows[] = [
                 $entry['price_id'],
                 $entry['product_name'],
-                $entry['plan_type'] ?? '—',
                 $entry['amount'] !== null ? '$' . number_format($entry['amount'] / 100, 2) : '—',
                 $entry['interval_count'] ? $entry['interval_count'] . 'yr' : '—',
                 $entry['plan_name'] ?? '<UNMAPPED>',
+                $entry['note'] ?? '',
             ];
         }
 
         $this->table(
-            ['Old Price ID', 'Product Name', 'Type', 'Amount', 'Interval', 'Mapped Plan'],
+            ['Old Price ID', 'Product Name', 'Amount', 'Interval', 'Mapped Plan', 'Note'],
             $rows
         );
-    }
-
-    /**
-     * Infer plan type from Stripe product name (same logic as MapPlans).
-     */
-    private function inferPlanType(string $productName): string
-    {
-        $lower = strtolower($productName);
-
-        if (str_contains($lower, 'comped')) return 'comped';
-        if (str_contains($lower, 'trainer') || str_contains($lower, 'registered trainer')) return 'trainer';
-        if (str_contains($lower, 'senior')) return 'senior';
-        if (str_contains($lower, 'student')) return 'student';
-
-        return 'membership';
     }
 
     private function parseName(?string $name): array

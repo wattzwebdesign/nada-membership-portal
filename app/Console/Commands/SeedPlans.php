@@ -12,7 +12,7 @@ class SeedPlans extends Command
 {
     protected $signature = 'nada:seed-plans';
 
-    protected $description = 'Seed the 9 membership plans and create corresponding Stripe products/prices';
+    protected $description = 'Seed the 18 membership and trainer plans and create corresponding Stripe products/prices';
 
     public function handle(StripeService $stripeService): int
     {
@@ -26,6 +26,16 @@ class SeedPlans extends Command
             ['name' => 'NADA Senior 1 Year',    'price_cents' => 7000,  'billing_interval_count' => 1, 'plan_type' => PlanType::Senior,     'discount_required' => 'senior'],
             ['name' => 'NADA Senior 2 Years',   'price_cents' => 12950, 'billing_interval_count' => 2, 'plan_type' => PlanType::Senior,     'discount_required' => 'senior'],
             ['name' => 'NADA Senior 3 Years',   'price_cents' => 18900, 'billing_interval_count' => 3, 'plan_type' => PlanType::Senior,     'discount_required' => 'senior'],
+            // Trainer plans
+            ['name' => 'Registered Trainer 1 Year',          'price_cents' => 30000, 'billing_interval_count' => 1, 'plan_type' => PlanType::Trainer, 'discount_required' => null,      'role_required' => 'registered_trainer'],
+            ['name' => 'Registered Trainer 2 Years',         'price_cents' => 55500, 'billing_interval_count' => 2, 'plan_type' => PlanType::Trainer, 'discount_required' => null,      'role_required' => 'registered_trainer'],
+            ['name' => 'Registered Trainer 3 Years',         'price_cents' => 81000, 'billing_interval_count' => 3, 'plan_type' => PlanType::Trainer, 'discount_required' => null,      'role_required' => 'registered_trainer'],
+            ['name' => 'Registered Trainer Student 1 Year',  'price_cents' => 21000, 'billing_interval_count' => 1, 'plan_type' => PlanType::Trainer, 'discount_required' => 'student', 'role_required' => 'registered_trainer'],
+            ['name' => 'Registered Trainer Student 2 Years', 'price_cents' => 38850, 'billing_interval_count' => 2, 'plan_type' => PlanType::Trainer, 'discount_required' => 'student', 'role_required' => 'registered_trainer'],
+            ['name' => 'Registered Trainer Student 3 Years', 'price_cents' => 56700, 'billing_interval_count' => 3, 'plan_type' => PlanType::Trainer, 'discount_required' => 'student', 'role_required' => 'registered_trainer'],
+            ['name' => 'Registered Trainer Senior 1 Year',   'price_cents' => 21000, 'billing_interval_count' => 1, 'plan_type' => PlanType::Trainer, 'discount_required' => 'senior',  'role_required' => 'registered_trainer'],
+            ['name' => 'Registered Trainer Senior 2 Years',  'price_cents' => 38850, 'billing_interval_count' => 2, 'plan_type' => PlanType::Trainer, 'discount_required' => 'senior',  'role_required' => 'registered_trainer'],
+            ['name' => 'Registered Trainer Senior 3 Years',  'price_cents' => 56700, 'billing_interval_count' => 3, 'plan_type' => PlanType::Trainer, 'discount_required' => 'senior',  'role_required' => 'registered_trainer'],
         ];
 
         $created = 0;
@@ -47,7 +57,7 @@ class SeedPlans extends Command
                 'billing_interval_count' => $data['billing_interval_count'],
                 'plan_type' => $data['plan_type'],
                 'discount_required' => $data['discount_required'],
-                'role_required' => null,
+                'role_required' => $data['role_required'] ?? null,
                 'is_visible' => true,
                 'is_active' => true,
                 'sort_order' => $index + 1,
