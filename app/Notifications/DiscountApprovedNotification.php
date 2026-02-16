@@ -23,15 +23,14 @@ class DiscountApprovedNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return $this->buildFromTemplate('discount_approved', [
-            'user_name' => $notifiable->name,
-            'discount_code' => $this->discountRequest->discount_code,
+            'user_name' => $notifiable->full_name,
+            'discount_type' => $this->discountRequest->discount_type->label(),
         ], fn () => (new MailMessage)
             ->subject('Discount Request Approved!')
-            ->greeting("Hello {$notifiable->name}!")
-            ->line('Great news! Your discount request has been approved.')
-            ->line("Discount Code: {$this->discountRequest->discount_code}")
-            ->line('You can apply this code during checkout to receive your discount.')
-            ->action('View Membership Plans', url('/membership'))
+            ->greeting("Hello {$notifiable->full_name}!")
+            ->line('Great news! Your ' . $this->discountRequest->discount_type->label() . ' discount request has been approved.')
+            ->line('Discounted membership plans are now available in your portal. Visit your Membership Plans page to view and activate your discounted rate.')
+            ->action('View Membership Plans', url('/membership/plans'))
             ->line('Thank you for being part of the NADA community!'));
     }
 }
