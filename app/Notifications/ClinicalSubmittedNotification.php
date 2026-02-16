@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Filament\Resources\ClinicalResource;
 use App\Models\Clinical;
 use App\Notifications\Concerns\UsesEmailTemplate;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -32,7 +33,7 @@ class ClinicalSubmittedNotification extends Notification
             ->line('A new clinical submission has been received and requires your review.')
             ->line("Submitted by: {$this->clinical->user->name}")
             ->line("Email: {$this->clinical->user->email}")
-            ->action('Review Submission', url("/admin/clinicals/{$this->clinical->id}"))
+            ->action('Review Submission', ClinicalResource::getUrl('view', ['record' => $this->clinical]))
             ->line('Please review this clinical submission at your earliest convenience.'));
     }
 }

@@ -6,10 +6,13 @@ use App\Filament\Resources\ClinicalResource\Pages;
 use App\Models\Clinical;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 
 class ClinicalResource extends Resource
 {
@@ -76,6 +79,85 @@ class ClinicalResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Applicant Information')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('user.email')
+                            ->label('User Account'),
+                        Infolists\Components\TextEntry::make('first_name'),
+                        Infolists\Components\TextEntry::make('last_name'),
+                        Infolists\Components\TextEntry::make('email')
+                            ->label('Contact Email'),
+                    ])->columns(2),
+
+                Infolists\Components\Section::make('Training Details')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('estimated_training_date')
+                            ->date()
+                            ->placeholder('Not provided'),
+                        Infolists\Components\TextEntry::make('trainer.full_name')
+                            ->label('Trainer')
+                            ->placeholder('Not assigned'),
+                    ])->columns(2),
+
+                Infolists\Components\Section::make('Treatment Logs')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('treatment_logs_display')
+                            ->label('')
+                            ->state(function (Clinical $record): HtmlString {
+                                $media = $record->getMedia('treatment_logs');
+
+                                if ($media->isEmpty()) {
+                                    return new HtmlString('<span class="text-gray-500">No files uploaded.</span>');
+                                }
+
+                                $links = $media->map(function ($item) {
+                                    $url = $item->getUrl();
+                                    $name = e($item->file_name);
+                                    $size = number_format($item->size / 1024, 1);
+                                    $icon = '<svg xmlns="http://www.w3.org/2000/svg" class="inline w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-4.12-4.122A1.5 1.5 0 0011.378 2H4.5zm4.75 9.25a.75.75 0 001.5 0V7.56l1.22 1.22a.75.75 0 001.06-1.06l-2.5-2.5a.75.75 0 00-1.06 0l-2.5 2.5a.75.75 0 001.06 1.06l1.22-1.22v3.69z" clip-rule="evenodd" /></svg>';
+
+                                    return "<a href=\"{$url}\" target=\"_blank\" class=\"inline-flex items-center gap-1 text-primary-600 hover:underline\">"
+                                        . "{$icon} {$name} <span class=\"text-gray-400 text-xs\">({$size} KB)</span>"
+                                        . "</a>";
+                                })->join('<br>');
+
+                                return new HtmlString($links);
+                            })
+                            ->html(),
+                    ]),
+
+                Infolists\Components\Section::make('Review Status')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('status')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'submitted' => 'info',
+                                'under_review' => 'warning',
+                                'approved' => 'success',
+                                'rejected' => 'danger',
+                                default => 'gray',
+                            }),
+                        Infolists\Components\TextEntry::make('reviewer.full_name')
+                            ->label('Reviewed By')
+                            ->placeholder('Pending'),
+                        Infolists\Components\TextEntry::make('reviewed_at')
+                            ->label('Reviewed At')
+                            ->dateTime()
+                            ->placeholder('Pending'),
+                        Infolists\Components\TextEntry::make('notes')
+                            ->placeholder('None')
+                            ->columnSpanFull(),
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->label('Submitted At')
+                            ->dateTime(),
+                    ])->columns(3),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -130,6 +212,7 @@ class ClinicalResource extends Resource
                     ->relationship('trainer', 'email'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('approve')
                     ->label('Approve')
@@ -189,6 +272,7 @@ class ClinicalResource extends Resource
         return [
             'index' => Pages\ListClinicals::route('/'),
             'create' => Pages\CreateClinical::route('/create'),
+            'view' => Pages\ViewClinical::route('/{record}'),
             'edit' => Pages\EditClinical::route('/{record}/edit'),
         ];
     }
