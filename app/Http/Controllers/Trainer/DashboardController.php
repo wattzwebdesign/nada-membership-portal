@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Trainer;
 use App\Http\Controllers\Controller;
 use App\Enums\RegistrationStatus;
 use App\Enums\TrainingStatus;
+use App\Models\Clinical;
 use App\Services\PayoutService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -57,12 +58,20 @@ class DashboardController extends Controller
         // Earnings summary from the PayoutService
         $earningsSummary = $this->payoutService->getEarningsReport($trainer);
 
+        // Clinicals pending review for this trainer
+        $pendingClinicals = Clinical::where('trainer_id', $trainer->id)
+            ->whereIn('status', ['submitted', 'under_review'])
+            ->with('user')
+            ->orderByDesc('created_at')
+            ->get();
+
         return view('trainer.dashboard', [
             'trainer' => $trainer,
             'upcomingTrainings' => $upcomingTrainings,
             'recentCompletions' => $recentCompletions,
             'totalCompletions' => $totalCompletions,
             'earningsSummary' => $earningsSummary,
+            'pendingClinicals' => $pendingClinicals,
         ]);
     }
 }
