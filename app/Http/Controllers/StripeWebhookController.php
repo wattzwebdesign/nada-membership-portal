@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RegistrationStatus;
+use App\Models\GroupTrainingRequest;
 use App\Models\Invoice;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
 use App\Models\User;
 use App\Notifications\Concerns\SafelyNotifies;
+use App\Notifications\GroupTrainingConfirmationNotification;
+use App\Notifications\GroupTrainingPaidNotification;
 use App\Notifications\PaymentFailedNotification;
 use App\Notifications\SubscriptionCanceledNotification;
 use App\Notifications\SubscriptionConfirmedNotification;
@@ -347,6 +350,42 @@ class StripeWebhookController extends Controller
                         'payment_intent' => $session->payment_intent,
                     ]);
                 }
+            }
+        }
+
+        // Handle group training payment
+        if ($type === 'group_training' && $session->payment_status === 'paid') {
+            $requestId = $session->metadata->group_training_request_id ?? null;
+            $groupRequest = $requestId
+                ? GroupTrainingRequest::find($requestId)
+                : GroupTrainingRequest::where('stripe_checkout_session_id', $session->id)->first();
+
+            if ($groupRequest && $groupRequest->status !== 'paid') {
+                $groupRequest->update([
+                    'status' => 'paid',
+                    'stripe_payment_intent_id' => $session->payment_intent,
+                    'paid_at' => now(),
+                ]);
+
+                // Notify both trainer and admin
+                $trainer = $groupRequest->trainer;
+                if ($trainer) {
+                    $this->safeNotify($trainer, new GroupTrainingPaidNotification($groupRequest));
+                }
+
+                $adminEmail = \App\Models\SiteSetting::adminEmail();
+                $this->safeNotifyRoute($adminEmail, new GroupTrainingPaidNotification($groupRequest));
+
+                // Confirmation to company contact
+                $this->safeNotifyRoute(
+                    $groupRequest->company_email,
+                    new GroupTrainingConfirmationNotification($groupRequest)
+                );
+
+                Log::info('Group training request paid from webhook.', [
+                    'group_training_request_id' => $groupRequest->id,
+                    'payment_intent' => $session->payment_intent,
+                ]);
             }
         }
 

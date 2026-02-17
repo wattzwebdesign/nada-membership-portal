@@ -15,6 +15,7 @@ use App\Http\Controllers\PublicPricingController;
 use App\Http\Controllers\PublicTrainerController;
 use App\Http\Controllers\TrainerApplicationController;
 use App\Http\Controllers\NdaController;
+use App\Http\Controllers\GroupTrainingController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\TrainingRegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,12 @@ Route::get('/pricing', [PublicPricingController::class, 'index'])->name('public.
 Route::get('/trainers', [PublicTrainerController::class, 'index'])->name('public.trainers.index');
 Route::get('/trainers/{user}', [PublicTrainerController::class, 'show'])->name('public.trainers.show');
 Route::get('/verify/{certificate_code?}', [PublicCertificateController::class, 'verify'])->name('public.verify');
+
+// Group Training (public form, no auth)
+Route::get('/group-training', [GroupTrainingController::class, 'create'])->name('group-training.create');
+Route::post('/group-training', [GroupTrainingController::class, 'store'])->name('group-training.store');
+Route::get('/group-training/success', [GroupTrainingController::class, 'success'])->name('group-training.success');
+Route::get('/group-training/cancel', [GroupTrainingController::class, 'cancel'])->name('group-training.cancel');
 
 // Admin Discount Approval (token-based, no auth required — links sent via email)
 Route::get('/admin/discount-requests/{token}/approve', [DiscountApprovalController::class, 'approve'])->name('discount.approve');

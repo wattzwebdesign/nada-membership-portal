@@ -139,6 +139,75 @@
                 </a>
             </div>
 
+            {{-- Group Training Link Builder --}}
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" x-data="groupTrainingLinkBuilder()">
+                <div class="p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="flex-shrink-0 p-2 rounded-lg" style="background-color: rgba(55, 66, 105, 0.1);">
+                            <svg class="w-5 h-5" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold" style="color: #374269;">Group Training Link</h3>
+                            <p class="text-xs text-gray-500">Share this link with companies to pre-fill your group training form.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Price Per Ticket ($) <span class="text-gray-400">(optional)</span></label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-400 text-sm">$</span>
+                                </div>
+                                <input type="number" step="0.01" min="0" x-model="priceDollars" placeholder="0.00"
+                                       class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Number of Tickets <span class="text-gray-400">(optional)</span></label>
+                            <input type="number" min="1" x-model="tickets" placeholder="10"
+                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <input type="text" readonly :value="generatedUrl"
+                               class="flex-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm text-sm text-gray-700 font-mono">
+                        <button type="button" @click="copyUrl()" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md bg-white hover:bg-gray-50 transition"
+                                :class="copied ? 'text-green-600 border-green-300' : 'text-gray-700'">
+                            <template x-if="!copied">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            </template>
+                            <template x-if="copied">
+                                <span class="text-xs font-medium">Copied!</span>
+                            </template>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function groupTrainingLinkBuilder() {
+                    return {
+                        priceDollars: '',
+                        tickets: '',
+                        copied: false,
+                        get generatedUrl() {
+                            let url = '{{ url("/group-training") }}?trainer={{ auth()->id() }}';
+                            const priceCents = Math.round(parseFloat(this.priceDollars || 0) * 100);
+                            if (priceCents > 0) url += '&price=' + priceCents;
+                            if (parseInt(this.tickets) > 0) url += '&tickets=' + parseInt(this.tickets);
+                            return url;
+                        },
+                        copyUrl() {
+                            navigator.clipboard.writeText(this.generatedUrl);
+                            this.copied = true;
+                            setTimeout(() => this.copied = false, 2000);
+                        }
+                    };
+                }
+            </script>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {{-- Upcoming Trainings --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
