@@ -31,6 +31,7 @@ class CertificateController extends Controller
 
         $progress = [
             'has_active_membership' => $user->hasActiveSubscription(),
+            'has_training_registration' => $user->trainingRegistrations()->exists(),
             'has_completed_training' => $user->trainingRegistrations()
                 ->where('status', RegistrationStatus::Completed)->exists(),
             'has_approved_clinical' => $user->clinicals()
