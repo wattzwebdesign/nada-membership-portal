@@ -7,22 +7,20 @@ use App\Models\Training;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class CertificateService
 {
     public function generateCode(): string
     {
-        $prefix = config('app.nada_cert_code_prefix', 'NADA');
-        $date = now()->format('Ymd');
-        $random = strtoupper(Str::random(5));
-
-        $code = "{$prefix}-{$date}-{$random}";
-
-        while (Certificate::where('certificate_code', $code)->exists()) {
-            $random = strtoupper(Str::random(5));
-            $code = "{$prefix}-{$date}-{$random}";
-        }
+        do {
+            $code = sprintf(
+                '%06d-%03d-%03d-%04d',
+                random_int(0, 999999),
+                random_int(0, 999),
+                random_int(0, 999),
+                random_int(0, 9999)
+            );
+        } while (Certificate::where('certificate_code', $code)->exists());
 
         return $code;
     }
