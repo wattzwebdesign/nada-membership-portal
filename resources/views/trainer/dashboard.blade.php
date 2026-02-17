@@ -191,6 +191,16 @@
                                 </div>
                             </a>
 
+                            <a href="{{ route('trainer.registrations.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <div class="flex-shrink-0 p-2 rounded-lg bg-blue-50">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">All Registrations</p>
+                                    <p class="text-xs text-gray-500">Search and filter across all trainings</p>
+                                </div>
+                            </a>
+
                             <a href="{{ route('trainer.clinicals.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <div class="flex-shrink-0 p-2 rounded-lg bg-green-50">
                                     <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

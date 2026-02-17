@@ -121,6 +121,9 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::post('/trainings/{training}/attendees/bulk-complete', [App\Http\Controllers\Trainer\AttendeeController::class, 'bulkComplete'])->name('attendees.bulk-complete');
     Route::get('/trainings/{training}/attendees/export', [App\Http\Controllers\Trainer\AttendeeController::class, 'export'])->name('attendees.export');
 
+    // All Registrations
+    Route::get('/registrations', [App\Http\Controllers\Trainer\RegistrationController::class, 'index'])->name('registrations.index');
+
     // Clinicals Review
     Route::get('/clinicals', [App\Http\Controllers\Trainer\ClinicalController::class, 'index'])->name('clinicals.index');
     Route::get('/clinicals/{clinical}', [App\Http\Controllers\Trainer\ClinicalController::class, 'show'])->name('clinicals.show');
