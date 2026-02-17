@@ -87,17 +87,11 @@ class TrainingResource extends Resource
                             ->label('Is Paid Training')
                             ->reactive(),
                         Forms\Components\TextInput::make('price_cents')
-                            ->label('Price (cents)')
+                            ->label('Price')
                             ->numeric()
-                            ->suffix('cents')
-                            ->helperText('Enter price in cents (e.g., 5000 = $50.00)')
-                            ->visible(fn (Forms\Get $get) => $get('is_paid')),
-                        Forms\Components\TextInput::make('currency')
-                            ->default('usd')
-                            ->maxLength(3)
-                            ->visible(fn (Forms\Get $get) => $get('is_paid')),
-                        Forms\Components\TextInput::make('stripe_price_id')
-                            ->maxLength(255)
+                            ->prefix('$')
+                            ->formatStateUsing(fn (?int $state): ?string => $state !== null ? number_format($state / 100, 2, '.', '') : null)
+                            ->dehydrateStateUsing(fn (?string $state): ?int => $state !== null ? (int) round((float) $state * 100) : null)
                             ->visible(fn (Forms\Get $get) => $get('is_paid')),
                     ])->columns(2),
             ]);
