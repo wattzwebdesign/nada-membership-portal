@@ -152,6 +152,51 @@
                 </div>
             </div>
 
+            {{-- Quick Actions Grid --}}
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                <a href="{{ route('trainer.profile.edit') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
+                    <div class="p-2 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
+                        <svg class="w-5 h-5" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </div>
+                    <p class="mt-2 text-xs font-medium text-gray-900">Edit Profile</p>
+                </a>
+
+                <a href="{{ route('trainer.trainings.index') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
+                    <div class="p-2 rounded-lg bg-blue-50">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                    </div>
+                    <p class="mt-2 text-xs font-medium text-gray-900">Trainings</p>
+                </a>
+
+                <a href="{{ route('trainer.registrations.index') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
+                    <div class="p-2 rounded-lg bg-blue-50">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <p class="mt-2 text-xs font-medium text-gray-900">Registrations</p>
+                </a>
+
+                <a href="{{ route('trainer.clinicals.index') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
+                    <div class="p-2 rounded-lg bg-green-50">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <p class="mt-2 text-xs font-medium text-gray-900">Clinicals</p>
+                </a>
+
+                <a href="{{ route('trainer.payouts.index') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
+                    <div class="p-2 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
+                        <svg class="w-5 h-5" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <p class="mt-2 text-xs font-medium text-gray-900">Payouts</p>
+                </a>
+
+                <a href="{{ route('trainer.payouts.reports') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
+                    <div class="p-2 rounded-lg bg-purple-50">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <p class="mt-2 text-xs font-medium text-gray-900">Reports</p>
+                </a>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {{-- Upcoming Trainings --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -194,72 +239,34 @@
                     </div>
                 </div>
 
-                {{-- Quick Actions --}}
+                {{-- Clinicals Pending Review --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Quick Actions</h3>
-
-                        <div class="space-y-3">
-                            <a href="{{ route('trainer.profile.edit') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <div class="flex-shrink-0 p-2 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
-                                    <svg class="w-5 h-5" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium text-gray-900">Edit Public Profile</p>
-                                    <p class="text-xs text-gray-500">Update your bio and directory listing</p>
-                                </div>
-                            </a>
-
-                            <a href="{{ route('trainer.trainings.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <div class="flex-shrink-0 p-2 rounded-lg bg-blue-50">
-                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium text-gray-900">Manage Trainings</p>
-                                    <p class="text-xs text-gray-500">Edit, publish, or cancel your trainings</p>
-                                </div>
-                            </a>
-
-                            <a href="{{ route('trainer.registrations.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <div class="flex-shrink-0 p-2 rounded-lg bg-blue-50">
-                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium text-gray-900">All Registrations</p>
-                                    <p class="text-xs text-gray-500">Search and filter across all trainings</p>
-                                </div>
-                            </a>
-
-                            <a href="{{ route('trainer.clinicals.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <div class="flex-shrink-0 p-2 rounded-lg bg-green-50">
-                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium text-gray-900">Review Clinicals</p>
-                                    <p class="text-xs text-gray-500">Approve submissions and issue certificates</p>
-                                </div>
-                            </a>
-
-                            <a href="{{ route('trainer.payouts.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <div class="flex-shrink-0 p-2 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
-                                    <svg class="w-5 h-5" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium text-gray-900">View Payouts</p>
-                                    <p class="text-xs text-gray-500">Check your Stripe Connect earnings</p>
-                                </div>
-                            </a>
-
-                            <a href="{{ route('trainer.payouts.reports') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <div class="flex-shrink-0 p-2 rounded-lg bg-purple-50">
-                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium text-gray-900">Earnings Reports</p>
-                                    <p class="text-xs text-gray-500">Detailed per-training breakdown</p>
-                                </div>
-                            </a>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold" style="color: #374269;">Clinicals Pending Review</h3>
+                            <a href="{{ route('trainer.clinicals.index') }}" class="text-sm font-medium hover:underline" style="color: #d39c27;">View All</a>
                         </div>
+
+                        @forelse ($pendingClinicals as $clinical)
+                            <div class="border-b border-gray-100 py-3 last:border-0">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <a href="{{ route('trainer.clinicals.show', $clinical) }}" class="text-sm font-medium hover:underline" style="color: #374269;">
+                                            {{ $clinical->user->full_name }}
+                                        </a>
+                                        <p class="text-xs text-gray-500 mt-0.5">Submitted {{ $clinical->created_at->diffForHumans() }}</p>
+                                    </div>
+                                    <a href="{{ route('trainer.clinicals.show', $clinical) }}" class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
+                                        Review
+                                    </a>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-6">
+                                <svg class="mx-auto h-10 w-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <p class="mt-2 text-sm text-gray-500">No clinicals pending review.</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
