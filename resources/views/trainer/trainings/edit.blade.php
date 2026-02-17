@@ -98,7 +98,7 @@
                         </div>
                     </div>
 
-                    <form method="POST" action="{{ route('trainer.trainings.update', $training) }}" x-data="{ isPaid: {{ old('is_paid', $training->is_paid) ? 'true' : 'false' }} }">
+                    <form method="POST" action="{{ route('trainer.trainings.update', $training) }}" x-data="editTrainingForm()">
                         @csrf
                         @method('PUT')
 
@@ -203,7 +203,7 @@
 
                                 {{-- Group Training Invitees --}}
                                 @if ($training->is_group)
-                                    <div class="border border-gray-200 rounded-lg p-4" x-data="inviteeRepeater()">
+                                    <div class="border border-gray-200 rounded-lg p-4">
                                         <h4 class="text-sm font-medium text-gray-700 mb-3">
                                             <span class="inline-flex items-center">
                                                 <svg class="w-4 h-4 mr-1 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -263,13 +263,16 @@
                         {{-- Actions --}}
                         <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
                             <a href="{{ route('trainer.trainings.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Back to Trainings</a>
-                            <div class="flex flex-wrap gap-3">
+                            <div class="flex flex-wrap items-center gap-3">
+                                @if ($training->is_group)
+                                    <p x-show="!canSubmit" x-cloak class="text-sm text-red-600">All invitees must be active members</p>
+                                @endif
                                 @if ($statusValue === 'pending_approval')
-                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                    <button type="submit" :disabled="!canSubmit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #374269;">
                                         Save Changes
                                     </button>
                                 @elseif ($statusValue === 'denied')
-                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-500">
+                                    <button type="submit" :disabled="!canSubmit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                         Resubmit for Review
                                     </button>
@@ -318,44 +321,56 @@
             virtualField.style.display = (type === 'in_person') ? 'none' : 'block';
         }
 
-        function inviteeRepeater() {
-            const existingInvitees = @json($training->invitees->pluck('email')->toArray());
-            const emails = existingInvitees.length > 0 ? existingInvitees : [''];
+        function editTrainingForm() {
+            @if($training->is_group)
+                const existingInvitees = @json($training->invitees->pluck('email')->toArray());
+                const emails = existingInvitees.length > 0 ? existingInvitees : [''];
+            @endif
             return {
-                invitees: emails.map(email => ({ email: email, status: '', message: '', name: '', checking: false })),
-                addInvitee() {
-                    this.invitees.push({ email: '', status: '', message: '', name: '', checking: false });
-                },
-                removeInvitee(index) {
-                    this.invitees.splice(index, 1);
-                },
-                async checkEmail(index) {
-                    const invitee = this.invitees[index];
-                    const email = (invitee.email || '').trim();
-                    if (!email || !email.includes('@')) {
+                isPaid: {{ old('is_paid', $training->is_paid) ? 'true' : 'false' }},
+                @if($training->is_group)
+                    invitees: emails.map(email => ({ email: email, status: '', message: '', name: '', checking: false })),
+                    addInvitee() {
+                        this.invitees.push({ email: '', status: '', message: '', name: '', checking: false });
+                    },
+                    removeInvitee(index) {
+                        this.invitees.splice(index, 1);
+                    },
+                    get canSubmit() {
+                        const filled = this.invitees.filter(i => (i.email || '').trim());
+                        if (filled.length === 0) return true;
+                        return filled.every(i => i.status === 'active') && !filled.some(i => i.checking);
+                    },
+                    async checkEmail(index) {
+                        const invitee = this.invitees[index];
+                        const email = (invitee.email || '').trim();
+                        if (!email || !email.includes('@')) {
+                            invitee.status = '';
+                            invitee.message = '';
+                            invitee.name = '';
+                            return;
+                        }
+                        invitee.checking = true;
                         invitee.status = '';
-                        invitee.message = '';
-                        invitee.name = '';
-                        return;
-                    }
-                    invitee.checking = true;
-                    invitee.status = '';
-                    try {
-                        const res = await fetch('{{ route("trainer.invitee.check") }}', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                            body: JSON.stringify({ email })
-                        });
-                        const data = await res.json();
-                        invitee.status = data.status;
-                        invitee.message = data.message || '';
-                        invitee.name = data.name || '';
-                    } catch (e) {
-                        invitee.status = '';
-                    } finally {
-                        invitee.checking = false;
-                    }
-                }
+                        try {
+                            const res = await fetch('{{ route("trainer.invitee.check") }}', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                body: JSON.stringify({ email })
+                            });
+                            const data = await res.json();
+                            invitee.status = data.status;
+                            invitee.message = data.message || '';
+                            invitee.name = data.name || '';
+                        } catch (e) {
+                            invitee.status = '';
+                        } finally {
+                            invitee.checking = false;
+                        }
+                    },
+                @else
+                    get canSubmit() { return true; },
+                @endif
             };
         }
 

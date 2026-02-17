@@ -195,9 +195,12 @@
                         {{-- Submit --}}
                         <div class="mt-6 flex items-center justify-between">
                             <a href="{{ route('trainer.trainings.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
-                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
-                                Submit for Review
-                            </button>
+                            <div class="flex items-center gap-3">
+                                <p x-show="isGroup && !canSubmit" x-cloak class="text-sm text-red-600">All invitees must be active members</p>
+                                <button type="submit" :disabled="!canSubmit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #374269;">
+                                    Submit for Review
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -226,6 +229,12 @@
                 },
                 removeInvitee(index) {
                     this.invitees.splice(index, 1);
+                },
+                get canSubmit() {
+                    if (!this.isGroup) return true;
+                    const filled = this.invitees.filter(i => (i.email || '').trim());
+                    if (filled.length === 0) return true;
+                    return filled.every(i => i.status === 'active') && !filled.some(i => i.checking);
                 },
                 async checkEmail(index) {
                     const invitee = this.invitees[index];

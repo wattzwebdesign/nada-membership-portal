@@ -113,6 +113,22 @@ class TrainingController extends Controller
         $inviteeEmails = array_filter($validated['invitees'] ?? []);
         unset($validated['invitees']);
 
+        // Verify all invitees are active members for group trainings
+        if ($isGroup && !empty($inviteeEmails)) {
+            $invalid = [];
+            foreach ($inviteeEmails as $email) {
+                $user = User::where('email', strtolower(trim($email)))->first();
+                if (!$user || !$user->hasActiveSubscription()) {
+                    $invalid[] = $email;
+                }
+            }
+            if (!empty($invalid)) {
+                return redirect()->back()->withInput()->withErrors([
+                    'invitees' => 'The following invitees do not have active memberships: ' . implode(', ', $invalid),
+                ]);
+            }
+        }
+
         $training = Training::create($validated);
 
         // Save invitees for group trainings
@@ -205,6 +221,22 @@ class TrainingController extends Controller
         if ($training->is_group) {
             $inviteeEmails = array_filter($validated['invitees'] ?? []);
             unset($validated['invitees']);
+
+            // Verify all invitees are active members
+            if (!empty($inviteeEmails)) {
+                $invalid = [];
+                foreach ($inviteeEmails as $email) {
+                    $user = User::where('email', strtolower(trim($email)))->first();
+                    if (!$user || !$user->hasActiveSubscription()) {
+                        $invalid[] = $email;
+                    }
+                }
+                if (!empty($invalid)) {
+                    return redirect()->back()->withInput()->withErrors([
+                        'invitees' => 'The following invitees do not have active memberships: ' . implode(', ', $invalid),
+                    ]);
+                }
+            }
 
             // Sync invitees: remove old ones not in new list, add new ones
             $training->invitees()->whereNotIn('email', $inviteeEmails)->delete();
