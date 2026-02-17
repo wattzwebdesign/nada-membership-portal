@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Trainer;
 use App\Http\Controllers\Controller;
 use App\Models\Clinical;
 use App\Notifications\CertificateReadyNotification;
+use App\Notifications\ClinicalApprovedNotification;
 use App\Notifications\Concerns\SafelyNotifies;
 use App\Services\CertificateService;
 use Illuminate\Http\RedirectResponse;
@@ -64,6 +65,8 @@ class ClinicalController extends Controller
             'reviewed_by' => $request->user()->id,
             'reviewed_at' => now(),
         ]);
+
+        $this->safeNotify($clinical->user, new ClinicalApprovedNotification($clinical));
 
         return redirect()
             ->route('trainer.clinicals.show', $clinical)
