@@ -53,7 +53,7 @@
         </div>
 
         {{-- Group Training CTA --}}
-        @if ($trainer->hasConnectedStripeAccount())
+        @if ($trainer->stripeAccount && $trainer->stripeAccount->charges_enabled)
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>

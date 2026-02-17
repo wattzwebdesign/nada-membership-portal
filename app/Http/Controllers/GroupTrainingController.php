@@ -26,9 +26,7 @@ class GroupTrainingController extends Controller
     public function create(Request $request): View
     {
         $trainers = User::trainersPublic()
-            ->whereHas('stripeAccount', fn ($q) => $q->where('onboarding_complete', true)
-                ->where('charges_enabled', true)
-                ->where('payouts_enabled', true))
+            ->whereHas('stripeAccount', fn ($q) => $q->where('charges_enabled', true))
             ->orderBy('last_name')
             ->get(['id', 'first_name', 'last_name']);
 
@@ -70,7 +68,7 @@ class GroupTrainingController extends Controller
 
         // Verify trainer has connected Stripe account
         $trainer = User::find($validated['trainer_id']);
-        if (! $trainer || ! $trainer->hasConnectedStripeAccount()) {
+        if (! $trainer || ! $trainer->stripeAccount || ! $trainer->stripeAccount->charges_enabled) {
             return back()->withInput()->withErrors([
                 'trainer_id' => 'The selected trainer cannot accept payments at this time.',
             ]);
