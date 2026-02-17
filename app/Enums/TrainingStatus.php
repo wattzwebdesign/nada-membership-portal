@@ -2,7 +2,10 @@
 
 namespace App\Enums;
 
-enum TrainingStatus: string
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
+
+enum TrainingStatus: string implements HasLabel, HasColor
 {
     case PendingApproval = 'pending_approval';
     case Published = 'published';
@@ -10,7 +13,7 @@ enum TrainingStatus: string
     case Canceled = 'canceled';
     case Completed = 'completed';
 
-    public function label(): string
+    public function getLabel(): string
     {
         return match ($this) {
             self::PendingApproval => 'Pending Approval',
@@ -21,7 +24,7 @@ enum TrainingStatus: string
         };
     }
 
-    public function color(): string
+    public function getColor(): string
     {
         return match ($this) {
             self::PendingApproval => 'warning',
@@ -30,5 +33,15 @@ enum TrainingStatus: string
             self::Canceled => 'danger',
             self::Completed => 'info',
         };
+    }
+
+    public function label(): string
+    {
+        return $this->getLabel();
+    }
+
+    public function color(): string
+    {
+        return $this->getColor();
     }
 }
