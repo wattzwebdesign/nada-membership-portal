@@ -7,6 +7,11 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mb-6 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <h3 class="text-sm font-semibold text-gray-700 mb-4">Certification Progress</h3>
+                <x-certificate-progress :progress="$progress" />
+            </div>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">

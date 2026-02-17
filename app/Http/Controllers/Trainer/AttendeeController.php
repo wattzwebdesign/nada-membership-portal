@@ -6,7 +6,6 @@ use App\Enums\RegistrationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
-use App\Services\CertificateService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -14,9 +13,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendeeController extends Controller
 {
-    public function __construct(
-        protected CertificateService $certificateService,
-    ) {}
 
     /**
      * List attendees for a specific training.
@@ -50,18 +46,9 @@ class AttendeeController extends Controller
             'marked_complete_by' => $request->user()->id,
         ]);
 
-        // Generate certificate for the attendee
-        $certificate = $this->certificateService->issueCertificate(
-            user: $registration->user,
-            training: $training,
-            issuedBy: $request->user(),
-        );
-
-        $registration->update(['certificate_id' => $certificate->id]);
-
         return redirect()
             ->route('trainer.attendees.index', $training)
-            ->with('success', "Completion recorded and certificate issued for {$registration->user->full_name}.");
+            ->with('success', "Completion recorded for {$registration->user->full_name}.");
     }
 
     /**
@@ -91,20 +78,12 @@ class AttendeeController extends Controller
                 'marked_complete_by' => $request->user()->id,
             ]);
 
-            $certificate = $this->certificateService->issueCertificate(
-                user: $registration->user,
-                training: $training,
-                issuedBy: $request->user(),
-            );
-
-            $registration->update(['certificate_id' => $certificate->id]);
-
             $completedCount++;
         }
 
         return redirect()
             ->route('trainer.attendees.index', $training)
-            ->with('success', "{$completedCount} attendee(s) marked as completed with certificates issued.");
+            ->with('success', "{$completedCount} attendee(s) marked as completed.");
     }
 
     /**

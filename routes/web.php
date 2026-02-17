@@ -121,6 +121,13 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::post('/trainings/{training}/attendees/bulk-complete', [App\Http\Controllers\Trainer\AttendeeController::class, 'bulkComplete'])->name('attendees.bulk-complete');
     Route::get('/trainings/{training}/attendees/export', [App\Http\Controllers\Trainer\AttendeeController::class, 'export'])->name('attendees.export');
 
+    // Clinicals Review
+    Route::get('/clinicals', [App\Http\Controllers\Trainer\ClinicalController::class, 'index'])->name('clinicals.index');
+    Route::get('/clinicals/{clinical}', [App\Http\Controllers\Trainer\ClinicalController::class, 'show'])->name('clinicals.show');
+    Route::post('/clinicals/{clinical}/approve', [App\Http\Controllers\Trainer\ClinicalController::class, 'approve'])->name('clinicals.approve');
+    Route::post('/clinicals/{clinical}/reject', [App\Http\Controllers\Trainer\ClinicalController::class, 'reject'])->name('clinicals.reject');
+    Route::post('/clinicals/{clinical}/issue-certificate', [App\Http\Controllers\Trainer\ClinicalController::class, 'issueCertificate'])->name('clinicals.issue-certificate');
+
     // Payouts
     Route::get('/payouts', [App\Http\Controllers\Trainer\PayoutController::class, 'index'])->name('payouts.index');
     Route::get('/payouts/connect', [App\Http\Controllers\Trainer\PayoutController::class, 'connectStripe'])->name('payouts.connect');

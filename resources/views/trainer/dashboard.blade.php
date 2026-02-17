@@ -191,6 +191,16 @@
                                 </div>
                             </a>
 
+                            <a href="{{ route('trainer.clinicals.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <div class="flex-shrink-0 p-2 rounded-lg bg-green-50">
+                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Review Clinicals</p>
+                                    <p class="text-xs text-gray-500">Approve submissions and issue certificates</p>
+                                </div>
+                            </a>
+
                             <a href="{{ route('trainer.payouts.index') }}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <div class="flex-shrink-0 p-2 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
                                     <svg class="w-5 h-5" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

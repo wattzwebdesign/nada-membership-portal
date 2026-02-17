@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\RegistrationStatus;
 use App\Filament\Resources\ClinicalResource\Pages;
 use App\Models\Clinical;
+use App\Notifications\CertificateReadyNotification;
+use App\Services\CertificateService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -251,6 +254,43 @@ class ClinicalResource extends Resource
                         ]);
                         Notification::make()
                             ->title('Clinical Submission Rejected')
+                            ->success()
+                            ->send();
+                    }),
+                Tables\Actions\Action::make('issue_certificate')
+                    ->label('Issue Certificate')
+                    ->icon('heroicon-o-document-check')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Issue Certificate')
+                    ->modalDescription('Are you sure you want to issue a NADA certificate for this member? This action cannot be undone.')
+                    ->visible(fn (Clinical $record): bool => $record->status === 'approved' && ! $record->user->certificates()->exists())
+                    ->action(function (Clinical $record) {
+                        $certService = app(CertificateService::class);
+
+                        $registration = $record->user->trainingRegistrations()
+                            ->where('status', RegistrationStatus::Completed)
+                            ->first();
+
+                        $certificate = $certService->issueCertificate(
+                            user: $record->user,
+                            training: $registration?->training,
+                            issuedBy: auth()->user(),
+                        );
+
+                        if ($registration) {
+                            $registration->update(['certificate_id' => $certificate->id]);
+                        }
+
+                        try {
+                            $record->user->notify(new CertificateReadyNotification($certificate));
+                        } catch (\Throwable $e) {
+                            \Illuminate\Support\Facades\Log::error('Failed to send CertificateReadyNotification', ['error' => $e->getMessage()]);
+                        }
+
+                        Notification::make()
+                            ->title('Certificate Issued')
+                            ->body("Certificate code: {$certificate->certificate_code}")
                             ->success()
                             ->send();
                     }),

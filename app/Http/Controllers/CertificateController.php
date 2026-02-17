@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RegistrationStatus;
 use App\Models\Certificate;
 use App\Services\CertificateService;
 use Illuminate\Http\Request;
@@ -20,13 +21,24 @@ class CertificateController extends Controller
      */
     public function index(Request $request): View
     {
-        $certificates = $request->user()
+        $user = $request->user();
+
+        $certificates = $user
             ->certificates()
             ->with('training')
             ->orderByDesc('date_issued')
             ->paginate(15);
 
-        return view('certificates.index', compact('certificates'));
+        $progress = [
+            'has_active_membership' => $user->hasActiveSubscription(),
+            'has_completed_training' => $user->trainingRegistrations()
+                ->where('status', RegistrationStatus::Completed)->exists(),
+            'has_approved_clinical' => $user->clinicals()
+                ->where('status', 'approved')->exists(),
+            'has_certificate' => $user->certificates()->exists(),
+        ];
+
+        return view('certificates.index', compact('certificates', 'progress'));
     }
 
     /**
