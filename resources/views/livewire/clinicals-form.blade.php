@@ -47,7 +47,7 @@
                             <label for="estimated_training_date" class="block text-sm font-medium text-gray-700">Estimated Training Date</label>
                             <input type="text" id="estimated_training_date" wire:model="estimated_training_date"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm"
-                                   x-data x-init="flatpickr($el, {altInput:true,altFormat:'M j, Y',dateFormat:'Y-m-d',minDate:'today',onChange:(d,s)=>{$wire.set('estimated_training_date',s)}})">
+                                   x-data x-init="flatpickr($el, {altInput:true,altFormat:'M j, Y',dateFormat:'Y-m-d',onChange:(d,s)=>{$wire.set('estimated_training_date',s)}})">
                             @error('estimated_training_date')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
