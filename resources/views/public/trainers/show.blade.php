@@ -52,6 +52,24 @@
             </div>
         </div>
 
+        {{-- Group Training CTA --}}
+        @if ($trainer->hasConnectedStripeAccount())
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h3 class="text-base font-semibold" style="color: #374269;">Book a Group Training</h3>
+                        <p class="text-sm text-gray-500 mt-1">Need training for your team or organization? Book a group session with {{ $trainer->first_name }}.</p>
+                    </div>
+                    <a href="{{ route('group-training.create', ['trainer' => $trainer->id]) }}"
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white whitespace-nowrap"
+                       style="background-color: #d39c27;">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Book Group Training
+                    </a>
+                </div>
+            </div>
+        @endif
+
         {{-- Bio Section --}}
         @if ($trainer->bio)
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8 mt-6">
