@@ -120,13 +120,21 @@
                 </div>
 
                 {{-- Sent History Sidebar --}}
-                <div class="lg:col-span-1">
+                <div class="lg:col-span-1" x-data="{ showBroadcast: null }">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
                             <h4 class="text-lg font-semibold mb-4" style="color: #374269;">Sent History</h4>
 
                             @forelse ($broadcasts as $broadcast)
-                                <div class="border-b border-gray-100 py-3 last:border-0">
+                                <button type="button"
+                                        @click="showBroadcast = {{ Js::from([
+                                            'subject' => $broadcast->subject,
+                                            'body' => $broadcast->body,
+                                            'sent_at' => $broadcast->sent_at->format('M j, Y \a\t g:i A'),
+                                            'recipient_count' => $broadcast->recipient_count,
+                                            'trainings' => $broadcast->trainings->pluck('title')->values(),
+                                        ]) }}"
+                                        class="w-full text-left border-b border-gray-100 py-3 last:border-0 hover:bg-gray-50 -mx-2 px-2 rounded transition cursor-pointer">
                                     <p class="text-sm font-medium text-gray-900 truncate">{{ $broadcast->subject }}</p>
                                     <p class="text-xs text-gray-500 mt-0.5">{{ $broadcast->sent_at->format('M j, Y \a\t g:i A') }} &middot; {{ $broadcast->recipient_count }} recipient(s)</p>
                                     <div class="flex flex-wrap gap-1 mt-1.5">
@@ -136,7 +144,7 @@
                                             </span>
                                         @endforeach
                                     </div>
-                                </div>
+                                </button>
                             @empty
                                 <div class="text-center py-6">
                                     <svg class="mx-auto h-10 w-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -151,6 +159,53 @@
                             @endif
                         </div>
                     </div>
+
+                    {{-- Broadcast Detail Modal --}}
+                    <template x-teleport="body">
+                        <div x-show="showBroadcast" x-cloak
+                             class="fixed inset-0 z-50 flex items-center justify-center p-4"
+                             @keydown.escape.window="showBroadcast = null">
+                            <div class="fixed inset-0 bg-gray-500/75 transition-opacity" @click="showBroadcast = null"></div>
+                            <div x-show="showBroadcast"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="relative bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden">
+                                {{-- Header --}}
+                                <div class="px-6 py-4 border-b border-gray-200 flex items-start justify-between">
+                                    <div class="min-w-0 flex-1">
+                                        <h3 class="text-lg font-semibold text-gray-900 truncate" x-text="showBroadcast?.subject"></h3>
+                                        <p class="text-xs text-gray-500 mt-0.5">
+                                            <span x-text="showBroadcast?.sent_at"></span> &middot;
+                                            <span x-text="showBroadcast?.recipient_count"></span> recipient(s)
+                                        </p>
+                                    </div>
+                                    <button type="button" @click="showBroadcast = null" class="ml-3 text-gray-400 hover:text-gray-600 flex-shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+                                {{-- Body --}}
+                                <div class="px-6 py-4 overflow-y-auto flex-1">
+                                    <div class="flex flex-wrap gap-1 mb-4">
+                                        <template x-for="title in showBroadcast?.trainings || []" :key="title">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700" x-text="title"></span>
+                                        </template>
+                                    </div>
+                                    <div class="prose prose-sm max-w-none text-gray-700" x-html="formatBody(showBroadcast?.body || '')"></div>
+                                </div>
+                                {{-- Footer --}}
+                                <div class="px-6 py-3 border-t border-gray-200 bg-gray-50 flex justify-end">
+                                    <button type="button" @click="showBroadcast = null"
+                                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
 
             </div>
@@ -158,6 +213,11 @@
     </div>
 
     <script>
+        function formatBody(text) {
+            if (!text) return '';
+            return text.split(/\n\s*\n/).map(p => '<p>' + p.trim().replace(/\n/g, '<br>') + '</p>').join('');
+        }
+
         function broadcastForm() {
             const preselected = @json($preselectedTrainingId ? [(int) $preselectedTrainingId] : []);
             const trainingsData = @json($trainings->map(fn ($t) => ['id' => $t->id, 'title' => $t->title]));
