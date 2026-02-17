@@ -264,7 +264,7 @@ class ClinicalResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('Issue Certificate')
                     ->modalDescription('Are you sure you want to issue a NADA certificate for this member? This action cannot be undone.')
-                    ->visible(fn (Clinical $record): bool => $record->status === 'approved' && ! $record->user->certificates()->exists())
+                    ->visible(fn (Clinical $record): bool => $record->status === 'approved' && $record->user && ! $record->user->certificates()->exists())
                     ->action(function (Clinical $record) {
                         $certService = app(CertificateService::class);
 
