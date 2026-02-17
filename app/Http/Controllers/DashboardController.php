@@ -23,25 +23,43 @@ class DashboardController extends Controller
             $plan = Plan::where('is_active', true)->find($pendingPlanId);
 
             if ($plan) {
-                // Auto-sync to Stripe if needed
-                if (!$plan->stripe_price_id) {
-                    try {
+                try {
+                    // Auto-sync to Stripe if missing
+                    if (!$plan->stripe_price_id) {
                         $this->stripeService->createStripeProductAndPrice($plan);
                         $plan->refresh();
-                    } catch (\Stripe\Exception\ApiErrorException $e) {
-                        return redirect()->route('membership.plans')
-                            ->with('error', 'Unable to process this plan. Please select a plan below.');
                     }
+
+                    $checkoutSession = $this->stripeService->createSubscriptionCheckout(
+                        $user,
+                        $plan,
+                        route('membership.index') . '?checkout=success',
+                        route('membership.plans') . '?checkout=canceled',
+                    );
+
+                    return redirect($checkoutSession->url);
+                } catch (\Stripe\Exception\InvalidRequestException $e) {
+                    // Stale Stripe price — re-sync and retry once
+                    if (str_contains($e->getMessage(), 'No such price')) {
+                        $this->stripeService->createStripeProductAndPrice($plan);
+                        $plan->refresh();
+
+                        $checkoutSession = $this->stripeService->createSubscriptionCheckout(
+                            $user,
+                            $plan,
+                            route('membership.index') . '?checkout=success',
+                            route('membership.plans') . '?checkout=canceled',
+                        );
+
+                        return redirect($checkoutSession->url);
+                    }
+
+                    return redirect()->route('membership.plans')
+                        ->with('error', 'Unable to process this plan. Please select a plan below.');
+                } catch (\Stripe\Exception\ApiErrorException $e) {
+                    return redirect()->route('membership.plans')
+                        ->with('error', 'Unable to process this plan. Please select a plan below.');
                 }
-
-                $checkoutSession = $this->stripeService->createSubscriptionCheckout(
-                    $user,
-                    $plan,
-                    route('membership.index') . '?checkout=success',
-                    route('membership.plans') . '?checkout=canceled',
-                );
-
-                return redirect($checkoutSession->url);
             }
 
             return redirect()->route('membership.plans')

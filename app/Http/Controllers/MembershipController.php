@@ -63,24 +63,41 @@ class MembershipController extends Controller
             return back()->with('error', 'You already have an active subscription. Please switch plans instead.');
         }
 
-        // Auto-sync to Stripe if the plan was created before Stripe integration
-        if (!$plan->stripe_price_id) {
-            try {
+        try {
+            // Auto-sync to Stripe if missing
+            if (!$plan->stripe_price_id) {
                 $this->stripeService->createStripeProductAndPrice($plan);
                 $plan->refresh();
-            } catch (\Stripe\Exception\ApiErrorException $e) {
-                return back()->with('error', 'Unable to process this plan. Please contact support.');
             }
+
+            $checkoutSession = $this->stripeService->createSubscriptionCheckout(
+                $user,
+                $plan,
+                route('membership.index') . '?checkout=success',
+                route('membership.plans') . '?checkout=canceled',
+            );
+
+            return redirect($checkoutSession->url);
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
+            // Stale Stripe price — re-sync and retry once
+            if (str_contains($e->getMessage(), 'No such price')) {
+                $this->stripeService->createStripeProductAndPrice($plan);
+                $plan->refresh();
+
+                $checkoutSession = $this->stripeService->createSubscriptionCheckout(
+                    $user,
+                    $plan,
+                    route('membership.index') . '?checkout=success',
+                    route('membership.plans') . '?checkout=canceled',
+                );
+
+                return redirect($checkoutSession->url);
+            }
+
+            return back()->with('error', 'Unable to process this plan. Please contact support.');
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            return back()->with('error', 'Unable to process this plan. Please contact support.');
         }
-
-        $checkoutSession = $this->stripeService->createSubscriptionCheckout(
-            $user,
-            $plan,
-            route('membership.index') . '?checkout=success',
-            route('membership.plans') . '?checkout=canceled',
-        );
-
-        return redirect($checkoutSession->url);
     }
 
     /**
