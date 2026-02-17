@@ -10,6 +10,7 @@ use App\Models\Training;
 use App\Models\TrainingRegistration;
 use App\Models\User;
 use App\Notifications\Concerns\SafelyNotifies;
+use App\Notifications\NewTrainingRegistrationNotification;
 use App\Notifications\TrainingRegisteredNotification;
 use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
@@ -87,6 +88,7 @@ class TrainingRegistrationController extends Controller
         ]);
 
         $this->safeNotify($user, new TrainingRegisteredNotification($registration));
+        $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($registration));
 
         return redirect()->route('trainings.my-registrations')
             ->with('success', 'You have been registered for "' . $training->title . '".');
@@ -155,6 +157,7 @@ class TrainingRegistrationController extends Controller
             ]);
 
             $this->safeNotify($user, new TrainingRegisteredNotification($registration));
+            $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($registration));
 
             return redirect()->route('trainings.my-registrations')
                 ->with('success', 'Payment confirmed! You are registered for "' . $training->title . '".');

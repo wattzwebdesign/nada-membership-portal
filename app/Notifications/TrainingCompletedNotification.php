@@ -32,8 +32,8 @@ class TrainingCompletedNotification extends Notification
             ->greeting("Congratulations {$notifiable->name}!")
             ->line('You have successfully completed your NADA training session.')
             ->line("Training: {$training->title}")
-            ->line('Your certificate will be available shortly.')
-            ->action('View Your Dashboard', url('/dashboard'))
+            ->line('Please complete your 40 hours of clinicals. When you are done, submit them here.')
+            ->action('Submit Clinicals', url('/clinicals/submit'))
             ->line('Thank you for your commitment to the NADA protocol.'));
     }
 }

@@ -6,6 +6,8 @@ use App\Enums\RegistrationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
+use App\Notifications\Concerns\SafelyNotifies;
+use App\Notifications\TrainingCompletedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -13,6 +15,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendeeController extends Controller
 {
+    use SafelyNotifies;
 
     /**
      * List attendees for a specific training.
@@ -46,6 +49,8 @@ class AttendeeController extends Controller
             'marked_complete_by' => $request->user()->id,
         ]);
 
+        $this->safeNotify($registration->user, new TrainingCompletedNotification($registration));
+
         return redirect()
             ->route('trainer.attendees.index', $training)
             ->with('success', "Completion recorded for {$registration->user->full_name}.");
@@ -77,6 +82,8 @@ class AttendeeController extends Controller
                 'completed_at' => now(),
                 'marked_complete_by' => $request->user()->id,
             ]);
+
+            $this->safeNotify($registration->user, new TrainingCompletedNotification($registration));
 
             $completedCount++;
         }

@@ -12,6 +12,7 @@ use App\Notifications\PaymentFailedNotification;
 use App\Notifications\SubscriptionCanceledNotification;
 use App\Notifications\SubscriptionConfirmedNotification;
 use App\Notifications\SubscriptionRenewedNotification;
+use App\Notifications\NewTrainingRegistrationNotification;
 use App\Notifications\TrainingRegisteredNotification;
 use App\Services\CertificateService;
 use App\Services\SubscriptionService;
@@ -338,6 +339,7 @@ class StripeWebhookController extends Controller
                     ]);
 
                     $this->safeNotify($user, new TrainingRegisteredNotification($registration));
+                    $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($registration));
 
                     Log::info('Training registration created from webhook.', [
                         'user_id' => $user->id,

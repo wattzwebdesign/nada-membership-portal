@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Trainer;
 use App\Enums\RegistrationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\TrainingRegistration;
+use App\Notifications\Concerns\SafelyNotifies;
+use App\Notifications\TrainingCompletedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class RegistrationController extends Controller
 {
+    use SafelyNotifies;
+
     public function index(Request $request): View
     {
         $trainer = $request->user();
@@ -67,6 +71,8 @@ class RegistrationController extends Controller
             'marked_complete_by' => $trainer->id,
         ]);
 
+        $this->safeNotify($registration->user, new TrainingCompletedNotification($registration));
+
         return redirect()
             ->back()
             ->with('success', "Completion recorded for {$registration->user->full_name}.");
@@ -97,6 +103,8 @@ class RegistrationController extends Controller
                 'completed_at' => now(),
                 'marked_complete_by' => $trainer->id,
             ]);
+
+            $this->safeNotify($registration->user, new TrainingCompletedNotification($registration));
 
             $completedCount++;
         }
