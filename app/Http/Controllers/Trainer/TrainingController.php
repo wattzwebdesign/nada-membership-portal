@@ -124,8 +124,23 @@ class TrainingController extends Controller
         $this->safeNotifyRoute(SiteSetting::adminEmail(), new TrainingSubmittedNotification($training));
 
         return redirect()
-            ->route('trainer.trainings.edit', $training)
+            ->route('trainer.trainings.show', $training)
             ->with('success', 'Training submitted for approval. You will be notified once it has been reviewed.');
+    }
+
+    /**
+     * Show a read-only view of a training.
+     */
+    public function show(Request $request, Training $training): View
+    {
+        $this->authorizeTrainerOwnership($request, $training);
+
+        $training->load('invitees');
+        $training->loadCount('registrations');
+
+        return view('trainer.trainings.show', [
+            'training' => $training,
+        ]);
     }
 
     /**
@@ -222,7 +237,7 @@ class TrainingController extends Controller
             : 'Training updated successfully.';
 
         return redirect()
-            ->route('trainer.trainings.edit', $training)
+            ->route('trainer.trainings.show', $training)
             ->with('success', $message);
     }
 
@@ -250,7 +265,7 @@ class TrainingController extends Controller
         $training->update(['status' => TrainingStatus::Canceled]);
 
         return redirect()
-            ->route('trainer.trainings.edit', $training)
+            ->route('trainer.trainings.show', $training)
             ->with('success', 'Training has been canceled.');
     }
 
@@ -264,7 +279,7 @@ class TrainingController extends Controller
         $training->update(['status' => TrainingStatus::Completed]);
 
         return redirect()
-            ->route('trainer.trainings.edit', $training)
+            ->route('trainer.trainings.show', $training)
             ->with('success', 'Training has been marked as completed.');
     }
 

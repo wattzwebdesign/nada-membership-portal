@@ -115,6 +115,7 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::get('/trainings', [App\Http\Controllers\Trainer\TrainingController::class, 'index'])->name('trainings.index');
     Route::get('/trainings/create', [App\Http\Controllers\Trainer\TrainingController::class, 'create'])->name('trainings.create');
     Route::post('/trainings', [App\Http\Controllers\Trainer\TrainingController::class, 'store'])->name('trainings.store');
+    Route::get('/trainings/{training}', [App\Http\Controllers\Trainer\TrainingController::class, 'show'])->name('trainings.show');
     Route::get('/trainings/{training}/edit', [App\Http\Controllers\Trainer\TrainingController::class, 'edit'])->name('trainings.edit');
     Route::put('/trainings/{training}', [App\Http\Controllers\Trainer\TrainingController::class, 'update'])->name('trainings.update');
     Route::delete('/trainings/{training}', [App\Http\Controllers\Trainer\TrainingController::class, 'destroy'])->name('trainings.destroy');

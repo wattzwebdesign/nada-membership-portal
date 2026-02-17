@@ -224,7 +224,7 @@
                             <div class="border-b border-gray-100 py-3 last:border-0">
                                 <div class="flex items-center justify-between">
                                     <div class="flex-1 min-w-0">
-                                        <a href="{{ route('trainer.trainings.edit', $training) }}" class="text-sm font-medium hover:underline line-clamp-1" style="color: #374269;">
+                                        <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline line-clamp-1" style="color: #374269;">
                                             {{ $training->title }}
                                         </a>
                                         <div class="flex items-center gap-2 mt-1">
@@ -240,8 +240,8 @@
                                         @elseif ($tStatus === 'denied')
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Denied</span>
                                         @endif
-                                        <a href="{{ route('trainer.trainings.edit', $training) }}" class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
-                                            {{ $tStatus === 'denied' ? 'Edit & Resubmit' : 'View' }}
+                                        <a href="{{ route('trainer.trainings.show', $training) }}" class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
+                                            View
                                         </a>
                                     </div>
                                 </div>
@@ -269,11 +269,17 @@
                         @forelse ($upcomingTrainings as $training)
                             <div class="border-b border-gray-100 py-3 last:border-0">
                                 <div>
-                                    <a href="{{ route('trainer.trainings.edit', $training) }}" class="text-sm font-medium hover:underline line-clamp-2" style="color: #374269;">
+                                    <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline line-clamp-2" style="color: #374269;">
                                         {{ $training->title }}
                                     </a>
                                     <div class="flex items-center justify-between mt-1.5">
-                                        <p class="text-xs text-gray-500">{{ $training->start_date->format('M j, Y \a\t g:i A') }}</p>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-xs text-gray-500">{{ $training->start_date->format('M j, Y \a\t g:i A') }}</p>
+                                            @if ($training->is_group)
+                                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700">Group</span>
+                                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600">Private</span>
+                                            @endif
+                                        </div>
                                         <a href="{{ route('trainer.attendees.index', $training) }}" class="inline-flex items-center gap-1 text-xs font-medium text-blue-700 hover:text-blue-900">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                             {{ $training->registrations_count ?? 0 }} registered

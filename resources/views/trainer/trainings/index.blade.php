@@ -46,7 +46,12 @@
                                 @foreach ($trainings as $training)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-4">
-                                            <p class="text-sm font-medium text-gray-900">{{ $training->title }}</p>
+                                            <div class="flex items-center gap-2">
+                                                <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline" style="color: #374269;">{{ $training->title }}</a>
+                                                @if ($training->is_group)
+                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700">Group</span>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $training->start_date->format('M j, Y') }}
@@ -100,7 +105,8 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
-                                            <a href="{{ route('trainer.trainings.edit', $training) }}" class="font-medium" style="color: #374269;">Edit</a>
+                                            <a href="{{ route('trainer.trainings.show', $training) }}" class="font-medium" style="color: #374269;">View</a>
+                                            <a href="{{ route('trainer.trainings.edit', $training) }}" class="font-medium text-gray-600 hover:text-gray-900">Edit</a>
                                             <a href="{{ route('trainer.attendees.index', $training) }}" class="font-medium text-gray-600 hover:text-gray-900">Attendees</a>
                                         </td>
                                     </tr>
@@ -134,15 +140,21 @@
                             @endphp
                             <div class="p-4">
                                 <div class="flex items-center justify-between mb-2">
-                                    <p class="text-sm font-medium text-gray-900">{{ $training->title }}</p>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $mobileStatusBadgeColor }}">
+                                    <div class="flex items-center gap-2 min-w-0">
+                                        <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline truncate" style="color: #374269;">{{ $training->title }}</a>
+                                        @if ($training->is_group)
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700 flex-shrink-0">Group</span>
+                                        @endif
+                                    </div>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $mobileStatusBadgeColor }} flex-shrink-0 ml-2">
                                         {{ $mobileStatusLabel }}
                                     </span>
                                 </div>
                                 <p class="text-xs text-gray-500">{{ $training->start_date->format('M j, Y \a\t g:i A') }}</p>
                                 <p class="text-xs text-gray-400">{{ $training->registrations_count ?? 0 }} attendees | {{ ucfirst(str_replace('_', ' ', $typeValue)) }}</p>
                                 <div class="mt-2 flex space-x-3">
-                                    <a href="{{ route('trainer.trainings.edit', $training) }}" class="text-xs font-medium" style="color: #374269;">Edit</a>
+                                    <a href="{{ route('trainer.trainings.show', $training) }}" class="text-xs font-medium" style="color: #374269;">View</a>
+                                    <a href="{{ route('trainer.trainings.edit', $training) }}" class="text-xs font-medium text-gray-600">Edit</a>
                                     <a href="{{ route('trainer.attendees.index', $training) }}" class="text-xs font-medium text-gray-600">Attendees</a>
                                 </div>
                             </div>
