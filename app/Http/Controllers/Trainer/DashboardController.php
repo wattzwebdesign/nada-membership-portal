@@ -23,6 +23,12 @@ class DashboardController extends Controller
     {
         $trainer = $request->user();
 
+        // Trainings pending approval or denied
+        $pendingTrainings = $trainer->trainings()
+            ->whereIn('status', [TrainingStatus::PendingApproval, TrainingStatus::Denied])
+            ->orderByDesc('updated_at')
+            ->get();
+
         // Upcoming trainings hosted by this trainer
         $upcomingTrainings = $trainer->trainings()
             ->where('status', TrainingStatus::Published)
@@ -67,6 +73,7 @@ class DashboardController extends Controller
 
         return view('trainer.dashboard', [
             'trainer' => $trainer,
+            'pendingTrainings' => $pendingTrainings,
             'upcomingTrainings' => $upcomingTrainings,
             'recentCompletions' => $recentCompletions,
             'totalCompletions' => $totalCompletions,

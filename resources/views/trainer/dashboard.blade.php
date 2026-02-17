@@ -208,6 +208,52 @@
                 }
             </script>
 
+            {{-- Pending / Denied Trainings --}}
+            @if ($pendingTrainings->count() > 0)
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-4 border-yellow-400">
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <h3 class="text-lg font-semibold" style="color: #374269;">Trainings Awaiting Action</h3>
+                        </div>
+
+                        @foreach ($pendingTrainings as $training)
+                            @php
+                                $tStatus = is_object($training->status) ? $training->status->value : $training->status;
+                            @endphp
+                            <div class="border-b border-gray-100 py-3 last:border-0">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1 min-w-0">
+                                        <a href="{{ route('trainer.trainings.edit', $training) }}" class="text-sm font-medium hover:underline line-clamp-1" style="color: #374269;">
+                                            {{ $training->title }}
+                                        </a>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <p class="text-xs text-gray-500">{{ $training->start_date->format('M j, Y \a\t g:i A') }}</p>
+                                            @if ($training->is_group)
+                                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700">Group</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2 ml-3">
+                                        @if ($tStatus === 'pending_approval')
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pending Approval</span>
+                                        @elseif ($tStatus === 'denied')
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Denied</span>
+                                        @endif
+                                        <a href="{{ route('trainer.trainings.edit', $training) }}" class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
+                                            {{ $tStatus === 'denied' ? 'Edit & Resubmit' : 'View' }}
+                                        </a>
+                                    </div>
+                                </div>
+                                @if ($tStatus === 'denied' && $training->denied_reason)
+                                    <p class="mt-1 text-xs text-red-600 line-clamp-1">Reason: {{ $training->denied_reason }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {{-- Upcoming Trainings --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">

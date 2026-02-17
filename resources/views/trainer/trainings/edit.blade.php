@@ -20,6 +20,17 @@
                 </div>
             @endif
 
+            @if ($errors->any())
+                <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                    <p class="text-sm font-medium">Please fix the following errors:</p>
+                    <ul class="mt-1 text-sm list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             @php
                 $statusValue = is_object($training->status) ? $training->status->value : $training->status;
                 $isEditable = in_array($statusValue, ['pending_approval', 'denied']);
@@ -152,6 +163,17 @@
                                         <label for="end_date" class="block text-sm font-medium text-gray-700">End Date & Time *</label>
                                         <input type="text" name="end_date" id="end_date" value="{{ old('end_date', $training->end_date->format('Y-m-d H:i')) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"enableTime":true,"time_24hr":false,"minuteIncrement":15,"altInput":true,"altFormat":"M j, Y h:i K","dateFormat":"Y-m-d H:i"}'>
                                     </div>
+                                </div>
+
+                                {{-- Timezone --}}
+                                <div>
+                                    <label for="timezone" class="block text-sm font-medium text-gray-700">Timezone</label>
+                                    <select name="timezone" id="timezone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                        <option value="America/New_York" {{ old('timezone', $training->timezone ?? 'America/New_York') === 'America/New_York' ? 'selected' : '' }}>Eastern Time</option>
+                                        <option value="America/Chicago" {{ old('timezone', $training->timezone) === 'America/Chicago' ? 'selected' : '' }}>Central Time</option>
+                                        <option value="America/Denver" {{ old('timezone', $training->timezone) === 'America/Denver' ? 'selected' : '' }}>Mountain Time</option>
+                                        <option value="America/Los_Angeles" {{ old('timezone', $training->timezone) === 'America/Los_Angeles' ? 'selected' : '' }}>Pacific Time</option>
+                                    </select>
                                 </div>
 
                                 {{-- Max Attendees --}}
