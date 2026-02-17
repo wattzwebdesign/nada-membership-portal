@@ -146,6 +146,11 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::get('/payouts/connect', [App\Http\Controllers\Trainer\PayoutController::class, 'connectStripe'])->name('payouts.connect');
     Route::get('/payouts/connect/callback', [App\Http\Controllers\Trainer\PayoutController::class, 'connectCallback'])->name('payouts.connect.callback');
     Route::get('/payouts/reports', [App\Http\Controllers\Trainer\PayoutController::class, 'reports'])->name('payouts.reports');
+
+    // Broadcasts
+    Route::get('/broadcasts', [App\Http\Controllers\Trainer\BroadcastController::class, 'index'])->name('broadcasts.index');
+    Route::post('/broadcasts', [App\Http\Controllers\Trainer\BroadcastController::class, 'store'])->name('broadcasts.store');
+    Route::post('/broadcasts/recipient-count', [App\Http\Controllers\Trainer\BroadcastController::class, 'recipientCount'])->name('broadcasts.recipient-count');
 });
 
 require __DIR__.'/auth.php';

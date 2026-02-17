@@ -148,6 +148,11 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return $this->hasMany(AgreementSignature::class);
     }
 
+    public function trainerBroadcasts(): HasMany
+    {
+        return $this->hasMany(TrainerBroadcast::class, 'trainer_id');
+    }
+
     // Scopes & Helpers
 
     public function isTrainer(): bool
