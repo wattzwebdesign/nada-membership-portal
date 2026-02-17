@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Trainer;
 use App\Enums\RegistrationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\TrainingRegistration;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -50,5 +51,58 @@ class RegistrationController extends Controller
             'trainings' => $trainings,
             'statuses' => RegistrationStatus::cases(),
         ]);
+    }
+
+    public function markComplete(Request $request, TrainingRegistration $registration): RedirectResponse
+    {
+        $trainer = $request->user();
+
+        if ($registration->training->trainer_id !== $trainer->id) {
+            abort(403, 'You do not have permission to manage this registration.');
+        }
+
+        $registration->update([
+            'status' => RegistrationStatus::Completed,
+            'completed_at' => now(),
+            'marked_complete_by' => $trainer->id,
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', "Completion recorded for {$registration->user->full_name}.");
+    }
+
+    public function bulkComplete(Request $request): RedirectResponse
+    {
+        $trainer = $request->user();
+
+        $validated = $request->validate([
+            'registration_ids' => ['required', 'array', 'min:1'],
+            'registration_ids.*' => ['required', 'integer', 'exists:training_registrations,id'],
+        ]);
+
+        $registrations = TrainingRegistration::whereIn('id', $validated['registration_ids'])
+            ->whereHas('training', function ($q) use ($trainer) {
+                $q->where('trainer_id', $trainer->id);
+            })
+            ->where('status', '!=', RegistrationStatus::Completed)
+            ->with('user')
+            ->get();
+
+        $completedCount = 0;
+
+        foreach ($registrations as $registration) {
+            $registration->update([
+                'status' => RegistrationStatus::Completed,
+                'completed_at' => now(),
+                'marked_complete_by' => $trainer->id,
+            ]);
+
+            $completedCount++;
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', "{$completedCount} attendee(s) marked as completed.");
     }
 }

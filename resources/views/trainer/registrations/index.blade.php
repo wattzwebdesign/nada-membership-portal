@@ -60,109 +60,145 @@
                 </form>
             </div>
 
+            @if (session('success'))
+                <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             {{-- Registrations Table --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 @if ($registrations->count() > 0)
+                    <form method="POST" action="{{ route('trainer.registrations.bulk-complete') }}">
+                        @csrf
 
-                    {{-- Desktop Table --}}
-                    <div class="hidden md:block overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Training</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($registrations as $reg)
-                                    @php
-                                        $regStatusValue = is_object($reg->status) ? $reg->status->value : $reg->status;
-                                        $regStatusColors = [
-                                            'registered' => 'bg-blue-100 text-blue-800',
-                                            'attended' => 'bg-yellow-100 text-yellow-800',
-                                            'completed' => 'bg-green-100 text-green-800',
-                                            'no_show' => 'bg-red-100 text-red-800',
-                                            'canceled' => 'bg-gray-100 text-gray-800',
-                                        ];
-                                        $regStatusColor = $regStatusColors[$regStatusValue] ?? 'bg-gray-100 text-gray-800';
-                                    @endphp
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $reg->user->full_name }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $reg->user->email }}
-                                        </td>
-                                        <td class="px-6 py-4 text-sm">
-                                            <a href="{{ route('trainer.attendees.index', $reg->training) }}" class="font-medium hover:underline" style="color: #374269;">
-                                                {{ $reg->training->title }}
-                                            </a>
-                                            <p class="text-xs text-gray-400">{{ $reg->training->start_date->format('M j, Y') }}</p>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $reg->created_at->format('M j, Y') }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $regStatusColor }}">
-                                                {{ ucfirst(str_replace('_', ' ', $regStatusValue)) }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            @if ($reg->amount_paid_cents > 0)
-                                                ${{ number_format($reg->amount_paid_cents / 100, 2) }}
-                                            @else
-                                                <span class="text-green-600">Free</span>
-                                            @endif
-                                        </td>
+                        {{-- Desktop Table --}}
+                        <div class="hidden md:block overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left">
+                                            <input type="checkbox" id="select-all" class="rounded border-gray-300" style="color: #374269;">
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Training</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach ($registrations as $reg)
+                                        @php
+                                            $regStatusValue = is_object($reg->status) ? $reg->status->value : $reg->status;
+                                            $regStatusColors = [
+                                                'registered' => 'bg-blue-100 text-blue-800',
+                                                'attended' => 'bg-yellow-100 text-yellow-800',
+                                                'completed' => 'bg-green-100 text-green-800',
+                                                'no_show' => 'bg-red-100 text-red-800',
+                                                'canceled' => 'bg-gray-100 text-gray-800',
+                                            ];
+                                            $regStatusColor = $regStatusColors[$regStatusValue] ?? 'bg-gray-100 text-gray-800';
+                                        @endphp
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4">
+                                                @if ($regStatusValue !== 'completed')
+                                                    <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 reg-check" style="color: #374269;">
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                {{ $reg->user->full_name }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $reg->user->email }}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <a href="{{ route('trainer.attendees.index', $reg->training) }}" class="font-medium hover:underline" style="color: #374269;">
+                                                    {{ $reg->training->title }}
+                                                </a>
+                                                <p class="text-xs text-gray-400">{{ $reg->training->start_date->format('M j, Y') }}</p>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $reg->created_at->format('M j, Y') }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $regStatusColor }}">
+                                                    {{ ucfirst(str_replace('_', ' ', $regStatusValue)) }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                @if ($reg->amount_paid_cents > 0)
+                                                    ${{ number_format($reg->amount_paid_cents / 100, 2) }}
+                                                @else
+                                                    <span class="text-green-600">Free</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                                @if ($regStatusValue !== 'completed')
+                                                    <button type="button" onclick="event.preventDefault(); document.getElementById('complete-{{ $reg->id }}').submit();" class="font-medium text-green-600 hover:text-green-800">
+                                                        Mark Complete
+                                                    </button>
+                                                @else
+                                                    <span class="text-gray-400">Completed {{ $reg->completed_at ? $reg->completed_at->format('M j') : '' }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
 
-                    {{-- Mobile Cards --}}
-                    <div class="md:hidden divide-y divide-gray-200">
-                        @foreach ($registrations as $reg)
-                            @php
-                                $regStatusValue = is_object($reg->status) ? $reg->status->value : $reg->status;
-                                $regStatusColors = [
-                                    'registered' => 'bg-blue-100 text-blue-800',
-                                    'attended' => 'bg-yellow-100 text-yellow-800',
-                                    'completed' => 'bg-green-100 text-green-800',
-                                    'no_show' => 'bg-red-100 text-red-800',
-                                    'canceled' => 'bg-gray-100 text-gray-800',
-                                ];
-                                $regStatusColor = $regStatusColors[$regStatusValue] ?? 'bg-gray-100 text-gray-800';
-                            @endphp
-                            <div class="p-4">
-                                <div class="flex items-center justify-between mb-1">
-                                    <span class="text-sm font-medium text-gray-900">{{ $reg->user->full_name }}</span>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $regStatusColor }}">
-                                        {{ ucfirst(str_replace('_', ' ', $regStatusValue)) }}
-                                    </span>
+                        {{-- Mobile Cards --}}
+                        <div class="md:hidden divide-y divide-gray-200">
+                            @foreach ($registrations as $reg)
+                                @php
+                                    $regStatusValue = is_object($reg->status) ? $reg->status->value : $reg->status;
+                                    $regStatusColors = [
+                                        'registered' => 'bg-blue-100 text-blue-800',
+                                        'attended' => 'bg-yellow-100 text-yellow-800',
+                                        'completed' => 'bg-green-100 text-green-800',
+                                        'no_show' => 'bg-red-100 text-red-800',
+                                        'canceled' => 'bg-gray-100 text-gray-800',
+                                    ];
+                                    $regStatusColor = $regStatusColors[$regStatusValue] ?? 'bg-gray-100 text-gray-800';
+                                @endphp
+                                <div class="p-4">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <div class="flex items-center space-x-2">
+                                            @if ($regStatusValue !== 'completed')
+                                                <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 reg-check" style="color: #374269;">
+                                            @endif
+                                            <span class="text-sm font-medium text-gray-900">{{ $reg->user->full_name }}</span>
+                                        </div>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $regStatusColor }}">
+                                            {{ ucfirst(str_replace('_', ' ', $regStatusValue)) }}
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 ml-6">{{ $reg->user->email }}</p>
+                                    <p class="text-xs text-gray-400 mt-1 ml-6">
+                                        <a href="{{ route('trainer.attendees.index', $reg->training) }}" class="hover:underline" style="color: #374269;">{{ $reg->training->title }}</a>
+                                        — {{ $reg->training->start_date->format('M j, Y') }}
+                                    </p>
+                                    @if ($regStatusValue !== 'completed')
+                                        <button type="button" onclick="event.preventDefault(); document.getElementById('complete-{{ $reg->id }}').submit();" class="mt-2 ml-6 text-xs font-medium text-green-600">
+                                            Mark Complete
+                                        </button>
+                                    @endif
                                 </div>
-                                <p class="text-xs text-gray-500">{{ $reg->user->email }}</p>
-                                <p class="text-xs text-gray-400 mt-1">
-                                    <a href="{{ route('trainer.attendees.index', $reg->training) }}" class="hover:underline" style="color: #374269;">{{ $reg->training->title }}</a>
-                                    — {{ $reg->training->start_date->format('M j, Y') }}
-                                </p>
-                                <div class="flex items-center justify-between mt-1.5">
-                                    <span class="text-xs text-gray-500">Registered {{ $reg->created_at->format('M j, Y') }}</span>
-                                    <span class="text-xs text-gray-500">
-                                        @if ($reg->amount_paid_cents > 0)
-                                            ${{ number_format($reg->amount_paid_cents / 100, 2) }}
-                                        @else
-                                            <span class="text-green-600">Free</span>
-                                        @endif
-                                    </span>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
+
+                        {{-- Bulk Action Bar --}}
+                        <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-500">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Mark Selected as Complete
+                            </button>
+                            <span class="text-sm text-gray-500">{{ $registrations->total() }} total registrations</span>
+                        </div>
+                    </form>
 
                 @else
                     <div class="p-12 text-center">
@@ -194,4 +230,24 @@
             </div>
         </div>
     </div>
+
+    {{-- Individual Complete Forms --}}
+    @foreach ($registrations as $reg)
+        @php
+            $regStatusValue = is_object($reg->status) ? $reg->status->value : $reg->status;
+        @endphp
+        @if ($regStatusValue !== 'completed')
+            <form id="complete-{{ $reg->id }}" method="POST" action="{{ route('trainer.registrations.complete', $reg) }}" class="hidden">
+                @csrf
+            </form>
+        @endif
+    @endforeach
+
+    <script>
+        document.getElementById('select-all')?.addEventListener('change', function() {
+            document.querySelectorAll('.reg-check').forEach(function(cb) {
+                cb.checked = this.checked;
+            }.bind(this));
+        });
+    </script>
 </x-app-layout>

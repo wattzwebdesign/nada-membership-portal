@@ -123,6 +123,8 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
 
     // All Registrations
     Route::get('/registrations', [App\Http\Controllers\Trainer\RegistrationController::class, 'index'])->name('registrations.index');
+    Route::post('/registrations/{registration}/complete', [App\Http\Controllers\Trainer\RegistrationController::class, 'markComplete'])->name('registrations.complete');
+    Route::post('/registrations/bulk-complete', [App\Http\Controllers\Trainer\RegistrationController::class, 'bulkComplete'])->name('registrations.bulk-complete');
 
     // Clinicals Review
     Route::get('/clinicals', [App\Http\Controllers\Trainer\ClinicalController::class, 'index'])->name('clinicals.index');
