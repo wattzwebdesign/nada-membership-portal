@@ -42,6 +42,6 @@ class GroupTrainingInviteNotification extends Notification
             ->line("Date: {$this->training->start_date->format('M j, Y \a\t g:i A')}")
             ->line("Location: {$location}")
             ->action('View Training', url("/trainings/{$this->training->id}?token={$this->invitee->token}"))
-            ->line('You must create an account or log in with this email address to register.'));
+            ->line('You must login with this email address in order to register for this training.'));
     }
 }
