@@ -49,35 +49,6 @@
                 </div>
             @endif
 
-            {{-- Pending Clinicals Banner --}}
-            @if ($pendingClinicals->count() > 0)
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-4 border-l-amber-500">
-                    <div class="p-5">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="flex-shrink-0 p-2 rounded-full bg-amber-100">
-                                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-sm font-semibold text-gray-900">{{ $pendingClinicals->count() }} Clinical{{ $pendingClinicals->count() === 1 ? '' : 's' }} Pending Review</h3>
-                                    <p class="text-xs text-gray-500 mt-0.5">
-                                        @foreach ($pendingClinicals->take(3) as $clinical)
-                                            {{ $clinical->user->full_name }}{{ !$loop->last ? ', ' : '' }}
-                                        @endforeach
-                                        @if ($pendingClinicals->count() > 3)
-                                            and {{ $pendingClinicals->count() - 3 }} more
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                            <a href="{{ route('trainer.clinicals.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white whitespace-nowrap" style="background-color: #374269;">
-                                Review Clinicals
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
             {{-- Stats Row --}}
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -120,35 +91,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {{-- Public Profile Card --}}
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-4" style="border-left-color: #d39c27;">
-                <div class="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div class="flex items-center gap-4">
-                        @if (auth()->user()->profile_photo_url)
-                            <img src="{{ auth()->user()->profile_photo_url }}" alt="" class="h-12 w-12 rounded-full object-cover flex-shrink-0">
-                        @else
-                            <div class="h-12 w-12 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0" style="background-color: #374269;">
-                                {{ auth()->user()->initials }}
-                            </div>
-                        @endif
-                        <div>
-                            <h3 class="text-sm font-semibold text-gray-900">Your Public Profile</h3>
-                            <p class="text-xs text-gray-500 mt-0.5">
-                                @if (auth()->user()->bio)
-                                    Bio added &mdash; visible on the <a href="{{ route('public.trainers.show', auth()->user()) }}" class="underline hover:text-gray-700" target="_blank">trainer directory</a>.
-                                @else
-                                    Add a bio so attendees can learn about you.
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-                    <a href="{{ route('trainer.profile.edit') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white whitespace-nowrap" style="background-color: #d39c27;">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                        Edit Public Profile
-                    </a>
                 </div>
             </div>
 
