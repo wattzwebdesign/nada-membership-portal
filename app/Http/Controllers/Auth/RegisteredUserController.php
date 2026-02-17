@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Plan;
 use App\Models\User;
 use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\WelcomeNotification;
@@ -18,9 +19,14 @@ class RegisteredUserController extends Controller
 {
     use SafelyNotifies;
 
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('auth.register');
+        $plan = null;
+        if ($request->has('plan')) {
+            $plan = Plan::visible()->find($request->input('plan'));
+        }
+
+        return view('auth.register', compact('plan'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -30,6 +36,7 @@ class RegisteredUserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'plan_id' => ['nullable', 'integer', 'exists:plans,id'],
         ]);
 
         $user = User::create([
@@ -46,6 +53,10 @@ class RegisteredUserController extends Controller
         $this->safeNotify($user, new WelcomeNotification($user));
 
         Auth::login($user);
+
+        if ($request->filled('plan_id')) {
+            $request->session()->put('pending_plan_id', (int) $request->input('plan_id'));
+        }
 
         return redirect(route('dashboard', absolute: false));
     }

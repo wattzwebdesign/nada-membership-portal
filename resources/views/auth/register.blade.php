@@ -1,6 +1,18 @@
 <x-guest-layout>
+    @if ($plan ?? null)
+        <div class="mb-6 rounded-lg border border-[#374269]/20 bg-[#374269]/5 p-4">
+            <p class="text-sm font-medium text-[#374269]">Selected Plan</p>
+            <p class="mt-1 text-lg font-semibold text-[#374269]">{{ $plan->name }}</p>
+            <p class="text-sm text-gray-600">{{ $plan->price_formatted }} {{ $plan->billing_label }}</p>
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
+
+        @if ($plan ?? null)
+            <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+        @endif
 
         <!-- First Name -->
         <div>
