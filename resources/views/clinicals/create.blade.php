@@ -60,16 +60,32 @@
                             </div>
 
                             {{-- Trainer Dropdown --}}
-                            <div>
+                            <div x-data="{ trainerNotListed: {{ old('trainer_id') === '' && old('_trainer_not_listed') ? 'true' : 'false' }} }">
                                 <label for="trainer_id" class="block text-sm font-medium text-gray-700">Select Trainer *</label>
-                                <select name="trainer_id" id="trainer_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
-                                    <option value="">-- Select a Trainer --</option>
-                                    @foreach ($trainers as $trainer)
-                                        <option value="{{ $trainer->id }}" {{ old('trainer_id') == $trainer->id ? 'selected' : '' }}>
-                                            {{ $trainer->full_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <template x-if="!trainerNotListed">
+                                    <div>
+                                        <select name="trainer_id" id="trainer_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                            <option value="">-- Select a Trainer --</option>
+                                            @foreach ($trainers as $trainer)
+                                                <option value="{{ $trainer->id }}" {{ old('trainer_id') == $trainer->id ? 'selected' : '' }}>
+                                                    {{ $trainer->full_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <button type="button" x-on:click="trainerNotListed = true" class="mt-1 text-sm hover:underline" style="color: #374269;">
+                                            My trainer is not listed
+                                        </button>
+                                    </div>
+                                </template>
+                                <template x-if="trainerNotListed">
+                                    <div>
+                                        <input type="hidden" name="trainer_id" value="">
+                                        <p class="mt-1 text-sm text-gray-500">Your submission will be sent to a NADA administrator for review.</p>
+                                        <button type="button" x-on:click="trainerNotListed = false" class="mt-1 text-sm hover:underline" style="color: #374269;">
+                                            Select a trainer instead
+                                        </button>
+                                    </div>
+                                </template>
                                 @error('trainer_id')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror

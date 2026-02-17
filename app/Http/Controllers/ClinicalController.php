@@ -40,7 +40,7 @@ class ClinicalController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'estimated_training_date' => ['nullable', 'date'],
-            'trainer_id' => ['required', 'exists:users,id'],
+            'trainer_id' => ['nullable', 'exists:users,id'],
             'notes' => ['nullable', 'string'],
             'treatment_logs' => ['nullable', 'array'],
             'treatment_logs.*' => ['file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,doc,docx'],
@@ -52,7 +52,7 @@ class ClinicalController extends Controller
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'estimated_training_date' => $validated['estimated_training_date'] ?? null,
-            'trainer_id' => $validated['trainer_id'],
+            'trainer_id' => $validated['trainer_id'] ?: null,
             'status' => 'submitted',
             'notes' => $validated['notes'] ?? null,
         ]);
@@ -64,7 +64,13 @@ class ClinicalController extends Controller
             }
         }
 
-        $this->safeNotifyRoute(SiteSetting::adminEmail(), new ClinicalSubmittedNotification($clinical));
+        // Notify the selected trainer, or fall back to admin if no trainer selected
+        $trainer = $clinical->trainer;
+        if ($trainer) {
+            $this->safeNotify($trainer, new ClinicalSubmittedNotification($clinical));
+        } else {
+            $this->safeNotifyRoute(SiteSetting::adminEmail(), new ClinicalSubmittedNotification($clinical));
+        }
 
         return redirect()->route('clinicals.index')
             ->with('success', 'Your clinical submission has been received and is under review.');
