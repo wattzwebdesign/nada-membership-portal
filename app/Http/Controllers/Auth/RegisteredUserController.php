@@ -11,6 +11,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -55,7 +56,7 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         if ($request->filled('plan_id')) {
-            $request->session()->put('pending_plan_id', (int) $request->input('plan_id'));
+            Cache::put("pending_plan:{$user->id}", (int) $request->input('plan_id'), now()->addHours(24));
         }
 
         return redirect(route('dashboard', absolute: false));

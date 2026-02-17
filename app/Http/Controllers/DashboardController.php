@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Plan;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -17,7 +18,7 @@ class DashboardController extends Controller
         $user = $request->user();
 
         // Check for a pending plan from registration flow
-        $pendingPlanId = $request->session()->pull('pending_plan_id');
+        $pendingPlanId = Cache::pull("pending_plan:{$user->id}");
         if ($pendingPlanId && !$user->hasActiveSubscription()) {
             $plan = Plan::where('is_active', true)->find($pendingPlanId);
 
