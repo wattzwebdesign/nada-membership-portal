@@ -111,6 +111,7 @@ class BroadcastController extends Controller
             emailSubject: $validated['subject'],
             emailBody: $validated['body'],
             trainerName: $trainer->full_name,
+            trainerEmail: $trainer->email,
         );
 
         foreach ($recipients as $recipient) {

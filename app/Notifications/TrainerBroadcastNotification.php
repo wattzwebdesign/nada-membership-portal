@@ -15,6 +15,7 @@ class TrainerBroadcastNotification extends Notification implements ShouldQueue
         public string $emailSubject,
         public string $emailBody,
         public string $trainerName,
+        public string $trainerEmail,
     ) {}
 
     public function via(object $notifiable): array
@@ -25,7 +26,8 @@ class TrainerBroadcastNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $message = (new MailMessage)
-            ->subject($this->emailSubject);
+            ->subject($this->emailSubject)
+            ->replyTo($this->trainerEmail, $this->trainerName);
 
         $paragraphs = preg_split('/\n\s*\n/', trim($this->emailBody));
 
