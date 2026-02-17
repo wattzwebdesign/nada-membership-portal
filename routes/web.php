@@ -112,6 +112,7 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::put('/profile', [App\Http\Controllers\Trainer\ProfileController::class, 'update'])->name('profile.update');
 
     // Training Management
+    Route::post('/invitee-check', [App\Http\Controllers\Trainer\TrainingController::class, 'checkInvitee'])->name('invitee.check');
     Route::get('/trainings', [App\Http\Controllers\Trainer\TrainingController::class, 'index'])->name('trainings.index');
     Route::get('/trainings/create', [App\Http\Controllers\Trainer\TrainingController::class, 'create'])->name('trainings.create');
     Route::post('/trainings', [App\Http\Controllers\Trainer\TrainingController::class, 'store'])->name('trainings.store');

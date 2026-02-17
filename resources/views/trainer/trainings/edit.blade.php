@@ -212,11 +212,40 @@
                                         </h4>
                                         <p class="text-xs text-gray-500 mb-3">Group trainings are always free. Invitations will be sent after admin approval.</p>
                                         <template x-for="(invitee, index) in invitees" :key="index">
-                                            <div class="flex items-center gap-2 mb-2">
-                                                <input type="email" :name="'invitees[' + index + ']'" x-model="invitee.email" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="email@example.com">
-                                                <button type="button" @click="removeInvitee(index)" class="flex-shrink-0 text-red-500 hover:text-red-700" x-show="invitees.length > 1">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                </button>
+                                            <div class="mb-2">
+                                                <div class="flex items-center gap-2">
+                                                    <input type="email" :name="'invitees[' + index + ']'" x-model="invitee.email" @blur="checkEmail(index)" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="email@example.com">
+                                                    <button type="button" @click="removeInvitee(index)" class="flex-shrink-0 text-red-500 hover:text-red-700" x-show="invitees.length > 1">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                    </button>
+                                                </div>
+                                                {{-- Membership status indicator --}}
+                                                <div class="mt-1 ml-1 text-xs flex items-center gap-1" x-show="invitee.checking || invitee.status" x-cloak>
+                                                    <template x-if="invitee.checking">
+                                                        <span class="text-gray-400 flex items-center gap-1">
+                                                            <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                                                            Checking...
+                                                        </span>
+                                                    </template>
+                                                    <template x-if="!invitee.checking && invitee.status === 'active'">
+                                                        <span class="text-green-600 flex items-center gap-1">
+                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                            <span x-text="invitee.name"></span> &mdash; Active member
+                                                        </span>
+                                                    </template>
+                                                    <template x-if="!invitee.checking && invitee.status === 'no_membership'">
+                                                        <span class="text-yellow-600 flex items-center gap-1">
+                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                                                            <span x-text="invitee.name"></span> &mdash; No active membership
+                                                        </span>
+                                                    </template>
+                                                    <template x-if="!invitee.checking && invitee.status === 'not_found'">
+                                                        <span class="text-red-500 flex items-center gap-1">
+                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                            No account found with this email
+                                                        </span>
+                                                    </template>
+                                                </div>
                                             </div>
                                         </template>
                                         <button type="button" @click="addInvitee()" class="mt-1 inline-flex items-center text-sm font-medium" style="color: #374269;">
@@ -293,12 +322,39 @@
             const existingInvitees = @json($training->invitees->pluck('email')->toArray());
             const emails = existingInvitees.length > 0 ? existingInvitees : [''];
             return {
-                invitees: emails.map(email => ({ email: email })),
+                invitees: emails.map(email => ({ email: email, status: '', message: '', name: '', checking: false })),
                 addInvitee() {
-                    this.invitees.push({ email: '' });
+                    this.invitees.push({ email: '', status: '', message: '', name: '', checking: false });
                 },
                 removeInvitee(index) {
                     this.invitees.splice(index, 1);
+                },
+                async checkEmail(index) {
+                    const invitee = this.invitees[index];
+                    const email = (invitee.email || '').trim();
+                    if (!email || !email.includes('@')) {
+                        invitee.status = '';
+                        invitee.message = '';
+                        invitee.name = '';
+                        return;
+                    }
+                    invitee.checking = true;
+                    invitee.status = '';
+                    try {
+                        const res = await fetch('{{ route("trainer.invitee.check") }}', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: JSON.stringify({ email })
+                        });
+                        const data = await res.json();
+                        invitee.status = data.status;
+                        invitee.message = data.message || '';
+                        invitee.name = data.name || '';
+                    } catch (e) {
+                        invitee.status = '';
+                    } finally {
+                        invitee.checking = false;
+                    }
                 }
             };
         }

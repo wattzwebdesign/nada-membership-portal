@@ -8,8 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
 use App\Models\Training;
 use App\Models\TrainingInvitee;
+use App\Models\User;
 use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\TrainingSubmittedNotification;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -281,6 +283,37 @@ class TrainingController extends Controller
         return redirect()
             ->route('trainer.trainings.show', $training)
             ->with('success', 'Training has been marked as completed.');
+    }
+
+    /**
+     * Check if an email belongs to a member with an active subscription.
+     */
+    public function checkInvitee(Request $request): JsonResponse
+    {
+        $request->validate(['email' => ['required', 'email']]);
+
+        $user = User::where('email', strtolower(trim($request->email)))->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'not_found',
+                'message' => 'No account found with this email',
+            ]);
+        }
+
+        if (!$user->hasActiveSubscription()) {
+            return response()->json([
+                'status' => 'no_membership',
+                'name' => $user->name,
+                'message' => 'Member found but no active membership',
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'active',
+            'name' => $user->name,
+            'message' => 'Active member',
+        ]);
     }
 
     /**
