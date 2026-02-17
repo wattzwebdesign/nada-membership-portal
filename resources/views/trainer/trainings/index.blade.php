@@ -69,15 +69,24 @@
                                             @php
                                                 $statusValue = is_object($training->status) ? $training->status->value : $training->status;
                                                 $statusBadgeColors = [
-                                                    'draft' => 'bg-gray-100 text-gray-800',
+                                                    'pending_approval' => 'bg-yellow-100 text-yellow-800',
                                                     'published' => 'bg-green-100 text-green-800',
+                                                    'denied' => 'bg-red-100 text-red-800',
                                                     'canceled' => 'bg-red-100 text-red-800',
                                                     'completed' => 'bg-blue-100 text-blue-800',
                                                 ];
                                                 $statusBadgeColor = $statusBadgeColors[$statusValue] ?? 'bg-gray-100 text-gray-800';
+                                                $statusLabels = [
+                                                    'pending_approval' => 'Pending Approval',
+                                                    'published' => 'Published',
+                                                    'denied' => 'Denied',
+                                                    'canceled' => 'Canceled',
+                                                    'completed' => 'Completed',
+                                                ];
+                                                $statusLabel = $statusLabels[$statusValue] ?? ucfirst($statusValue);
                                             @endphp
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeColor }}">
-                                                {{ ucfirst($statusValue) }}
+                                                {{ $statusLabel }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -93,12 +102,6 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
                                             <a href="{{ route('trainer.trainings.edit', $training) }}" class="font-medium" style="color: #374269;">Edit</a>
                                             <a href="{{ route('trainer.attendees.index', $training) }}" class="font-medium text-gray-600 hover:text-gray-900">Attendees</a>
-                                            @if ($statusValue === 'draft')
-                                                <form method="POST" action="{{ route('trainer.trainings.publish', $training) }}" class="inline">
-                                                    @csrf
-                                                    <button type="submit" class="font-medium text-green-600 hover:text-green-800">Publish</button>
-                                                </form>
-                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -111,14 +114,29 @@
                         @foreach ($trainings as $training)
                             @php
                                 $statusValue = is_object($training->status) ? $training->status->value : $training->status;
-                                $statusBadgeColor = $statusBadgeColors[$statusValue] ?? 'bg-gray-100 text-gray-800';
+                                $mobileStatusBadgeColors = [
+                                    'pending_approval' => 'bg-yellow-100 text-yellow-800',
+                                    'published' => 'bg-green-100 text-green-800',
+                                    'denied' => 'bg-red-100 text-red-800',
+                                    'canceled' => 'bg-red-100 text-red-800',
+                                    'completed' => 'bg-blue-100 text-blue-800',
+                                ];
+                                $mobileStatusBadgeColor = $mobileStatusBadgeColors[$statusValue] ?? 'bg-gray-100 text-gray-800';
+                                $mobileStatusLabels = [
+                                    'pending_approval' => 'Pending Approval',
+                                    'published' => 'Published',
+                                    'denied' => 'Denied',
+                                    'canceled' => 'Canceled',
+                                    'completed' => 'Completed',
+                                ];
+                                $mobileStatusLabel = $mobileStatusLabels[$statusValue] ?? ucfirst($statusValue);
                                 $typeValue = is_object($training->type) ? $training->type->value : $training->type;
                             @endphp
                             <div class="p-4">
                                 <div class="flex items-center justify-between mb-2">
                                     <p class="text-sm font-medium text-gray-900">{{ $training->title }}</p>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeColor }}">
-                                        {{ ucfirst($statusValue) }}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $mobileStatusBadgeColor }}">
+                                        {{ $mobileStatusLabel }}
                                     </span>
                                 </div>
                                 <p class="text-xs text-gray-500">{{ $training->start_date->format('M j, Y \a\t g:i A') }}</p>

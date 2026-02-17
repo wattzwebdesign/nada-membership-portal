@@ -34,7 +34,7 @@ class TrainingBrowser extends Component
     public function render()
     {
         $trainings = Training::query()
-            ->published()
+            ->publiclyVisible()
             ->upcoming()
             ->with('trainer')
             ->when($this->search, function ($query) {

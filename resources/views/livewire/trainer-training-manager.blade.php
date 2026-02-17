@@ -76,8 +76,9 @@
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 @php
                                                     $statusColors = [
-                                                        'draft' => 'bg-gray-100 text-gray-800',
+                                                        'pending_approval' => 'bg-yellow-100 text-yellow-800',
                                                         'published' => 'bg-green-100 text-green-800',
+                                                        'denied' => 'bg-red-100 text-red-800',
                                                         'canceled' => 'bg-red-100 text-red-800',
                                                         'completed' => 'bg-blue-100 text-blue-800',
                                                     ];
@@ -93,15 +94,6 @@
                                                    style="color: #374269;">
                                                     Attendees
                                                 </a>
-
-                                                @if ($training->status === \App\Enums\TrainingStatus::Draft)
-                                                    <button wire:click="publish({{ $training->id }})"
-                                                            wire:confirm="Publish this training? It will become visible to members."
-                                                            class="font-medium hover:underline"
-                                                            style="color: #d39c27;">
-                                                        Publish
-                                                    </button>
-                                                @endif
 
                                                 @if ($training->status !== \App\Enums\TrainingStatus::Canceled)
                                                     <button wire:click="cancel({{ $training->id }})"

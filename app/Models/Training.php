@@ -30,6 +30,8 @@ class Training extends Model
         'currency',
         'stripe_price_id',
         'status',
+        'is_group',
+        'denied_reason',
     ];
 
     protected function casts(): array
@@ -41,6 +43,7 @@ class Training extends Model
             'end_date' => 'datetime',
             'max_attendees' => 'integer',
             'is_paid' => 'boolean',
+            'is_group' => 'boolean',
             'price_cents' => 'integer',
         ];
     }
@@ -58,6 +61,11 @@ class Training extends Model
     public function certificates(): HasMany
     {
         return $this->hasMany(Certificate::class);
+    }
+
+    public function invitees(): HasMany
+    {
+        return $this->hasMany(TrainingInvitee::class);
     }
 
     public function getPriceFormattedAttribute(): string
@@ -87,6 +95,16 @@ class Training extends Model
     public function scopePublished($query)
     {
         return $query->where('status', TrainingStatus::Published);
+    }
+
+    public function scopePubliclyVisible($query)
+    {
+        return $query->where('status', TrainingStatus::Published)->where('is_group', false);
+    }
+
+    public function scopePendingApproval($query)
+    {
+        return $query->where('status', TrainingStatus::PendingApproval);
     }
 
     public function scopeUpcoming($query)

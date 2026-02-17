@@ -28,21 +28,6 @@ class TrainerTrainingManager extends Component
             ->get();
     }
 
-    public function publish(int $id): void
-    {
-        $training = Training::where('trainer_id', Auth::id())->findOrFail($id);
-
-        if ($training->status !== TrainingStatus::Draft) {
-            session()->flash('error', 'Only draft trainings can be published.');
-            return;
-        }
-
-        $training->update(['status' => TrainingStatus::Published]);
-        $this->loadTrainings();
-
-        session()->flash('success', 'Training "' . $training->title . '" has been published.');
-    }
-
     public function cancel(int $id): void
     {
         $training = Training::where('trainer_id', Auth::id())->findOrFail($id);

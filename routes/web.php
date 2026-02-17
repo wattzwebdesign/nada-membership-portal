@@ -118,7 +118,6 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::get('/trainings/{training}/edit', [App\Http\Controllers\Trainer\TrainingController::class, 'edit'])->name('trainings.edit');
     Route::put('/trainings/{training}', [App\Http\Controllers\Trainer\TrainingController::class, 'update'])->name('trainings.update');
     Route::delete('/trainings/{training}', [App\Http\Controllers\Trainer\TrainingController::class, 'destroy'])->name('trainings.destroy');
-    Route::post('/trainings/{training}/publish', [App\Http\Controllers\Trainer\TrainingController::class, 'publish'])->name('trainings.publish');
     Route::post('/trainings/{training}/cancel', [App\Http\Controllers\Trainer\TrainingController::class, 'cancel'])->name('trainings.cancel');
     Route::post('/trainings/{training}/complete', [App\Http\Controllers\Trainer\TrainingController::class, 'markComplete'])->name('trainings.complete');
 

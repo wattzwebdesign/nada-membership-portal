@@ -10,9 +10,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold mb-2" style="color: #374269;">New Training</h3>
-                    <p class="text-sm text-gray-500 mb-6">Fill out the details below to create a new training. You can save it as a draft and publish when ready.</p>
+                    <p class="text-sm text-gray-500 mb-6">Fill out the details below to create a new training. It will be submitted for admin approval before being published.</p>
 
-                    <form method="POST" action="{{ route('trainer.trainings.store') }}">
+                    <form method="POST" action="{{ route('trainer.trainings.store') }}" x-data="trainingForm()">
                         @csrf
 
                         <div class="space-y-6">
@@ -113,13 +113,42 @@
                                 @enderror
                             </div>
 
-                            {{-- Paid Toggle & Price --}}
+                            {{-- Group Training Toggle --}}
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="checkbox" name="is_paid" id="is_paid" value="1" class="rounded border-gray-300 shadow-sm" style="color: #374269;" {{ old('is_paid') ? 'checked' : '' }} onchange="togglePriceField()">
+                                    <input type="checkbox" name="is_group" value="1" class="rounded border-gray-300 shadow-sm" style="color: #374269;" x-model="isGroup" {{ old('is_group') ? 'checked' : '' }}>
+                                    <span class="ml-2 text-sm font-medium text-gray-700">Group Training (Invite Only)</span>
+                                </label>
+                                <p class="mt-1 ml-6 text-xs text-gray-500">Group trainings are always free and only visible to invited members.</p>
+
+                                {{-- Invitee Email Repeater --}}
+                                <div x-show="isGroup" x-cloak class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Invitee Emails</label>
+                                    <template x-for="(invitee, index) in invitees" :key="index">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <input type="email" :name="'invitees[' + index + ']'" x-model="invitee.email" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="email@example.com">
+                                            <button type="button" @click="removeInvitee(index)" class="flex-shrink-0 text-red-500 hover:text-red-700" x-show="invitees.length > 1">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            </button>
+                                        </div>
+                                    </template>
+                                    <button type="button" @click="addInvitee()" class="mt-1 inline-flex items-center text-sm font-medium" style="color: #374269;">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                        Add Another Email
+                                    </button>
+                                    @error('invitees.*')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            {{-- Paid Toggle & Price (hidden when group) --}}
+                            <div x-show="!isGroup" class="border border-gray-200 rounded-lg p-4">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="checkbox" name="is_paid" value="1" class="rounded border-gray-300 shadow-sm" style="color: #374269;" x-model="isPaid" {{ old('is_paid') ? 'checked' : '' }}>
                                     <span class="ml-2 text-sm font-medium text-gray-700">This is a paid training</span>
                                 </label>
-                                <div id="price-field" class="mt-4 {{ old('is_paid') ? '' : 'hidden' }}">
+                                <div x-show="isPaid" x-cloak class="mt-4">
                                     <label for="price" class="block text-sm font-medium text-gray-700">Price ($) *</label>
                                     <div class="mt-1 relative rounded-md shadow-sm">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -138,7 +167,7 @@
                         <div class="mt-6 flex items-center justify-between">
                             <a href="{{ route('trainer.trainings.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
                             <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
-                                Create Training
+                                Submit for Review
                             </button>
                         </div>
                     </form>
@@ -157,10 +186,19 @@
             virtualField.style.display = (type === 'in_person') ? 'none' : 'block';
         }
 
-        function togglePriceField() {
-            const isPaid = document.getElementById('is_paid').checked;
-            const priceField = document.getElementById('price-field');
-            priceField.classList.toggle('hidden', !isPaid);
+        function trainingForm() {
+            const oldInvitees = @json(old('invitees', ['']));
+            return {
+                isGroup: {{ old('is_group') ? 'true' : 'false' }},
+                isPaid: {{ old('is_paid') ? 'true' : 'false' }},
+                invitees: oldInvitees.map(email => ({ email: email || '' })),
+                addInvitee() {
+                    this.invitees.push({ email: '' });
+                },
+                removeInvitee(index) {
+                    this.invitees.splice(index, 1);
+                }
+            };
         }
 
         document.addEventListener('DOMContentLoaded', function() {

@@ -5,13 +5,20 @@ namespace App\Filament\Resources;
 use App\Enums\TrainingStatus;
 use App\Enums\TrainingType;
 use App\Filament\Resources\TrainingResource\Pages;
+use App\Filament\Resources\TrainingResource\RelationManagers;
 use App\Models\Training;
+use App\Notifications\Concerns\SafelyNotifies;
+use App\Notifications\GroupTrainingInviteNotification;
+use App\Notifications\TrainingApprovedNotification;
+use App\Notifications\TrainingDeniedNotification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class TrainingResource extends Resource
 {
@@ -24,6 +31,18 @@ class TrainingResource extends Resource
     protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Training::pendingApproval()->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
 
     public static function form(Form $form): Form
     {
@@ -49,8 +68,22 @@ class TrainingResource extends Resource
                         Forms\Components\Select::make('status')
                             ->options(TrainingStatus::class)
                             ->required()
-                            ->default(TrainingStatus::Draft),
+                            ->default(TrainingStatus::PendingApproval),
+                        Forms\Components\Toggle::make('is_group')
+                            ->label('Group Training')
+                            ->helperText('Group trainings are invite-only and always free.')
+                            ->disabled(),
                     ])->columns(2),
+
+                Forms\Components\Section::make('Denial Reason')
+                    ->schema([
+                        Forms\Components\Textarea::make('denied_reason')
+                            ->label('Reason for Denial')
+                            ->disabled()
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(fn (?Training $record) => $record?->status === TrainingStatus::Denied)
+                    ->collapsed(),
 
                 Forms\Components\Section::make('Location')
                     ->schema([
@@ -116,6 +149,13 @@ class TrainingResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn (TrainingStatus $state) => $state->label())
                     ->color(fn (TrainingStatus $state): string => $state->color()),
+                Tables\Columns\IconColumn::make('is_group')
+                    ->boolean()
+                    ->label('Group')
+                    ->trueIcon('heroicon-o-user-group')
+                    ->falseIcon('heroicon-o-minus')
+                    ->trueColor('info')
+                    ->falseColor('gray'),
                 Tables\Columns\TextColumn::make('start_date')
                     ->dateTime()
                     ->sortable(),
@@ -150,12 +190,86 @@ class TrainingResource extends Resource
                     ->options(TrainingStatus::class),
                 Tables\Filters\TernaryFilter::make('is_paid')
                     ->label('Paid'),
+                Tables\Filters\TernaryFilter::make('is_group')
+                    ->label('Group Training'),
                 Tables\Filters\Filter::make('upcoming')
                     ->query(fn (Builder $query) => $query->where('start_date', '>', now()))
                     ->label('Upcoming Only')
                     ->toggle(),
             ])
             ->actions([
+                Tables\Actions\Action::make('approve')
+                    ->label('Approve')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Approve Training')
+                    ->modalDescription('This will publish the training and notify the trainer. If this is a group training, invitees will also be notified.')
+                    ->visible(fn (Training $record) => $record->status === TrainingStatus::PendingApproval)
+                    ->action(function (Training $record) {
+                        $record->update(['status' => TrainingStatus::Published]);
+
+                        // Notify trainer
+                        try {
+                            $record->trainer->notify(new TrainingApprovedNotification($record));
+                        } catch (\Throwable $e) {
+                            Log::error('Failed to send TrainingApprovedNotification', ['error' => $e->getMessage()]);
+                        }
+
+                        // For group trainings, send invitations
+                        if ($record->is_group) {
+                            foreach ($record->invitees as $invitee) {
+                                try {
+                                    Notification::route('mail', $invitee->email)
+                                        ->notify(new GroupTrainingInviteNotification($record, $invitee));
+                                    $invitee->update(['notified_at' => now()]);
+                                } catch (\Throwable $e) {
+                                    Log::error('Failed to send GroupTrainingInviteNotification', [
+                                        'email' => $invitee->email,
+                                        'error' => $e->getMessage(),
+                                    ]);
+                                }
+                            }
+                        }
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Training approved')
+                            ->success()
+                            ->send();
+                    }),
+
+                Tables\Actions\Action::make('deny')
+                    ->label('Deny')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->form([
+                        Forms\Components\Textarea::make('denied_reason')
+                            ->label('Reason for Denial')
+                            ->required()
+                            ->maxLength(1000)
+                            ->placeholder('Explain why this training is being denied...'),
+                    ])
+                    ->modalHeading('Deny Training')
+                    ->visible(fn (Training $record) => $record->status === TrainingStatus::PendingApproval)
+                    ->action(function (Training $record, array $data) {
+                        $record->update([
+                            'status' => TrainingStatus::Denied,
+                            'denied_reason' => $data['denied_reason'],
+                        ]);
+
+                        // Notify trainer
+                        try {
+                            $record->trainer->notify(new TrainingDeniedNotification($record));
+                        } catch (\Throwable $e) {
+                            Log::error('Failed to send TrainingDeniedNotification', ['error' => $e->getMessage()]);
+                        }
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Training denied')
+                            ->success()
+                            ->send();
+                    }),
+
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -167,7 +281,9 @@ class TrainingResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\InviteesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

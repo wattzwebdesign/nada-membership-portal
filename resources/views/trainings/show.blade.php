@@ -38,6 +38,11 @@
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $typeBadgeColor }}">
                                     {{ $training->type->label() }}
                                 </span>
+                                @if ($training->is_group)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                        Invite Only
+                                    </span>
+                                @endif
                                 @if ($training->is_paid)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style="background-color: #fef3c7; color: #92400e;">
                                         Paid Training
