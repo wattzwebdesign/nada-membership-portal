@@ -103,15 +103,40 @@
                             </div>
                         @endif
                     @else
+                        @php
+                            if (! ($progress['has_active_membership'] ?? false)) {
+                                $emptyMessage = 'Get an active membership to start your certification journey.';
+                                $emptyAction = 'View Plans';
+                                $emptyUrl = route('membership.plans');
+                            } elseif (! ($progress['has_training_registration'] ?? false)) {
+                                $emptyMessage = 'Register for a training to begin your certification.';
+                                $emptyAction = 'Browse Trainings';
+                                $emptyUrl = route('trainings.index');
+                            } elseif (! ($progress['has_completed_training'] ?? false)) {
+                                $emptyMessage = 'Complete your training to continue toward your certificate.';
+                                $emptyAction = 'My Registrations';
+                                $emptyUrl = route('trainings.my-registrations');
+                            } elseif (! ($progress['has_approved_clinical'] ?? false)) {
+                                $emptyMessage = 'Submit your 40 hours of clinicals to continue toward your certificate.';
+                                $emptyAction = 'Submit Clinicals';
+                                $emptyUrl = route('clinicals.create');
+                            } else {
+                                $emptyMessage = 'Your clinical hours have been approved. Your certificate will be issued shortly.';
+                                $emptyAction = null;
+                                $emptyUrl = null;
+                            }
+                        @endphp
                         <div class="text-center py-12">
                             <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
                             <h3 class="mt-3 text-sm font-medium text-gray-900">No Certificates Yet</h3>
-                            <p class="mt-1 text-sm text-gray-500">Complete a training to earn your NADA certificate.</p>
-                            <div class="mt-6">
-                                <a href="{{ route('trainings.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
-                                    Browse Trainings
-                                </a>
-                            </div>
+                            <p class="mt-1 text-sm text-gray-500">{{ $emptyMessage }}</p>
+                            @if ($emptyAction)
+                                <div class="mt-6">
+                                    <a href="{{ $emptyUrl }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                        {{ $emptyAction }}
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     @endif
                 </div>
