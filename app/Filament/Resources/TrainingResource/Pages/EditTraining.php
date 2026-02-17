@@ -88,6 +88,8 @@ class EditTraining extends EditRecord
                 }),
 
             Actions\DeleteAction::make(),
+            Actions\RestoreAction::make(),
+            Actions\ForceDeleteAction::make(),
         ];
     }
 }

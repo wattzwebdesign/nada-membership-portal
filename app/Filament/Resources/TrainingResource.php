@@ -196,6 +196,7 @@ class TrainingResource extends Resource
                     ->query(fn (Builder $query) => $query->where('start_date', '>', now()))
                     ->label('Upcoming Only')
                     ->toggle(),
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\Action::make('approve')
@@ -205,7 +206,7 @@ class TrainingResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('Approve Training')
                     ->modalDescription('This will publish the training and notify the trainer. If this is a group training, invitees will also be notified.')
-                    ->visible(fn (Training $record) => $record->status === TrainingStatus::PendingApproval)
+                    ->visible(fn (Training $record) => $record->status === TrainingStatus::PendingApproval && !$record->trashed())
                     ->action(function (Training $record) {
                         $record->update(['status' => TrainingStatus::Published]);
 
@@ -250,7 +251,7 @@ class TrainingResource extends Resource
                             ->placeholder('Explain why this training is being denied...'),
                     ])
                     ->modalHeading('Deny Training')
-                    ->visible(fn (Training $record) => $record->status === TrainingStatus::PendingApproval)
+                    ->visible(fn (Training $record) => $record->status === TrainingStatus::PendingApproval && !$record->trashed())
                     ->action(function (Training $record, array $data) {
                         $record->update([
                             'status' => TrainingStatus::Denied,
@@ -271,10 +272,15 @@ class TrainingResource extends Resource
                     }),
 
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
                 ]),
             ]);
     }
