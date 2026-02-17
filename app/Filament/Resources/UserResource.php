@@ -64,7 +64,8 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('zip')
                             ->maxLength(20),
                         Forms\Components\TextInput::make('country')
-                            ->maxLength(255),
+                            ->maxLength(2)
+                            ->default('US'),
                     ])->columns(3)->collapsible(),
 
                 Forms\Components\Section::make('Discount & Trainer Status')
