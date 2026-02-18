@@ -34,9 +34,14 @@ class ImportResources extends Command
             $this->components->warn('DRY RUN — no database writes will be made.');
         }
 
-        $csvPath = base_path('Resources-Export-2026-February-18-0129.csv');
+        $csvFile = 'Resources-Export-2026-February-18-0129.csv';
+        $csvPath = storage_path("app/migration/{$csvFile}");
         if (! file_exists($csvPath)) {
-            $this->error('CSV file not found: Resources-Export-2026-February-18-0129.csv');
+            // Fallback to project root for local dev
+            $csvPath = base_path($csvFile);
+        }
+        if (! file_exists($csvPath)) {
+            $this->error("CSV file not found. Place it at storage/app/migration/{$csvFile}");
             return Command::FAILURE;
         }
 
