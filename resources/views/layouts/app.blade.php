@@ -57,5 +57,6 @@
                 });
             });
         </script>
+        <livewire:support-chat />
     </body>
 </html>

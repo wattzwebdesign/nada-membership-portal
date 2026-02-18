@@ -77,5 +77,6 @@
             </div>
         </footer>
         @stack('scripts')
+        <livewire:support-chat />
     </body>
 </html>
