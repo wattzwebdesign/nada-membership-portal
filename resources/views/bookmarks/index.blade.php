@@ -12,7 +12,7 @@
                     </svg>
                     <h3 class="text-lg font-medium text-gray-900 mb-1">No bookmarks yet</h3>
                     <p class="text-sm text-gray-500 mb-6">You haven't bookmarked any resources yet.</p>
-                    <a href="{{ route('public.resources.index') }}"
+                    <a href="{{ route('public.resources.index') }}" target="_blank" rel="noopener noreferrer"
                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                         Browse Resource Library
                     </a>
@@ -23,7 +23,7 @@
                         <div class="bg-white rounded-lg border border-gray-200 p-5 hover:shadow-md hover:border-gray-300 transition-all duration-150"
                              x-data="{ removed: false }" x-show="!removed" x-transition>
                             <div class="flex items-start justify-between">
-                                <a href="{{ route('public.resources.show', [$resource->categories->first(), $resource]) }}" class="flex-1 min-w-0">
+                                <a href="{{ route('public.resources.show', [$resource->categories->first(), $resource]) }}" target="_blank" rel="noopener noreferrer" class="flex-1 min-w-0">
                                     <h3 class="text-base font-semibold text-gray-900">{{ $resource->title }}</h3>
                                     <div class="mt-2 flex flex-wrap gap-1.5">
                                         @foreach ($resource->categories as $cat)
