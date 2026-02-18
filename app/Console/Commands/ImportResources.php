@@ -298,6 +298,33 @@ class ImportResources extends Command
             }
         }
 
+        // Download inline linked files and rewrite URLs
+        if (! $skipFiles && $body) {
+            preg_match_all('/href="(https?:\/\/acudetox\.com\/wp-content\/uploads\/[^"]+)"/', $body, $inlineMatches);
+            if (! empty($inlineMatches[1])) {
+                $updatedBody = $body;
+                foreach (array_unique($inlineMatches[1]) as $inlineUrl) {
+                    try {
+                        $media = $resource->addMediaFromUrl($inlineUrl)
+                            ->toMediaCollection('attachments');
+                        $updatedBody = str_replace($inlineUrl, $media->getUrl(), $updatedBody);
+                        $this->filesDownloaded++;
+                    } catch (\Throwable $e) {
+                        $this->fileErrors++;
+                        $this->importLog[] = [
+                            'wp_id' => $wpId,
+                            'status' => 'inline_file_error',
+                            'url' => $inlineUrl,
+                            'error' => $e->getMessage(),
+                        ];
+                    }
+                }
+                if ($updatedBody !== $body) {
+                    $resource->update(['body' => $updatedBody]);
+                }
+            }
+        }
+
         $this->imported++;
         $this->importLog[] = ['wp_id' => $wpId, 'status' => 'imported', 'id' => $resource->id, 'title' => $title];
     }
