@@ -27,12 +27,12 @@
 
                     @if ($subscription)
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
+                            <div data-guide="membership-plan-name">
                                 <p class="text-sm text-gray-500">Plan Name</p>
                                 <p class="text-lg font-semibold text-gray-900">{{ $subscription->plan->name ?? 'N/A' }}</p>
                             </div>
 
-                            <div>
+                            <div data-guide="membership-status">
                                 <p class="text-sm text-gray-500">Status</p>
                                 @php
                                     $statusColors = [
@@ -51,7 +51,7 @@
                                 </span>
                             </div>
 
-                            <div>
+                            <div data-guide="membership-renewal-date">
                                 <p class="text-sm text-gray-500">Renewal Date</p>
                                 <p class="text-lg font-semibold text-gray-900">
                                     {{ $subscription->current_period_end ? $subscription->current_period_end->format('F j, Y') : 'N/A' }}
@@ -86,7 +86,7 @@
                                         Every {{ $subscription->plan->billing_interval_count ?? 1 }} {{ ucfirst($subscription->plan->billing_interval ?? 'year') }}{{ ($subscription->plan->billing_interval_count ?? 1) > 1 ? 's' : '' }}
                                     </p>
                                 </div>
-                                <div>
+                                <div data-guide="membership-price">
                                     <p class="text-sm text-gray-500">Price</p>
                                     <p class="text-base text-gray-900">${{ number_format(($subscription->plan->price_cents ?? 0) / 100, 2) }} / {{ $subscription->plan->billing_interval ?? 'year' }}</p>
                                 </div>

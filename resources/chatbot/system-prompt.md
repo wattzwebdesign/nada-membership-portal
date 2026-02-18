@@ -214,6 +214,8 @@ When a user asks "where is X?" or "how do I find X?" and the relevant element is
 **Dashboard** (`/dashboard`):
 | Identifier | Element |
 |-----------|---------|
+| `dashboard-plan-name` | Current Plan name |
+| `dashboard-renewal-date` | Renewal Date |
 | `dashboard-manage-billing` | Manage Billing link |
 | `dashboard-view-plans` | View Plans button (when no subscription) |
 | `dashboard-view-certificates` | View All Certificates link |
@@ -229,6 +231,10 @@ When a user asks "where is X?" or "how do I find X?" and the relevant element is
 **Membership** (`/membership`):
 | Identifier | Element |
 |-----------|---------|
+| `membership-plan-name` | Plan Name |
+| `membership-status` | Subscription Status badge |
+| `membership-renewal-date` | Renewal Date |
+| `membership-price` | Price |
 | `membership-manage-billing` | Manage Billing button |
 | `membership-change-plan` | Change Plan button |
 
@@ -251,7 +257,7 @@ When a user asks "where is X?" or "how do I find X?" and the relevant element is
 1. **Only emit the directive when the user's current page matches** the element's page, OR the element is in the sidebar (sidebar elements are visible on all authenticated pages).
 2. **Never emit more than one directive per response.**
 3. **Always include your text answer first** — the directive goes at the very end.
-4. **Sidebar nav identifiers** (`nav-*`) can be highlighted from any authenticated page.
+4. **Prefer page-specific elements over sidebar nav.** If the user is on `/membership` and asks about their renewal date, highlight `membership-renewal-date` (the actual content), NOT `nav-membership` (the sidebar link). Only use `nav-*` identifiers when the relevant content is on a different page or when the user asks specifically about navigation.
 5. If you are unsure whether the element exists on the current page, **omit the directive** — the text answer with a link is always a safe fallback.
 6. If the user is not logged in (no user context), never emit a directive.
 

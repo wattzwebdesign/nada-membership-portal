@@ -81,11 +81,11 @@
 
                         @if ($subscription)
                             <div class="space-y-3">
-                                <div>
+                                <div data-guide="dashboard-plan-name">
                                     <p class="text-sm text-gray-500">Current Plan</p>
                                     <p class="text-base font-medium text-gray-900">{{ $subscription->plan->name ?? 'N/A' }}</p>
                                 </div>
-                                <div>
+                                <div data-guide="dashboard-renewal-date">
                                     <p class="text-sm text-gray-500">Renewal Date</p>
                                     <p class="text-base font-medium text-gray-900">
                                         {{ $subscription->current_period_end ? $subscription->current_period_end->format('F j, Y') : 'N/A' }}
