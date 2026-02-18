@@ -12,6 +12,7 @@ use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicCertificateController;
 use App\Http\Controllers\PublicPricingController;
+use App\Http\Controllers\PublicResourceController;
 use App\Http\Controllers\PublicTrainerController;
 use App\Http\Controllers\TrainerApplicationController;
 use App\Http\Controllers\NdaController;
@@ -152,5 +153,10 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::post('/broadcasts', [App\Http\Controllers\Trainer\BroadcastController::class, 'store'])->name('broadcasts.store');
     Route::post('/broadcasts/recipient-count', [App\Http\Controllers\Trainer\BroadcastController::class, 'recipientCount'])->name('broadcasts.recipient-count');
 });
+
+// Public Resource Library
+Route::get('/resources', [PublicResourceController::class, 'index'])->name('public.resources.index');
+Route::get('/resources/{resourceCategory}', [PublicResourceController::class, 'category'])->name('public.resources.category');
+Route::get('/resources/{resourceCategory}/{resource}', [PublicResourceController::class, 'show'])->name('public.resources.show');
 
 require __DIR__.'/auth.php';
