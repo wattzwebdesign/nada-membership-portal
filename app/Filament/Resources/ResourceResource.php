@@ -8,6 +8,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -71,6 +72,13 @@ class ResourceResource extends Resource
 
                 Forms\Components\Section::make('Media & Links')
                     ->schema([
+                        SpatieMediaLibraryFileUpload::make('attachments')
+                            ->collection('attachments')
+                            ->multiple()
+                            ->reorderable()
+                            ->maxSize(25600)
+                            ->helperText('Upload files up to 25 MB each')
+                            ->columnSpanFull(),
                         Forms\Components\TextInput::make('external_link')
                             ->url()
                             ->maxLength(500),
