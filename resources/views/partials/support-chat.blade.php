@@ -226,13 +226,20 @@ document.addEventListener('alpine:init', () => {
             if (!el) return;
             // Check element is visible (not in a closed mobile drawer etc.)
             if (el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return;
+            // Add dim overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'guide-overlay';
+            document.body.appendChild(overlay);
             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             el.setAttribute('data-guide-active', '');
             const remove = () => {
                 el.removeAttribute('data-guide-active');
+                overlay.remove();
                 el.removeEventListener('click', remove);
+                overlay.removeEventListener('click', remove);
             };
             el.addEventListener('click', remove, { once: true });
+            overlay.addEventListener('click', remove, { once: true });
             setTimeout(remove, 4500);
         },
 

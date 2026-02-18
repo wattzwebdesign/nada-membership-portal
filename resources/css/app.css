@@ -8,9 +8,24 @@
     50% { box-shadow: 0 0 0 8px rgba(173, 126, 7, 0); }
 }
 
+.guide-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 40;
+    animation: guide-fade-in 0.3s ease;
+}
+
+@keyframes guide-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 [data-guide-active] {
     animation: nada-guide-pulse 1.5s ease-in-out 3;
     outline: 2px solid #AD7E07;
     outline-offset: 2px;
     border-radius: 4px;
+    position: relative;
+    z-index: 41;
 }
