@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Subscription;
 use App\Notifications\PaymentOverdueNotification;
 use App\Notifications\RenewalReminderNotification;
+use App\Notifications\UpcomingRenewalNotification;
 use App\Services\StripeService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -14,18 +15,68 @@ use Illuminate\Support\Facades\Log;
 class SendRenewalReminders extends Command
 {
     protected $signature = 'nada:send-renewal-reminders';
-    protected $description = 'Send pre-renewal reminders (no card on file) and post-failure overdue reminders';
+    protected $description = 'Send renewal reminders, no-card warnings, and post-failure overdue reminders';
 
     public function handle(StripeService $stripeService): int
     {
         $this->info('Starting renewal reminders...');
 
+        $upcomingSent = $this->sendUpcomingRenewalReminders();
         $preRenewalSent = $this->sendPreRenewalReminders($stripeService);
         $postFailureSent = $this->sendPostFailureReminders();
 
-        $this->info("Done. Pre-renewal: {$preRenewalSent} sent. Post-failure: {$postFailureSent} sent.");
+        $this->info("Done. Upcoming: {$upcomingSent} sent. No-card: {$preRenewalSent} sent. Post-failure: {$postFailureSent} sent.");
 
         return Command::SUCCESS;
+    }
+
+    private function sendUpcomingRenewalReminders(): int
+    {
+        $sent = 0;
+        $now = now();
+
+        $windows = [
+            ['start' => 29, 'end' => 31, 'key' => 'upcoming_30d_sent', 'days' => 30],
+            ['start' => 6, 'end' => 8, 'key' => 'upcoming_7d_sent', 'days' => 7],
+        ];
+
+        foreach ($windows as $window) {
+            $subscriptions = Subscription::where('status', SubscriptionStatus::Active)
+                ->where('cancel_at_period_end', false)
+                ->whereBetween('current_period_end', [
+                    $now->copy()->addDays($window['start'])->startOfDay(),
+                    $now->copy()->addDays($window['end'])->endOfDay(),
+                ])
+                ->with(['user', 'plan'])
+                ->get();
+
+            foreach ($subscriptions as $subscription) {
+                if (!$subscription->user) {
+                    continue;
+                }
+
+                $metadata = $subscription->metadata ?? [];
+                if (!empty($metadata[$window['key']])) {
+                    continue;
+                }
+
+                $subscription->user->notify(new UpcomingRenewalNotification($subscription, $window['days']));
+
+                $metadata[$window['key']] = now()->toIso8601String();
+                $subscription->update(['metadata' => $metadata]);
+
+                Log::info('Upcoming renewal reminder sent', [
+                    'user_id' => $subscription->user_id,
+                    'subscription_id' => $subscription->id,
+                    'type' => $window['key'],
+                    'renewal_date' => $subscription->current_period_end->toDateString(),
+                ]);
+                $this->info("  Upcoming {$window['days']}d reminder sent to {$subscription->user->email}");
+                $sent++;
+            }
+        }
+
+        return $sent;
     }
 
     private function sendPreRenewalReminders(StripeService $stripeService): int

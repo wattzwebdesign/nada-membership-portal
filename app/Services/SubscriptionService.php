@@ -66,6 +66,8 @@ class SubscriptionService
         if ($newStatus === 'active' && $oldStatus !== 'active') {
             $metadata = $subscription->metadata ?? [];
             $reminderKeys = [
+                'upcoming_30d_sent',
+                'upcoming_7d_sent',
                 'pre_renewal_14d_sent',
                 'pre_renewal_3d_sent',
                 'post_failure_3d_sent',
