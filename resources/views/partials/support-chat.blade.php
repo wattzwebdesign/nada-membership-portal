@@ -148,8 +148,7 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
 
-            const userCount = this.messages.filter(m => m.role === 'user').length;
-            if (userCount >= this.maxMessages) {
+            if (this.messages.length + 1 >= this.maxMessages) {
                 this.hasError = true;
                 this.errorMessage = 'Conversation limit reached. Please clear the chat to continue.';
                 return;
