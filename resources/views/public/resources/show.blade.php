@@ -10,8 +10,38 @@
             {{ $category->name }}
         </a>
 
-        {{-- Title & Category Pills --}}
-        <h1 class="text-2xl font-bold text-gray-900">{{ $resource->title }}</h1>
+        {{-- Title & Bookmark --}}
+        <div class="flex items-start justify-between gap-4">
+            <h1 class="text-2xl font-bold text-gray-900">{{ $resource->title }}</h1>
+            @auth
+                <div x-data="{ bookmarked: @json($isBookmarked), loading: false }" class="flex-shrink-0">
+                    <button
+                        @click="
+                            if (loading) return;
+                            loading = true;
+                            fetch('{{ route('bookmarks.toggle', $resource) }}', {
+                                method: 'POST',
+                                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
+                            })
+                            .then(r => r.json())
+                            .then(data => { bookmarked = data.bookmarked; })
+                            .finally(() => { loading = false; })
+                        "
+                        class="p-2 rounded-md hover:bg-gray-100 transition-colors"
+                        :title="bookmarked ? 'Remove bookmark' : 'Bookmark this resource'"
+                    >
+                        {{-- Filled bookmark --}}
+                        <svg x-show="bookmarked" class="w-6 h-6" style="color: #d39c27;" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 2h14a1 1 0 011 1v19.143a.5.5 0 01-.766.424L12 18.03l-7.234 4.536A.5.5 0 014 22.143V3a1 1 0 011-1z"/>
+                        </svg>
+                        {{-- Outline bookmark --}}
+                        <svg x-show="!bookmarked" class="w-6 h-6 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                        </svg>
+                    </button>
+                </div>
+            @endauth
+        </div>
         <div class="mt-3 flex flex-wrap gap-1.5">
             @foreach ($resource->categories as $cat)
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium text-white" style="background-color: #d39c27;">

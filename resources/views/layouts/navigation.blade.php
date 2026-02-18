@@ -27,6 +27,9 @@
                     <x-nav-link :href="route('clinicals.index')" :active="request()->routeIs('clinicals.*')">
                         Clinicals
                     </x-nav-link>
+                    <x-nav-link :href="route('bookmarks.index')" :active="request()->routeIs('bookmarks.*')">
+                        Bookmarks
+                    </x-nav-link>
 
                     @if(auth()->user()->isTrainer())
                         <x-nav-link :href="route('trainer.dashboard')" :active="request()->routeIs('trainer.*')" class="text-amber-600">
@@ -104,6 +107,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('clinicals.index')" :active="request()->routeIs('clinicals.*')">
                 Clinicals
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('bookmarks.index')" :active="request()->routeIs('bookmarks.*')">
+                Bookmarks
             </x-responsive-nav-link>
 
             @if(auth()->user()->isTrainer())

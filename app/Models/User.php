@@ -8,6 +8,7 @@ use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -151,6 +152,11 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
     public function trainerBroadcasts(): HasMany
     {
         return $this->hasMany(TrainerBroadcast::class, 'trainer_id');
+    }
+
+    public function bookmarkedResources(): BelongsToMany
+    {
+        return $this->belongsToMany(Resource::class, 'resource_bookmarks')->withPivot('created_at');
     }
 
     // Scopes & Helpers

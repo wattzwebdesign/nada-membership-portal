@@ -39,6 +39,20 @@ class Resource extends Model implements HasMedia
         return $this->belongsToMany(ResourceCategory::class);
     }
 
+    public function bookmarkedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'resource_bookmarks')->withPivot('created_at');
+    }
+
+    public function isBookmarkedBy(?User $user): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        return $this->bookmarkedBy()->where('user_id', $user->id)->exists();
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('attachments')

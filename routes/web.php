@@ -18,6 +18,7 @@ use App\Http\Controllers\TrainerApplicationController;
 use App\Http\Controllers\NdaController;
 use App\Http\Controllers\GroupTrainingController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ResourceBookmarkController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\TrainingRegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -97,6 +98,10 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::get('/discount/request', [DiscountRequestController::class, 'create'])->name('discount.request.create');
     Route::post('/discount/request', [DiscountRequestController::class, 'store'])->name('discount.request.store');
     Route::get('/discount/status', [DiscountRequestController::class, 'status'])->name('discount.request.status');
+
+    // Bookmarks
+    Route::get('/bookmarks', [ResourceBookmarkController::class, 'index'])->name('bookmarks.index');
+    Route::post('/bookmarks/{resource}/toggle', [ResourceBookmarkController::class, 'toggle'])->name('bookmarks.toggle');
 
     // Account / Profile
     Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');

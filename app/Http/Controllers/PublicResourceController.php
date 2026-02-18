@@ -25,9 +25,14 @@ class PublicResourceController extends Controller
             ->orderByDesc('published_at')
             ->paginate(20);
 
+        $bookmarkedIds = auth()->check()
+            ? auth()->user()->bookmarkedResources()->pluck('resource_id')->all()
+            : [];
+
         return view('public.resources.category', [
             'category' => $resourceCategory,
             'resources' => $resources,
+            'bookmarkedIds' => $bookmarkedIds,
         ]);
     }
 
@@ -39,11 +44,13 @@ class PublicResourceController extends Controller
         }
 
         $canViewFull = $resource->canViewFullContent();
+        $isBookmarked = auth()->check() && $resource->isBookmarkedBy(auth()->user());
 
         return view('public.resources.show', [
             'category' => $resourceCategory,
             'resource' => $resource,
             'canViewFull' => $canViewFull,
+            'isBookmarked' => $isBookmarked,
         ]);
     }
 }
