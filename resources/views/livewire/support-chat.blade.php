@@ -92,9 +92,10 @@
 
         {{-- Input --}}
         <div class="px-3 py-3 border-t border-gray-200 shrink-0">
-            <form wire:submit.prevent="sendMessage" class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
                 <input
                     wire:model="userInput"
+                    wire:keydown.enter="sendMessage"
                     type="text"
                     placeholder="Type your question..."
                     maxlength="500"
@@ -103,7 +104,8 @@
                     autocomplete="off"
                 />
                 <button
-                    type="submit"
+                    wire:click="sendMessage"
+                    type="button"
                     class="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-white transition hover:opacity-90 disabled:opacity-50"
                     style="background-color: #d39c27;"
                     @if($isLoading) disabled @endif
@@ -112,7 +114,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
                 </button>
-            </form>
+            </div>
         </div>
     </div>
 
