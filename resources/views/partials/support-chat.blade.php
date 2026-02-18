@@ -238,7 +238,7 @@ document.addEventListener('alpine:init', () => {
                 const t = rect.top - pad;
                 const r = rect.right + pad;
                 const b = rect.bottom + pad;
-                overlay.style.clipPath = `polygon(0% 0%, 0% 100%, ${l}px 100%, ${l}px ${b}px, ${r}px ${b}px, ${r}px ${t}px, ${l}px ${t}px, ${l}px ${b}px, ${l}px 100%, 100% 100%, 100% 0%)`;
+                overlay.style.clipPath = `polygon(0% 0%, 0% 100%, ${l}px 100%, ${l}px ${t}px, ${r}px ${t}px, ${r}px ${b}px, ${l}px ${b}px, ${l}px ${t}px, ${l}px 100%, 100% 100%, 100% 0%)`;
             };
             setCutout();
             setTimeout(setCutout, 500);
