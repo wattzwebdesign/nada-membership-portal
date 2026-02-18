@@ -30,7 +30,16 @@
 </div>
 
 {{-- Scrollable nav area --}}
-<nav class="flex-1 overflow-y-auto px-3 space-y-6">
+<div class="flex-1 relative min-h-0" x-data="{
+    canScroll: false,
+    atBottom: false,
+    check() {
+        const el = this.$refs.navScroll;
+        this.canScroll = el.scrollHeight > el.clientHeight;
+        this.atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
+    }
+}" x-init="$nextTick(() => check())" @resize.window="check()">
+    <nav x-ref="navScroll" @scroll="check()" class="h-full overflow-y-auto px-3 space-y-6 pb-2">
     {{-- MEMBER section --}}
     <div>
         <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider" style="color: #254927;">Member</p>
@@ -156,7 +165,25 @@
             </div>
         </div>
     @endif
-</nav>
+    </nav>
+
+    {{-- Fade gradient + scroll hint --}}
+    <div
+        x-show="canScroll && !atBottom"
+        x-transition:leave="transition-opacity duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="absolute bottom-0 left-0 right-0 pointer-events-none"
+        x-cloak
+    >
+        <div class="h-12" style="background: linear-gradient(to bottom, transparent, #f0e8d3);"></div>
+        <div class="flex justify-center pb-1" style="background-color: #f0e8d3;">
+            <svg class="w-4 h-4 animate-bounce opacity-50" fill="none" stroke="#242424" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+        </div>
+    </div>
+</div>
 
 {{-- Account section (pinned to bottom) --}}
 <div class="shrink-0 border-t border-black/10 px-3 py-4 space-y-1">
