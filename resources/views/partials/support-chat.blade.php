@@ -225,26 +225,26 @@ document.addEventListener('alpine:init', () => {
             if (!el) return;
             // Check element is visible (not in a closed mobile drawer etc.)
             if (el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return;
-            // Add dim overlay
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.setAttribute('data-guide-active', '');
+            // Create overlay with clip-path cutout around the element
             const overlay = document.createElement('div');
             overlay.className = 'guide-overlay';
             document.body.appendChild(overlay);
-            // Elevate any positioned ancestors above the overlay so the element isn't trapped
-            const elevated = [];
-            let parent = el.parentElement;
-            while (parent && parent !== document.body) {
-                if (getComputedStyle(parent).position !== 'static') {
-                    elevated.push({ el: parent, oldZ: parent.style.zIndex });
-                    parent.style.zIndex = '41';
-                }
-                parent = parent.parentElement;
-            }
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.setAttribute('data-guide-active', '');
+            const setCutout = () => {
+                const rect = el.getBoundingClientRect();
+                const pad = 6;
+                const l = rect.left - pad;
+                const t = rect.top - pad;
+                const r = rect.right + pad;
+                const b = rect.bottom + pad;
+                overlay.style.clipPath = `polygon(0% 0%, 0% 100%, ${l}px 100%, ${l}px ${b}px, ${r}px ${b}px, ${r}px ${t}px, ${l}px ${t}px, ${l}px ${b}px, ${l}px 100%, 100% 100%, 100% 0%)`;
+            };
+            setCutout();
+            setTimeout(setCutout, 500);
             const remove = () => {
                 el.removeAttribute('data-guide-active');
                 overlay.remove();
-                elevated.forEach(item => item.el.style.zIndex = item.oldZ);
                 el.removeEventListener('click', remove);
                 overlay.removeEventListener('click', remove);
             };
