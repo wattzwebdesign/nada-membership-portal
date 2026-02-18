@@ -8,15 +8,21 @@ use Illuminate\Support\Facades\RateLimiter;
 
 class ChatbotService
 {
-    public function sendMessage(array $conversationHistory): string
+    public function sendMessage(array $conversationHistory, ?string $userContext = null): string
     {
+        $systemPrompt = $this->loadSystemPrompt();
+
+        if ($userContext) {
+            $systemPrompt .= "\n\n" . $userContext;
+        }
+
         $response = Http::withHeaders([
             'x-api-key' => config('chatbot.api_key'),
             'anthropic-version' => '2023-06-01',
         ])->timeout(30)->post('https://api.anthropic.com/v1/messages', [
             'model' => config('chatbot.model'),
             'max_tokens' => config('chatbot.max_tokens'),
-            'system' => $this->loadSystemPrompt(),
+            'system' => $systemPrompt,
             'messages' => $conversationHistory,
         ]);
 
