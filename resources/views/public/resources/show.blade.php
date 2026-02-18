@@ -24,8 +24,15 @@
             {{-- Full Content --}}
             <div class="mt-8">
                 @if ($resource->body)
+                    @php
+                        $renderedBody = preg_replace(
+                            '/<a\s+href="https?:\/\/acudetox\.com\/wp-content\/uploads\/[^"]*"[^>]*>(.*?)<\/a>/i',
+                            '<span class="inline-flex items-center gap-1 text-gray-400 line-through" title="This file is no longer available"><svg class="inline w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L6.106 6.106m3.772 3.772l4.242 4.242m0 0l3.772 3.772M3 3l18 18"/></svg>$1 <span class="text-xs no-underline">(unavailable)</span></span>',
+                            $resource->body
+                        );
+                    @endphp
                     <div class="max-w-none text-gray-700 leading-relaxed [&_*]:!font-normal [&>p]:mb-4 [&>h2]:text-xl [&>h2]:!font-semibold [&>h2]:text-gray-900 [&>h2]:mt-6 [&>h2]:mb-3 [&>h3]:text-base [&>h3]:text-gray-700 [&>h3]:mt-0 [&>h3]:mb-4 [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:mb-4 [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-4 [&_a]:!text-blue-600 [&_a]:!underline [&_a]:hover:!text-blue-800 [&>blockquote]:border-l-4 [&>blockquote]:border-gray-300 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-4">
-                        {!! $resource->body !!}
+                        {!! $renderedBody !!}
                     </div>
                 @endif
 

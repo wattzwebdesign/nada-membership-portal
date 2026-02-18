@@ -41,7 +41,8 @@ class Resource extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('attachments');
+        $this->addMediaCollection('attachments')
+            ->acceptsFile(fn ($file) => $file->size <= 25 * 1024 * 1024); // 25 MB
     }
 
     public function canViewFullContent(): bool
