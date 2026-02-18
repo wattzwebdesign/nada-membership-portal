@@ -65,8 +65,8 @@
                 <div class="space-y-3 lg:max-h-[calc(100vh-220px)] lg:overflow-y-auto lg:pr-2">
                     @forelse ($trainers as $trainer)
                         <a href="{{ route('public.trainers.show', $trainer) }}"
-                           class="block bg-white border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-md transition-all duration-150"
-                           :class="{ 'ring-2 ring-blue-400': highlightedTrainerId === {{ $trainer->id }} }"
+                           class="block bg-white border border-gray-200 rounded-lg p-4 hover:border-gray-300 hover:shadow-md transition-all duration-150"
+                           :class="{ 'ring-2 ring-gray-300': highlightedTrainerId === {{ $trainer->id }} }"
                            @mouseenter="bounceMarker({{ $trainer->id }})"
                            @mouseleave="highlightedTrainerId = null">
                             <div class="flex items-center space-x-3">
