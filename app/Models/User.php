@@ -237,4 +237,24 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
             mb_substr($this->first_name ?? '', 0, 1) . mb_substr($this->last_name ?? '', 0, 1)
         );
     }
+
+    public function getPhoneFormattedAttribute(): ?string
+    {
+        if (! $this->phone) {
+            return null;
+        }
+
+        $digits = preg_replace('/\D/', '', $this->phone);
+
+        // Strip leading 1 for US numbers
+        if (strlen($digits) === 11 && str_starts_with($digits, '1')) {
+            $digits = substr($digits, 1);
+        }
+
+        if (strlen($digits) === 10) {
+            return sprintf('(%s) %s-%s', substr($digits, 0, 3), substr($digits, 3, 3), substr($digits, 6));
+        }
+
+        return $this->phone;
+    }
 }
