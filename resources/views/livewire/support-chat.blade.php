@@ -92,7 +92,7 @@
 
         {{-- Input --}}
         <div class="px-3 py-3 border-t border-gray-200 shrink-0">
-            <form wire:submit="sendMessage" class="flex items-center gap-2">
+            <form wire:submit.prevent="sendMessage" class="flex items-center gap-2">
                 <input
                     wire:model="userInput"
                     type="text"
