@@ -132,6 +132,7 @@ document.addEventListener('alpine:init', () => {
             const saved = sessionStorage.getItem('nada_chat_messages');
             if (saved) {
                 try { this.messages = JSON.parse(saved); } catch (e) {}
+                this.$nextTick(() => this.scrollToBottom());
             }
             this.$watch('messages', (val) => {
                 sessionStorage.setItem('nada_chat_messages', JSON.stringify(val));
