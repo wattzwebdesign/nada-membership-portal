@@ -1,7 +1,7 @@
 <x-public-layout>
     <x-slot name="title">{{ $trainer->full_name }} - NADA Trainer</x-slot>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="{ showContactModal: {{ $errors->any() || session('success') ? 'true' : 'false' }} }">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="{ showContactModal: {{ $errors->any() || session('success') ? 'true' : 'false' }} }">
         {{-- Back Link --}}
         <a href="{{ route('public.trainers.index') }}" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
