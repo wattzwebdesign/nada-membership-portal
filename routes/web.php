@@ -29,6 +29,7 @@ Route::get('/', function () {
 Route::get('/pricing', [PublicPricingController::class, 'index'])->name('public.pricing');
 Route::get('/trainers', [PublicTrainerController::class, 'index'])->name('public.trainers.index');
 Route::get('/trainers/{user}', [PublicTrainerController::class, 'show'])->name('public.trainers.show');
+Route::post('/trainers/{user}/contact', [PublicTrainerController::class, 'contact'])->middleware('throttle:5,1')->name('public.trainers.contact');
 Route::get('/verify/{certificate_code?}', [PublicCertificateController::class, 'verify'])->name('public.verify');
 
 // Group Training (public form, no auth)

@@ -21,7 +21,6 @@
                     </div>
                     <div class="flex items-center space-x-4">
                         <a href="{{ route('public.trainers.index') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Trainers</a>
-                        <a href="{{ route('group-training.create') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Group Training</a>
                         <a href="{{ route('public.resources.index') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Resources</a>
                         <a href="{{ route('public.pricing') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Pricing</a>
                         @auth

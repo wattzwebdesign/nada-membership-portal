@@ -52,23 +52,52 @@
             </div>
         </div>
 
-        {{-- Group Training CTA --}}
-        @if ($trainer->stripeAccount && $trainer->stripeAccount->charges_enabled)
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
-                        <h3 class="text-base font-semibold" style="color: #374269;">Book a Group Training</h3>
-                        <p class="text-sm text-gray-500 mt-1">Need training for your team or organization? Book a group session with {{ $trainer->first_name }}.</p>
-                    </div>
-                    <a href="{{ route('group-training.create', ['trainer' => $trainer->id]) }}"
-                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white whitespace-nowrap"
-                       style="background-color: #d39c27;">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        Book Group Training
-                    </a>
+        {{-- Contact Trainer Form --}}
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6">
+            <h3 class="text-base font-semibold mb-4" style="color: #374269;">Contact This Trainer</h3>
+
+            @if (session('success'))
+                <div class="rounded-md bg-green-50 border border-green-200 p-4 mb-4">
+                    <p class="text-sm text-green-700">{{ session('success') }}</p>
                 </div>
-            </div>
-        @endif
+            @endif
+
+            <form method="POST" action="{{ route('public.trainers.contact', $trainer) }}">
+                @csrf
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        @error('name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
+                        <input type="email" name="email" id="email" value="{{ old('email') }}" required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        @error('email') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone <span class="text-sm text-gray-400 font-normal">(optional)</span></label>
+                    <input type="text" name="phone" id="phone" value="{{ old('phone') }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    @error('phone') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
+                <div class="mt-4">
+                    <label for="message" class="block text-sm font-medium text-gray-700">Message <span class="text-red-500">*</span></label>
+                    <textarea name="message" id="message" rows="4" required
+                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">{{ old('message') }}</textarea>
+                    @error('message') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
 
         {{-- Bio Section --}}
         @if ($trainer->bio)

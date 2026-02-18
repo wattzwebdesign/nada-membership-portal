@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Notifications\TrainerContactNotification;
 use App\Services\GeocodingService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -141,5 +143,26 @@ class PublicTrainerController extends Controller
             'trainer' => $user,
             'upcomingTrainings' => $upcomingTrainings,
         ]);
+    }
+
+    public function contact(Request $request, User $user): RedirectResponse
+    {
+        abort_unless($user->isTrainer(), 404);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:50',
+            'message' => 'required|string|max:2000',
+        ]);
+
+        $user->notify(new TrainerContactNotification(
+            senderName: $validated['name'],
+            senderEmail: $validated['email'],
+            senderPhone: $validated['phone'] ?? null,
+            senderMessage: $validated['message'],
+        ));
+
+        return redirect()->back()->with('success', 'Your message has been sent to ' . $user->first_name . '.');
     }
 }
