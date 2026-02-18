@@ -130,6 +130,16 @@ document.addEventListener('alpine:init', () => {
         errorMessage: '',
         maxMessages: {{ config('chatbot.max_messages', 20) }},
 
+        init() {
+            const saved = sessionStorage.getItem('nada_chat_messages');
+            if (saved) {
+                try { this.messages = JSON.parse(saved); } catch (e) {}
+            }
+            this.$watch('messages', (val) => {
+                sessionStorage.setItem('nada_chat_messages', JSON.stringify(val));
+            });
+        },
+
         async sendMessage() {
             const input = this.userInput.trim();
             if (!input || this.isLoading) return;
@@ -188,6 +198,7 @@ document.addEventListener('alpine:init', () => {
             this.messages = [];
             this.hasError = false;
             this.errorMessage = '';
+            sessionStorage.removeItem('nada_chat_messages');
         },
 
         scrollToBottom() {
