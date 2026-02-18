@@ -57,6 +57,6 @@
                 });
             });
         </script>
-        <livewire:support-chat />
+        @include('partials.support-chat')
     </body>
 </html>

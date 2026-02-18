@@ -17,11 +17,13 @@ use App\Http\Controllers\PublicTrainerController;
 use App\Http\Controllers\TrainerApplicationController;
 use App\Http\Controllers\NdaController;
 use App\Http\Controllers\GroupTrainingController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\TrainingRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
+Route::post('/chat/send', [ChatController::class, 'send'])->middleware('throttle:60,1')->name('chat.send');
 Route::get('/', function () {
     return redirect()->route('login');
 });
