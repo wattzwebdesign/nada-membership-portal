@@ -230,11 +230,22 @@ document.addEventListener('alpine:init', () => {
             const overlay = document.createElement('div');
             overlay.className = 'guide-overlay';
             document.body.appendChild(overlay);
+            // Elevate any positioned ancestors above the overlay so the element isn't trapped
+            const elevated = [];
+            let parent = el.parentElement;
+            while (parent && parent !== document.body) {
+                if (getComputedStyle(parent).position !== 'static') {
+                    elevated.push({ el: parent, oldZ: parent.style.zIndex });
+                    parent.style.zIndex = '41';
+                }
+                parent = parent.parentElement;
+            }
             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             el.setAttribute('data-guide-active', '');
             const remove = () => {
                 el.removeAttribute('data-guide-active');
                 overlay.remove();
+                elevated.forEach(item => item.el.style.zIndex = item.oldZ);
                 el.removeEventListener('click', remove);
                 overlay.removeEventListener('click', remove);
             };
