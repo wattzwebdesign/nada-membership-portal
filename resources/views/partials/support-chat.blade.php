@@ -148,17 +148,14 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
 
-            if (this.messages.length + 1 >= this.maxMessages) {
-                this.hasError = true;
-                this.errorMessage = 'Conversation limit reached. Please clear the chat to continue.';
-                return;
-            }
-
             this.hasError = false;
             this.messages.push({ role: 'user', content: input });
             this.userInput = '';
             this.isLoading = true;
             this.$nextTick(() => this.scrollToBottom());
+
+            // Send only the most recent messages to stay within API limits
+            const recentMessages = this.messages.slice(-this.maxMessages);
 
             try {
                 const response = await fetch('{{ route("chat.send") }}', {
@@ -168,7 +165,7 @@ document.addEventListener('alpine:init', () => {
                         'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
                         'Accept': 'application/json',
                     },
-                    body: JSON.stringify({ messages: this.messages, current_path: window.location.pathname }),
+                    body: JSON.stringify({ messages: recentMessages, current_path: window.location.pathname }),
                 });
 
                 const data = await response.json();
