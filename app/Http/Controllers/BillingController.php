@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Notifications\Concerns\SafelyNotifies;
+use App\Notifications\PaymentMethodRemovedNotification;
 use App\Notifications\PaymentMethodUpdatedNotification;
 use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
@@ -89,6 +90,29 @@ class BillingController extends Controller
                 ->with('success', 'Your payment method has been updated.');
         } catch (\Stripe\Exception\ApiErrorException $e) {
             return back()->with('error', 'Failed to update payment method: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Remove the user's payment method from Stripe (stop auto-payments).
+     */
+    public function removePaymentMethod(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        if (!$user->stripe_customer_id) {
+            return back()->with('error', 'No Stripe customer record found. Please contact support.');
+        }
+
+        try {
+            $this->stripeService->detachPaymentMethod($user->stripe_customer_id);
+
+            $this->safeNotify($user, new PaymentMethodRemovedNotification());
+
+            return redirect()->route('billing.index')
+                ->with('success', 'Your card has been removed. Auto-payments are now stopped.');
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            return back()->with('error', 'Failed to remove payment method: ' . $e->getMessage());
         }
     }
 }

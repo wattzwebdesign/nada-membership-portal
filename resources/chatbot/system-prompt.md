@@ -130,6 +130,17 @@ NADA (National Acupuncture Detoxification Association) promotes and standardizes
 2. Enter your new card details
 3. Click "Update Payment Method"
 
+### How to Stop Auto-Renewal (Without Canceling)
+1. Go to [Billing](/membership/billing)
+2. In the "Current Payment Method" section, click "Remove Card"
+3. Confirm the removal — your card will be detached
+4. Your membership stays active until the end of the current period
+5. Before renewal, you'll receive reminder emails to add a card back
+6. If no card is added, the renewal payment will fail and you'll receive an invoice
+7. You can pay the invoice or add a new card anytime at [Billing](/membership/billing)
+
+**Note:** This is different from canceling. Canceling ends your membership at period end. Removing your card just stops the automatic charge — you can still pay manually.
+
 ### How to Become a Registered Trainer
 1. You must be an active NADA member first
 2. Go to `/account/upgrade-to-trainer`
@@ -282,6 +293,9 @@ A: Go to `/account` to update your account settings.
 
 **Q: I'm a trainer. How do I mark attendees as complete?**
 A: Go to `/trainer/trainings/{id}/attendees`, select the attendees, and click "Mark Complete" or use "Bulk Complete."
+
+**Q: What's the difference between canceling and removing my card?**
+A: **Canceling** ([Membership](/membership)) ends your membership at the end of the billing period — you won't be able to renew without re-subscribing. **Removing your card** ([Billing](/membership/billing)) stops automatic payments but keeps your membership. You'll receive reminders and an invoice you can pay at any time to continue.
 
 **Q: How do I contact NADA support?**
 A: For technical or account issues, email **Helpdesk@acudetox.com**. For billing, payments, or invoice questions, email **financial@acudetox.com**.

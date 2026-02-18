@@ -46,7 +46,7 @@ class SubscriptionService
             return null;
         }
 
-        $subscription->update([
+        $updateData = [
             'status' => $stripeData['status'],
             'current_period_start' => isset($stripeData['current_period_start'])
                 ? \Carbon\Carbon::createFromTimestamp($stripeData['current_period_start'])
@@ -58,7 +58,27 @@ class SubscriptionService
             'canceled_at' => isset($stripeData['canceled_at'])
                 ? \Carbon\Carbon::createFromTimestamp($stripeData['canceled_at'])
                 : $subscription->canceled_at,
-        ]);
+        ];
+
+        // Clear reminder tracking metadata when subscription becomes active again
+        $oldStatus = $subscription->getRawOriginal('status');
+        $newStatus = $stripeData['status'];
+        if ($newStatus === 'active' && $oldStatus !== 'active') {
+            $metadata = $subscription->metadata ?? [];
+            $reminderKeys = [
+                'pre_renewal_14d_sent',
+                'pre_renewal_3d_sent',
+                'post_failure_3d_sent',
+                'post_failure_7d_sent',
+                'post_failure_14d_sent',
+            ];
+            foreach ($reminderKeys as $key) {
+                unset($metadata[$key]);
+            }
+            $updateData['metadata'] = $metadata ?: null;
+        }
+
+        $subscription->update($updateData);
 
         return $subscription;
     }

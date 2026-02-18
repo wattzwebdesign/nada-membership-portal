@@ -43,7 +43,9 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Create a Stripe Checkout session to pay an open invoice.
+     * Pay an open invoice — redirect to Stripe hosted invoice page for subscription
+     * invoices (paying reactivates the subscription), or fall back to Checkout for
+     * manually-created invoices.
      */
     public function pay(Request $request, Invoice $invoice): RedirectResponse
     {
@@ -59,6 +61,26 @@ class InvoiceController extends Controller
             return back()->with('error', 'This invoice cannot be paid.');
         }
 
+        // For Stripe subscription invoices, redirect to the hosted invoice page.
+        // When the member pays via Stripe's hosted page, Stripe reactivates the subscription automatically.
+        if ($invoice->hosted_invoice_url) {
+            return redirect($invoice->hosted_invoice_url);
+        }
+
+        // Try to fetch the hosted URL from Stripe if we have a Stripe invoice ID
+        if ($invoice->stripe_invoice_id) {
+            try {
+                $stripeInvoice = \Stripe\Invoice::retrieve($invoice->stripe_invoice_id);
+                if ($stripeInvoice->hosted_invoice_url) {
+                    $invoice->update(['hosted_invoice_url' => $stripeInvoice->hosted_invoice_url]);
+                    return redirect($stripeInvoice->hosted_invoice_url);
+                }
+            } catch (\Stripe\Exception\ApiErrorException $e) {
+                // Fall through to Checkout flow
+            }
+        }
+
+        // Fallback: create a Checkout Session for manually-created invoices
         $invoice->load('items');
         $user = $request->user();
         $customer = $this->stripeService->getOrCreateCustomer($user);

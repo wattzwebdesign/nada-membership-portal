@@ -17,3 +17,7 @@ Schedule::command('nada:expire-discount-tokens')
 Schedule::command('nada:check-expiring-memberships')
     ->weekly()
     ->description('Notify admin of memberships expiring in next 30 days');
+
+Schedule::command('nada:send-renewal-reminders')
+    ->dailyAt('09:00')
+    ->description('Send renewal and payment overdue reminders');

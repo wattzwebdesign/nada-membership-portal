@@ -130,6 +130,35 @@ class StripeService
         return $paymentMethod;
     }
 
+    public function detachPaymentMethod(string $customerId): void
+    {
+        // Detach all cards from the customer
+        $paymentMethods = PaymentMethod::all([
+            'customer' => $customerId,
+            'type' => 'card',
+        ]);
+
+        foreach ($paymentMethods->data as $pm) {
+            $pm->detach();
+        }
+
+        // Clear the default payment method so Stripe can't fall back
+        Customer::update($customerId, [
+            'invoice_settings' => ['default_payment_method' => ''],
+        ]);
+    }
+
+    public function customerHasPaymentMethod(string $customerId): bool
+    {
+        $paymentMethods = PaymentMethod::all([
+            'customer' => $customerId,
+            'type' => 'card',
+            'limit' => 1,
+        ]);
+
+        return count($paymentMethods->data) > 0;
+    }
+
     // Invoices
 
     public function listInvoices(string $customerId, int $limit = 10): array

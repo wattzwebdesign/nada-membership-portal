@@ -26,33 +26,49 @@
                     <h3 class="text-lg font-semibold mb-4 text-brand-primary">Current Payment Method</h3>
 
                     @if (isset($paymentMethod) && $paymentMethod)
-                        <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                            <div class="flex-shrink-0">
-                                @php
-                                    $brandIcons = [
-                                        'visa' => 'V',
-                                        'mastercard' => 'MC',
-                                        'amex' => 'AX',
-                                        'discover' => 'D',
-                                    ];
-                                    $brand = $paymentMethod->card->brand ?? 'card';
-                                @endphp
-                                <div class="w-12 h-8 rounded flex items-center justify-center text-white text-xs font-bold bg-brand-primary">
-                                    {{ $brandIcons[$brand] ?? strtoupper(substr($brand, 0, 2)) }}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    @php
+                                        $brandIcons = [
+                                            'visa' => 'V',
+                                            'mastercard' => 'MC',
+                                            'amex' => 'AX',
+                                            'discover' => 'D',
+                                        ];
+                                        $brand = $paymentMethod->card->brand ?? 'card';
+                                    @endphp
+                                    <div class="w-12 h-8 rounded flex items-center justify-center text-white text-xs font-bold bg-brand-primary">
+                                        {{ $brandIcons[$brand] ?? strtoupper(substr($brand, 0, 2)) }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">
+                                        {{ ucfirst($paymentMethod->card->brand ?? 'Card') }} ending in {{ $paymentMethod->card->last4 ?? '****' }}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Expires {{ $paymentMethod->card->exp_month ?? '--' }}/{{ $paymentMethod->card->exp_year ?? '----' }}
+                                    </p>
                                 </div>
                             </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">
-                                    {{ ucfirst($paymentMethod->card->brand ?? 'Card') }} ending in {{ $paymentMethod->card->last4 ?? '****' }}
-                                </p>
-                                <p class="text-sm text-gray-500">
-                                    Expires {{ $paymentMethod->card->exp_month ?? '--' }}/{{ $paymentMethod->card->exp_year ?? '----' }}
-                                </p>
-                            </div>
+                            <form method="POST" action="{{ route('billing.remove-payment-method') }}" onsubmit="return confirm('Are you sure you want to remove your card? Auto-payments will be stopped and you will need to add a card before your next renewal.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50">
+                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    Remove Card
+                                </button>
+                            </form>
                         </div>
                     @else
-                        <div class="p-4 bg-gray-50 rounded-lg text-center">
-                            <p class="text-sm text-gray-500">No payment method on file.</p>
+                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <div class="flex">
+                                <svg class="w-5 h-5 text-yellow-600 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                                <div>
+                                    <p class="text-sm font-medium text-yellow-800">No payment method on file</p>
+                                    <p class="text-sm text-yellow-700 mt-1">Auto-payments are stopped. Add a card below before your next renewal to keep your membership active.</p>
+                                </div>
+                            </div>
                         </div>
                     @endif
                 </div>

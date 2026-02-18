@@ -70,6 +70,7 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::post('/membership/reactivate', [MembershipController::class, 'reactivate'])->name('membership.reactivate');
     Route::get('/membership/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('/membership/billing/payment-method', [BillingController::class, 'updatePaymentMethod'])->name('billing.update-payment-method');
+    Route::delete('/membership/billing/payment-method', [BillingController::class, 'removePaymentMethod'])->name('billing.remove-payment-method');
     Route::get('/membership/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/membership/invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
     Route::post('/membership/invoices/{invoice}/pay', [InvoiceController::class, 'pay'])->name('invoices.pay');
