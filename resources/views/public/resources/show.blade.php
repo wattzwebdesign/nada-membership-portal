@@ -24,7 +24,7 @@
             {{-- Full Content --}}
             <div class="mt-8">
                 @if ($resource->body)
-                    <div class="prose prose-gray max-w-none">
+                    <div class="max-w-none text-gray-700 leading-relaxed [&>p]:mb-4 [&>h2]:text-xl [&>h2]:font-semibold [&>h2]:text-gray-900 [&>h2]:mt-6 [&>h2]:mb-3 [&>h3]:text-lg [&>h3]:font-semibold [&>h3]:text-gray-900 [&>h3]:mt-5 [&>h3]:mb-2 [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:mb-4 [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-4 [&>a]:text-blue-600 [&>a]:underline [&>blockquote]:border-l-4 [&>blockquote]:border-gray-300 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-4">
                         {!! $resource->body !!}
                     </div>
                 @endif
