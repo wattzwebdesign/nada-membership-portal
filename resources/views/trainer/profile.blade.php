@@ -45,9 +45,7 @@
                                 @if ($trainer->profile_photo_url)
                                     <img src="{{ $trainer->profile_photo_url }}" alt="{{ $trainer->full_name }}" class="h-16 w-16 rounded-full object-cover">
                                 @else
-                                    <div class="h-16 w-16 rounded-full flex items-center justify-center text-white text-lg font-bold" style="background-color: #374269;">
-                                        {{ $trainer->initials }}
-                                    </div>
+                                    <img src="{{ asset('images/nada-mark.png') }}" alt="NADA" class="h-16 w-16 rounded-full object-contain bg-white border border-gray-200 p-0.5">
                                 @endif
                                 <div>
                                     <p class="text-base font-semibold text-gray-900">{{ $trainer->full_name }}</p>
