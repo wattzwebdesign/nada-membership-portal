@@ -20,6 +20,7 @@ class ChatController extends Controller
             'messages' => 'required|array|max:' . config('chatbot.max_messages', 20),
             'messages.*.role' => 'required|in:user,assistant',
             'messages.*.content' => 'required|string|max:5000',
+            'current_path' => 'nullable|string|max:255',
         ]);
 
         $ip = $request->ip();
@@ -31,6 +32,11 @@ class ChatController extends Controller
         $chatbot->hitRateLimit($ip);
 
         $userContext = $this->buildUserContext();
+
+        $currentPath = $request->input('current_path');
+        if ($currentPath) {
+            $userContext .= "\n\n## Current Page\nThe user is currently viewing: `{$currentPath}`";
+        }
 
         try {
             $response = $chatbot->sendMessage($request->input('messages'), $userContext);

@@ -105,12 +105,12 @@
 
                         {{-- Action Buttons --}}
                         <div class="mt-6 border-t border-gray-200 pt-6 flex flex-wrap gap-3">
-                            <a href="{{ route('billing.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
+                            <a href="{{ route('billing.index') }}" data-guide="membership-manage-billing" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                                 Manage Billing
                             </a>
 
-                            <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md border-brand-primary text-brand-primary">
+                            <a href="{{ route('membership.plans') }}" data-guide="membership-change-plan" class="inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md border-brand-primary text-brand-primary">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                 Change Plan
                             </a>

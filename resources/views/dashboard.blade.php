@@ -98,7 +98,7 @@
                                 @endif
                             </div>
                             <div class="mt-5">
-                                <a href="{{ route('billing.index') }}" class="inline-flex items-center text-sm font-medium hover:underline text-brand-secondary">
+                                <a href="{{ route('billing.index') }}" data-guide="dashboard-manage-billing" class="inline-flex items-center text-sm font-medium hover:underline text-brand-secondary">
                                     Manage Billing
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
@@ -106,7 +106,7 @@
                         @else
                             <div class="text-center py-4">
                                 <p class="text-gray-500 mb-4">You do not have an active membership.</p>
-                                <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
+                                <a href="{{ route('membership.plans') }}" data-guide="dashboard-view-plans" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                     View Plans
                                 </a>
                             </div>
@@ -150,7 +150,7 @@
                                 @endforeach
                             </div>
                             <div class="mt-4">
-                                <a href="{{ route('certificates.index') }}" class="inline-flex items-center text-sm font-medium hover:underline text-brand-secondary">
+                                <a href="{{ route('certificates.index') }}" data-guide="dashboard-view-certificates" class="inline-flex items-center text-sm font-medium hover:underline text-brand-secondary">
                                     View All Certificates
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
@@ -231,17 +231,17 @@
                                 </a>
                             @endif
 
-                            <a href="{{ route('trainings.index') }}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
+                            <a href="{{ route('trainings.index') }}" data-guide="dashboard-register-training" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
                                 <svg class="w-6 h-6 mb-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                 <span class="text-sm font-medium text-gray-700">Register for Training</span>
                             </a>
 
-                            <a href="{{ route('clinicals.create') }}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
+                            <a href="{{ route('clinicals.create') }}" data-guide="dashboard-submit-clinicals" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
                                 <svg class="w-6 h-6 mb-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 <span class="text-sm font-medium text-gray-700">Submit Clinicals</span>
                             </a>
 
-                            <a href="{{ route('discount.request.create') }}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
+                            <a href="{{ route('discount.request.create') }}" data-guide="dashboard-request-discount" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
                                 <svg class="w-6 h-6 mb-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>
                                 <span class="text-sm font-medium text-gray-700">Request Discount</span>
                             </a>

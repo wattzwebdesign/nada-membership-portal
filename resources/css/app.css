@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Chatbot "Show Me Where" guide pulse animation */
+@keyframes nada-guide-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(173, 126, 7, 0.5); }
+    50% { box-shadow: 0 0 0 8px rgba(173, 126, 7, 0); }
+}
+
+[data-guide-active] {
+    animation: nada-guide-pulse 1.5s ease-in-out 3;
+    outline: 2px solid #AD7E07;
+    outline-offset: 2px;
+    border-radius: 4px;
+}

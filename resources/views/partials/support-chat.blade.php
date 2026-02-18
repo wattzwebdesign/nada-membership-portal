@@ -169,7 +169,7 @@ document.addEventListener('alpine:init', () => {
                         'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
                         'Accept': 'application/json',
                     },
-                    body: JSON.stringify({ messages: this.messages }),
+                    body: JSON.stringify({ messages: this.messages, current_path: window.location.pathname }),
                 });
 
                 const data = await response.json();
@@ -181,7 +181,11 @@ document.addEventListener('alpine:init', () => {
                     return;
                 }
 
-                this.messages.push({ role: 'assistant', content: data.content });
+                const parsed = this.parseGuideDirective(data.content);
+                this.messages.push({ role: 'assistant', content: parsed.text });
+                if (parsed.guide) {
+                    this.$nextTick(() => this.highlightElement(parsed.guide.selector));
+                }
             } catch (e) {
                 this.hasError = true;
                 this.errorMessage = 'Something went wrong. Please try again.';
@@ -203,6 +207,33 @@ document.addEventListener('alpine:init', () => {
             if (this.$refs.chatMessages) {
                 this.$refs.chatMessages.scrollTop = this.$refs.chatMessages.scrollHeight;
             }
+        },
+
+        parseGuideDirective(content) {
+            const match = content.match(/<!-- GUIDE:(.*?):GUIDE -->/);
+            if (!match) return { text: content, guide: null };
+            try {
+                const guide = JSON.parse(match[1]);
+                const text = content.replace(/<!-- GUIDE:.*?:GUIDE -->/g, '').trim();
+                return { text, guide };
+            } catch (e) {
+                return { text: content, guide: null };
+            }
+        },
+
+        highlightElement(selector) {
+            const el = document.querySelector(selector);
+            if (!el) return;
+            // Check element is visible (not in a closed mobile drawer etc.)
+            if (el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return;
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.setAttribute('data-guide-active', '');
+            const remove = () => {
+                el.removeAttribute('data-guide-active');
+                el.removeEventListener('click', remove);
+            };
+            el.addEventListener('click', remove, { once: true });
+            setTimeout(remove, 4500);
         },
 
         renderMarkdown(text) {

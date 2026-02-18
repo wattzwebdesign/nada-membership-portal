@@ -87,6 +87,7 @@
                         {{-- Submit --}}
                         <div class="flex justify-end">
                             <button type="submit"
+                                    data-guide="discount-submit"
                                     class="inline-flex items-center px-6 py-2.5 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-primary"
                                     wire:loading.attr="disabled">
                                 <svg wire:loading wire:target="submit" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">

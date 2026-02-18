@@ -90,7 +90,7 @@
             {{-- Payment Method --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h2 class="text-xl font-bold mb-4 text-brand-primary">Payment Method</h2>
+                    <h2 class="text-xl font-bold mb-4 text-brand-primary" data-guide="billing-update-payment">Payment Method</h2>
 
                     @if ($cardLast4)
                         <div class="flex items-center justify-between">

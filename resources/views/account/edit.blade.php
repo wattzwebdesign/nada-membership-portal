@@ -109,7 +109,7 @@
                                 </div>
 
                                 <div class="mt-6">
-                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
+                                    <button type="submit" data-guide="account-save" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                         Save Changes
                                     </button>
                                 </div>
