@@ -1,5 +1,5 @@
 {{-- Desktop sidebar --}}
-<aside class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:left-0 lg:w-64 lg:z-30 print:hidden" style="background-color: #374269;">
+<aside class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:left-0 lg:w-64 lg:z-30 print:hidden" style="background-color: #f0e8d3;">
     @include('layouts.partials.sidebar-content')
 </aside>
 
@@ -41,12 +41,12 @@
         x-transition:leave-start="translate-x-0"
         x-transition:leave-end="-translate-x-full"
         class="fixed inset-y-0 left-0 z-50 w-64 flex flex-col"
-        style="background-color: #374269;"
+        style="background-color: #f0e8d3;"
         x-cloak
     >
         {{-- Close button --}}
         <div class="absolute top-0 right-0 pt-4 pr-3">
-            <button @click="sidebarOpen = false" class="text-white/70 hover:text-white focus:outline-none">
+            <button @click="sidebarOpen = false" class="focus:outline-none" style="color: #242424;">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
