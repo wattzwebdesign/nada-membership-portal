@@ -1,93 +1,5 @@
 @if(config('chatbot.enabled'))
-<div
-    x-data="{
-        open: false,
-        messages: [],
-        userInput: '',
-        isLoading: false,
-        hasError: false,
-        errorMessage: '',
-        maxMessages: {{ config('chatbot.max_messages', 20) }},
-
-        async sendMessage() {
-            const input = this.userInput.trim();
-            if (!input || this.isLoading) return;
-
-            if (input.length > 500) {
-                this.hasError = true;
-                this.errorMessage = 'Messages must be 500 characters or less.';
-                return;
-            }
-
-            const userCount = this.messages.filter(m => m.role === 'user').length;
-            if (userCount >= this.maxMessages) {
-                this.hasError = true;
-                this.errorMessage = 'Conversation limit reached. Please clear the chat to continue.';
-                return;
-            }
-
-            this.hasError = false;
-            this.messages.push({ role: 'user', content: input });
-            this.userInput = '';
-            this.isLoading = true;
-            this.$nextTick(() => this.scrollToBottom());
-
-            try {
-                const response = await fetch('{{ route('chat.send') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({ messages: this.messages }),
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    this.hasError = true;
-                    this.errorMessage = data.error || 'Something went wrong. Please try again.';
-                    this.messages.pop();
-                    return;
-                }
-
-                this.messages.push({ role: 'assistant', content: data.content });
-            } catch (e) {
-                this.hasError = true;
-                this.errorMessage = 'Something went wrong. Please try again.';
-                this.messages.pop();
-            } finally {
-                this.isLoading = false;
-                this.$nextTick(() => this.scrollToBottom());
-            }
-        },
-
-        clearConversation() {
-            this.messages = [];
-            this.hasError = false;
-            this.errorMessage = '';
-        },
-
-        scrollToBottom() {
-            if (this.$refs.chatMessages) {
-                this.$refs.chatMessages.scrollTop = this.$refs.chatMessages.scrollHeight;
-            }
-        },
-
-        renderMarkdown(text) {
-            return text
-                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/`(.*?)`/g, '<code class=&quot;bg-gray-200 px-1 rounded text-xs&quot;>$1</code>')
-                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href=&quot;$2&quot; class=&quot;text-blue-600 underline&quot;>$1</a>')
-                .replace(/\n/g, '<br>');
-        }
-    }"
-    class="fixed bottom-6 right-6 z-50"
-    style="font-family: 'Figtree', sans-serif;"
->
+<div x-data="supportChat" class="fixed bottom-6 right-6 z-50" style="font-family: 'Figtree', sans-serif;">
     {{-- Chat Panel --}}
     <div
         x-show="open"
@@ -141,7 +53,7 @@
                     </div>
                     {{-- Assistant message --}}
                     <div x-show="message.role === 'assistant'" class="flex justify-start">
-                        <div class="rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] text-sm bg-gray-100 text-gray-800 prose prose-sm prose-a:text-blue-600" x-html="renderMarkdown(message.content)"></div>
+                        <div class="rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] text-sm bg-gray-100 text-gray-800" x-html="renderMarkdown(message.content)"></div>
                     </div>
                 </div>
             </template>
@@ -206,4 +118,109 @@
         </svg>
     </button>
 </div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('supportChat', () => ({
+        open: false,
+        messages: [],
+        userInput: '',
+        isLoading: false,
+        hasError: false,
+        errorMessage: '',
+        maxMessages: {{ config('chatbot.max_messages', 20) }},
+
+        async sendMessage() {
+            const input = this.userInput.trim();
+            if (!input || this.isLoading) return;
+
+            if (input.length > 500) {
+                this.hasError = true;
+                this.errorMessage = 'Messages must be 500 characters or less.';
+                return;
+            }
+
+            const userCount = this.messages.filter(m => m.role === 'user').length;
+            if (userCount >= this.maxMessages) {
+                this.hasError = true;
+                this.errorMessage = 'Conversation limit reached. Please clear the chat to continue.';
+                return;
+            }
+
+            this.hasError = false;
+            this.messages.push({ role: 'user', content: input });
+            this.userInput = '';
+            this.isLoading = true;
+            this.$nextTick(() => this.scrollToBottom());
+
+            try {
+                const response = await fetch('{{ route("chat.send") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ messages: this.messages }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    this.hasError = true;
+                    this.errorMessage = data.error || 'Something went wrong. Please try again.';
+                    this.messages.pop();
+                    return;
+                }
+
+                this.messages.push({ role: 'assistant', content: data.content });
+            } catch (e) {
+                this.hasError = true;
+                this.errorMessage = 'Something went wrong. Please try again.';
+                this.messages.pop();
+            } finally {
+                this.isLoading = false;
+                this.$nextTick(() => this.scrollToBottom());
+            }
+        },
+
+        clearConversation() {
+            this.messages = [];
+            this.hasError = false;
+            this.errorMessage = '';
+        },
+
+        scrollToBottom() {
+            if (this.$refs.chatMessages) {
+                this.$refs.chatMessages.scrollTop = this.$refs.chatMessages.scrollHeight;
+            }
+        },
+
+        renderMarkdown(text) {
+            // Escape HTML
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+            // Links: [text](url) → clickable <a> tags
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 underline hover:text-blue-800">$1</a>');
+
+            // Bold
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // Italic
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Inline code
+            html = html.replace(/`(.*?)`/g, '<code class="bg-gray-200 px-1 rounded text-xs">$1</code>');
+
+            // Line breaks
+            html = html.replace(/\n/g, '<br>');
+
+            return html;
+        }
+    }));
+});
+</script>
 @endif
