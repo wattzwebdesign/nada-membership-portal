@@ -223,6 +223,9 @@ class ImportResources extends Command
 
         // Strip WP block editor comments
         $body = preg_replace('/<!--\s*\/?wp:[\s\S]*?-->/', '', $content);
+        // Fix WordPress double-encoded non-breaking spaces (Â artifacts)
+        $body = str_replace("\xC2\xA0", ' ', $body);
+        $body = str_replace('Â', '', $body);
         $body = trim($body);
 
         // Extract YouTube video ID
