@@ -128,6 +128,10 @@ class StripeWebhookController extends Controller
      */
     protected function handleCustomerSubscriptionUpdated(object $subscription): Response
     {
+        // Capture old status before the update so we can detect transitions
+        $existingLocal = \App\Models\Subscription::where('stripe_subscription_id', $subscription->id)->first();
+        $oldStatus = $existingLocal?->getRawOriginal('status');
+
         $existingSub = $this->subscriptionService->updateFromStripe(
             $this->objectToArray($subscription)
         );
@@ -142,12 +146,15 @@ class StripeWebhookController extends Controller
 
         $user = $existingSub->user;
 
-        // If the subscription became active (e.g. after renewal), sync certificate expiration dates.
+        // Only send renewed notification when the subscription *transitions* to active
+        // (not when it's already active and gets updated for other reasons like a card change).
         if ($subscription->status === 'active') {
             $user->load('activeSubscription');
             $this->certificateService->syncExpirationFromSubscription($user);
 
-            $this->safeNotify($user, new SubscriptionRenewedNotification($existingSub));
+            if ($oldStatus !== 'active') {
+                $this->safeNotify($user, new SubscriptionRenewedNotification($existingSub));
+            }
         }
 
         Log::info('Subscription updated from webhook.', [
