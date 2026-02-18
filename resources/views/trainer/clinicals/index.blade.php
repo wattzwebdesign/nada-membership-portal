@@ -23,7 +23,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold" style="color: #374269;">Assigned Clinicals</h3>
+                        <h3 class="text-lg font-semibold text-brand-primary">Assigned Clinicals</h3>
                         <span class="text-sm text-gray-500">{{ $clinicals->total() }} total</span>
                     </div>
 
@@ -68,7 +68,7 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right">
-                                                <a href="{{ route('trainer.clinicals.show', $clinical) }}" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md hover:bg-gray-50 transition" style="border-color: #374269; color: #374269;">
+                                                <a href="{{ route('trainer.clinicals.show', $clinical) }}" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md hover:bg-gray-50 transition border-brand-primary text-brand-primary">
                                                     View
                                                 </a>
                                             </td>

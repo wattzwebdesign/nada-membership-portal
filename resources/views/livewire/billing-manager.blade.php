@@ -17,7 +17,7 @@
             {{-- Current Plan --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h2 class="text-xl font-bold mb-4" style="color: #374269;">Current Plan</h2>
+                    <h2 class="text-xl font-bold mb-4 text-brand-primary">Current Plan</h2>
 
                     @if ($subscription)
                         <div class="flex items-start justify-between">
@@ -60,8 +60,7 @@
                                     <button wire:click="reactivateSubscription"
                                             wire:confirm="Reactivate your subscription? You will continue to be billed."
                                             wire:loading.attr="disabled"
-                                            class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                                            style="background-color: #374269;">
+                                            class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-primary">
                                         <span wire:loading.remove wire:target="reactivateSubscription">Reactivate</span>
                                         <span wire:loading wire:target="reactivateSubscription">Processing...</span>
                                     </button>
@@ -80,8 +79,7 @@
                         <div class="text-center py-6">
                             <p class="text-gray-500 mb-4">You don't have an active subscription.</p>
                             <a href="{{ route('membership.index') }}"
-                               class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                               style="background-color: #d39c27;">
+                               class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-secondary">
                                 View Plans
                             </a>
                         </div>
@@ -92,7 +90,7 @@
             {{-- Payment Method --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h2 class="text-xl font-bold mb-4" style="color: #374269;">Payment Method</h2>
+                    <h2 class="text-xl font-bold mb-4 text-brand-primary">Payment Method</h2>
 
                     @if ($cardLast4)
                         <div class="flex items-center justify-between">

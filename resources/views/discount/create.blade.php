@@ -26,7 +26,7 @@
                     <svg class="mx-auto h-12 w-12 text-green-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <h3 class="text-lg font-semibold text-green-800">Discount Active</h3>
                     <p class="text-sm text-green-600 mt-1">Your {{ ucfirst(auth()->user()->discount_type) }} discount is already approved and active.</p>
-                    <a href="{{ route('membership.plans') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                    <a href="{{ route('membership.plans') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                         View Discounted Plans
                     </a>
                 </div>
@@ -82,7 +82,7 @@
                             return '';
                         }
                     }">
-                        <h3 class="text-lg font-semibold mb-2" style="color: #374269;">Discount Request Form</h3>
+                        <h3 class="text-lg font-semibold mb-2 text-brand-primary">Discount Request Form</h3>
                         <p class="text-sm text-gray-500 mb-6">NADA offers discounted membership rates for students and seniors. Submit your request with supporting documentation and we will review it promptly.</p>
 
                         <form method="POST" action="{{ route('discount.request.store') }}" enctype="multipart/form-data">
@@ -95,7 +95,7 @@
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <label class="relative flex items-start p-4 border-2 rounded-lg cursor-pointer transition"
                                             :class="discountType === 'student' ? 'border-amber-400 bg-amber-50' : 'border-gray-200 hover:border-gray-300'">
-                                            <input type="radio" name="discount_type" value="student" class="mt-0.5 mr-3" style="color: #d39c27;" x-model="discountType" required>
+                                            <input type="radio" name="discount_type" value="student" class="mt-0.5 mr-3 text-brand-secondary" x-model="discountType" required>
                                             <div>
                                                 <span class="text-sm font-medium text-gray-900">Student Discount</span>
                                                 <p class="text-xs text-gray-500 mt-1">For currently enrolled students. Student ID or enrollment verification required.</p>
@@ -103,7 +103,7 @@
                                         </label>
                                         <label class="relative flex items-start p-4 border-2 rounded-lg cursor-pointer transition"
                                             :class="discountType === 'senior' ? 'border-amber-400 bg-amber-50' : 'border-gray-200 hover:border-gray-300'">
-                                            <input type="radio" name="discount_type" value="senior" class="mt-0.5 mr-3" style="color: #d39c27;" x-model="discountType">
+                                            <input type="radio" name="discount_type" value="senior" class="mt-0.5 mr-3 text-brand-secondary" x-model="discountType">
                                             <div>
                                                 <span class="text-sm font-medium text-gray-900">Senior Discount</span>
                                                 <p class="text-xs text-gray-500 mt-1">For seniors. Government-issued ID or other age verification required.</p>
@@ -189,7 +189,7 @@
                                         x-on:dragover.prevent="dragging = true"
                                         x-on:dragleave.prevent="dragging = false"
                                         x-on:drop.prevent="dragging = false; handleFiles($event.dataTransfer.files)"
-                                        :class="dragging ? 'border-[#374269] bg-blue-50' : 'border-gray-300'"
+                                        :class="dragging ? 'border-brand-primary bg-blue-50' : 'border-gray-300'"
                                         class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md cursor-pointer hover:border-gray-400 transition-colors"
                                     >
                                         <div class="space-y-1 text-center">
@@ -197,7 +197,7 @@
                                                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                             </svg>
                                             <div class="flex text-sm text-gray-600">
-                                                <span class="font-medium hover:underline" style="color: #374269;">Upload files</span>
+                                                <span class="font-medium hover:underline text-brand-primary">Upload files</span>
                                                 <p class="pl-1">or drag and drop</p>
                                             </div>
                                             <p class="text-xs text-gray-500">PDF, JPG, PNG, DOC, DOCX up to 10MB each</p>
@@ -248,7 +248,7 @@
                             {{-- Submit --}}
                             <div class="mt-6 flex items-center justify-between">
                                 <a href="{{ route('discount.request.status') }}" class="text-sm text-gray-500 hover:text-gray-700">Check Request Status</a>
-                                <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                     Submit Request
                                 </button>
                             </div>

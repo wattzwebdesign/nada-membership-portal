@@ -14,7 +14,7 @@
         style="height: 500px; max-height: calc(100vh - 8rem);"
     >
         {{-- Header --}}
-        <div class="flex items-center justify-between px-4 py-3 text-white shrink-0" style="background-color: #374269;">
+        <div class="flex items-center justify-between px-4 py-3 text-white shrink-0 bg-brand-primary">
             <div class="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -49,7 +49,7 @@
                 <div>
                     {{-- User message --}}
                     <div x-show="message.role === 'user'" class="flex justify-end">
-                        <div class="rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[85%] text-sm text-white" style="background-color: #374269;" x-text="message.content"></div>
+                        <div class="rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[85%] text-sm text-white bg-brand-primary" x-text="message.content"></div>
                     </div>
                     {{-- Assistant message --}}
                     <div x-show="message.role === 'assistant'" class="flex justify-start">
@@ -85,15 +85,14 @@
                     placeholder="Type your question..."
                     maxlength="500"
                     :disabled="isLoading"
-                    class="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#374269] focus:border-transparent"
+                    class="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                     autocomplete="off"
                 />
                 <button
                     @click="sendMessage()"
                     type="button"
                     :disabled="isLoading"
-                    class="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-white transition hover:opacity-90 disabled:opacity-50"
-                    style="background-color: #d39c27;"
+                    class="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-white transition hover:opacity-90 disabled:opacity-50 bg-brand-secondary"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -106,8 +105,7 @@
     {{-- Floating Button --}}
     <button
         @click="open = !open"
-        class="ml-auto flex items-center justify-center w-14 h-14 rounded-full text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
-        style="background-color: #374269;"
+        class="ml-auto flex items-center justify-center w-14 h-14 rounded-full text-white shadow-lg transition hover:scale-105 hover:shadow-xl bg-brand-primary"
         title="Chat with NADA Support"
     >
         <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

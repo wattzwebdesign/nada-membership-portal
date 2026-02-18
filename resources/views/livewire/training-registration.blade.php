@@ -20,8 +20,7 @@
                     <div class="flex items-start justify-between mb-6">
                         <div>
                             <div class="flex items-center gap-3 mb-2">
-                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium text-white"
-                                      style="background-color: #374269;">
+                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium text-white bg-brand-primary">
                                     {{ $training->type->label() }}
                                 </span>
                                 @php
@@ -39,7 +38,7 @@
                             <h1 class="text-2xl font-bold text-gray-900">{{ $training->title }}</h1>
                         </div>
                         <div class="text-right">
-                            <span class="text-2xl font-bold" style="color: #d39c27;">{{ $training->price_formatted }}</span>
+                            <span class="text-2xl font-bold text-brand-secondary">{{ $training->price_formatted }}</span>
                         </div>
                     </div>
 
@@ -130,8 +129,7 @@
                                     wire:confirm="Register for {{ $training->title }}?{{ $training->is_paid ? ' You will be charged ' . $training->price_formatted . '.' : '' }}"
                                     wire:loading.attr="disabled"
                                     @if ($training->isFull()) disabled @endif
-                                    class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                                    style="background-color: #374269;">
+                                    class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed bg-brand-primary">
                                 <span wire:loading.remove wire:target="register">
                                     @if ($training->isFull())
                                         Training Full

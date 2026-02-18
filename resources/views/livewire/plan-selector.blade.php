@@ -2,7 +2,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold" style="color: #374269;">Choose Your Plan</h2>
+                <h2 class="text-3xl font-bold text-brand-primary">Choose Your Plan</h2>
                 <p class="mt-2 text-gray-600">Select the membership plan that best fits your needs.</p>
             </div>
 
@@ -16,12 +16,10 @@
                         @php
                             $isCurrent = $currentPlan && $currentPlan->id === $plan->id;
                         @endphp
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col {{ $isCurrent ? 'ring-2' : 'border border-gray-200' }}"
-                             style="{{ $isCurrent ? 'ring-color: #d39c27; border-color: #d39c27;' : '' }}">
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col {{ $isCurrent ? 'ring-2 ring-brand-secondary border-brand-secondary' : 'border border-gray-200' }}">
                             {{-- Plan Header --}}
                             @if ($isCurrent)
-                                <div class="px-6 py-2 text-center text-xs font-bold text-white uppercase tracking-wider"
-                                     style="background-color: #d39c27;">
+                                <div class="px-6 py-2 text-center text-xs font-bold text-white uppercase tracking-wider bg-brand-secondary">
                                     Current Plan
                                 </div>
                             @endif
@@ -30,7 +28,7 @@
                                 <h3 class="text-xl font-bold text-gray-900">{{ $plan->name }}</h3>
 
                                 <div class="mt-4 flex items-baseline">
-                                    <span class="text-4xl font-extrabold" style="color: #374269;">{{ $plan->price_formatted }}</span>
+                                    <span class="text-4xl font-extrabold text-brand-primary">{{ $plan->price_formatted }}</span>
                                     <span class="ml-1 text-sm text-gray-500">{{ $plan->billing_label }}</span>
                                 </div>
 
@@ -57,8 +55,7 @@
                                 @else
                                     <button wire:click="selectPlan({{ $plan->id }})"
                                             wire:loading.attr="disabled"
-                                            class="w-full py-2.5 px-4 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                                            style="background-color: #374269;">
+                                            class="w-full py-2.5 px-4 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-primary">
                                         <span wire:loading.remove wire:target="selectPlan({{ $plan->id }})">
                                             {{ $currentPlan ? 'Switch to This Plan' : 'Select Plan' }}
                                         </span>

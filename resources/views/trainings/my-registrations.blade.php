@@ -17,8 +17,8 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold" style="color: #374269;">My Registrations</h3>
-                        <a href="{{ route('trainings.index') }}" class="inline-flex items-center text-sm font-medium" style="color: #374269;">
+                        <h3 class="text-lg font-semibold text-brand-primary">My Registrations</h3>
+                        <a href="{{ route('trainings.index') }}" class="inline-flex items-center text-sm font-medium text-brand-primary">
                             Browse Trainings
                             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
@@ -42,7 +42,7 @@
                                     @foreach ($registrations as $registration)
                                         <tr class="hover:bg-gray-50">
                                             <td class="px-6 py-4">
-                                                <a href="{{ route('trainings.show', $registration->training) }}" class="text-sm font-medium hover:underline" style="color: #374269;">
+                                                <a href="{{ route('trainings.show', $registration->training) }}" class="text-sm font-medium hover:underline text-brand-primary">
                                                     {{ $registration->training->title }}
                                                 </a>
                                                 <p class="text-xs text-gray-500">{{ $registration->training->trainer->full_name ?? '' }}</p>
@@ -94,12 +94,12 @@
                                                     </form>
                                                 @endif
                                                 @if ($registration->invoice_id)
-                                                    <a href="{{ route('invoices.show', $registration->invoice_id) }}" class="text-sm font-medium" style="color: #374269;">
+                                                    <a href="{{ route('invoices.show', $registration->invoice_id) }}" class="text-sm font-medium text-brand-primary">
                                                         View Invoice
                                                     </a>
                                                 @endif
                                                 @if ($registration->certificate_id)
-                                                    <a href="{{ route('certificates.download', $registration->certificate_id) }}" class="text-sm font-medium" style="color: #374269;">
+                                                    <a href="{{ route('certificates.download', $registration->certificate_id) }}" class="text-sm font-medium text-brand-primary">
                                                         Download Certificate
                                                     </a>
                                                 @endif
@@ -115,7 +115,7 @@
                             @foreach ($registrations as $registration)
                                 <div class="border border-gray-200 rounded-lg p-4">
                                     <div class="flex items-center justify-between mb-2">
-                                        <a href="{{ route('trainings.show', $registration->training) }}" class="text-sm font-medium hover:underline" style="color: #374269;">
+                                        <a href="{{ route('trainings.show', $registration->training) }}" class="text-sm font-medium hover:underline text-brand-primary">
                                             {{ $registration->training->title }}
                                         </a>
                                         @php
@@ -139,12 +139,12 @@
                                             </form>
                                         @endif
                                         @if ($registration->invoice_id)
-                                            <a href="{{ route('invoices.show', $registration->invoice_id) }}" class="text-xs font-medium" style="color: #374269;">
+                                            <a href="{{ route('invoices.show', $registration->invoice_id) }}" class="text-xs font-medium text-brand-primary">
                                                 View Invoice
                                             </a>
                                         @endif
                                         @if ($registration->certificate_id)
-                                            <a href="{{ route('certificates.download', $registration->certificate_id) }}" class="text-xs font-medium" style="color: #374269;">
+                                            <a href="{{ route('certificates.download', $registration->certificate_id) }}" class="text-xs font-medium text-brand-primary">
                                                 Download Certificate
                                             </a>
                                         @endif
@@ -164,7 +164,7 @@
                             <h3 class="mt-3 text-sm font-medium text-gray-900">No Registrations</h3>
                             <p class="mt-1 text-sm text-gray-500">You haven't registered for any trainings yet.</p>
                             <div class="mt-6">
-                                <a href="{{ route('trainings.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                <a href="{{ route('trainings.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                     Browse Trainings
                                 </a>
                             </div>

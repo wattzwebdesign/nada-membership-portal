@@ -66,8 +66,7 @@
                                         x-show="$el.parentElement.querySelector('#description-container').scrollHeight > 120"
                                         x-cloak
                                         @click="expanded = !expanded"
-                                        class="mt-2 text-sm font-medium hover:underline"
-                                        style="color: #374269;"
+                                        class="mt-2 text-sm font-medium hover:underline text-brand-primary"
                                         x-text="expanded ? 'Show less' : 'See more'"
                                     ></button>
                                 </div>
@@ -77,7 +76,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 pt-6">
                                 {{-- Date & Time --}}
                                 <div class="flex items-start">
-                                    <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     <div>
                                         <p class="text-sm font-medium text-gray-900">Date & Time</p>
                                         <p class="text-sm text-gray-500">{{ $training->start_date->format('l, F j, Y') }}</p>
@@ -88,7 +87,7 @@
                                 {{-- Location --}}
                                 @if ($training->type !== App\Enums\TrainingType::Virtual)
                                     <div class="flex items-start">
-                                        <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                         <div>
                                             <p class="text-sm font-medium text-gray-900">Location</p>
                                             @if ($training->location_name)
@@ -104,11 +103,11 @@
                                 {{-- Virtual Link --}}
                                 @if (in_array($training->type, [App\Enums\TrainingType::Virtual, App\Enums\TrainingType::Hybrid]) && $training->virtual_link)
                                     <div class="flex items-start">
-                                        <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                        <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                         <div>
                                             <p class="text-sm font-medium text-gray-900">Virtual Meeting</p>
                                             @if ($userRegistration)
-                                                <a href="{{ $training->virtual_link }}" target="_blank" class="text-sm hover:underline" style="color: #374269;">Join Meeting</a>
+                                                <a href="{{ $training->virtual_link }}" target="_blank" class="text-sm hover:underline text-brand-primary">Join Meeting</a>
                                             @else
                                                 <p class="text-sm text-gray-500">Link available after registration</p>
                                             @endif
@@ -118,7 +117,7 @@
 
                                 {{-- Trainer --}}
                                 <div class="flex items-start">
-                                    <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     <div>
                                         <p class="text-sm font-medium text-gray-900">Trainer</p>
                                         <p class="text-sm text-gray-500">{{ $training->trainer->full_name ?? 'N/A' }}</p>
@@ -128,7 +127,7 @@
                                 {{-- Capacity --}}
                                 @if ($training->max_attendees)
                                     <div class="flex items-start">
-                                        <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                        <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                         <div>
                                             <p class="text-sm font-medium text-gray-900">Capacity</p>
                                             <p class="text-sm text-gray-500">{{ $training->registrations_count ?? 0 }} / {{ $training->max_attendees }} registered</p>
@@ -144,11 +143,11 @@
                 <div class="lg:col-span-1">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg sticky top-6">
                         <div class="p-6">
-                            <h4 class="text-lg font-semibold mb-4" style="color: #374269;">Registration</h4>
+                            <h4 class="text-lg font-semibold mb-4 text-brand-primary">Registration</h4>
 
                             @if ($training->is_paid)
                                 <div class="text-center mb-4">
-                                    <span class="text-3xl font-extrabold" style="color: #374269;">${{ number_format($training->price_cents / 100, 2) }}</span>
+                                    <span class="text-3xl font-extrabold text-brand-primary">${{ number_format($training->price_cents / 100, 2) }}</span>
                                     <span class="text-sm text-gray-500">per person</span>
                                 </div>
                             @else
@@ -172,7 +171,7 @@
                                 <div class="bg-yellow-50 border border-yellow-200 rounded-md p-3 mb-4">
                                     <p class="text-sm text-yellow-700 font-medium text-center">An active membership plan is required to register for trainings.</p>
                                 </div>
-                                <a href="{{ route('membership.index') }}" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition" style="background-color: #374269;">
+                                <a href="{{ route('membership.index') }}" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition bg-brand-primary">
                                     View Membership Plans
                                 </a>
                             @elseif ($training->max_attendees && ($training->registrations_count ?? 0) >= $training->max_attendees)
@@ -185,7 +184,7 @@
                             @else
                                 <form method="POST" action="{{ route('trainings.register', $training) }}">
                                     @csrf
-                                    <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition" style="background-color: #d39c27;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                                    <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition bg-brand-secondary hover:opacity-90">
                                         {{ $training->is_paid ? 'Register & Pay' : 'Register Now' }}
                                     </button>
                                 </form>

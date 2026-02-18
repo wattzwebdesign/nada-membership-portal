@@ -4,10 +4,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold" style="color: #374269;">My Trainings</h2>
+                        <h2 class="text-2xl font-bold text-brand-primary">My Trainings</h2>
                         <a href="{{ route('trainer.trainings.create') }}"
-                           class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                           style="background-color: #d39c27;">
+                           class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-secondary">
                             <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
@@ -90,8 +89,7 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                                 <a href="{{ route('trainer.attendees.index', $training) }}"
-                                                   class="font-medium hover:underline"
-                                                   style="color: #374269;">
+                                                   class="font-medium hover:underline text-brand-primary">
                                                     Attendees
                                                 </a>
 

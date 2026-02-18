@@ -2,7 +2,7 @@
     <x-slot name="title">Resource Library - NADA</x-slot>
 
     {{-- Hero Banner --}}
-    <div class="py-10 text-center text-white" style="background-color: #374269;">
+    <div class="py-10 text-center text-white bg-brand-primary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold">Resource Library</h1>
             <p class="mt-2 text-blue-100 text-lg">Articles, research, videos, and more from NADA</p>

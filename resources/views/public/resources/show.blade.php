@@ -31,7 +31,7 @@
                         :title="bookmarked ? 'Remove bookmark' : 'Bookmark this resource'"
                     >
                         {{-- Filled bookmark --}}
-                        <svg x-show="bookmarked" class="w-6 h-6" style="color: #d39c27;" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="bookmarked" class="w-6 h-6 text-brand-secondary" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M5 2h14a1 1 0 011 1v19.143a.5.5 0 01-.766.424L12 18.03l-7.234 4.536A.5.5 0 014 22.143V3a1 1 0 011-1z"/>
                         </svg>
                         {{-- Outline bookmark --}}
@@ -44,7 +44,7 @@
         </div>
         <div class="mt-3 flex flex-wrap gap-1.5">
             @foreach ($resource->categories as $cat)
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium text-white" style="background-color: #d39c27;">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium text-white bg-brand-secondary">
                     {{ $cat->name }}
                 </span>
             @endforeach
@@ -78,7 +78,7 @@
                 @if ($resource->external_link)
                     <div class="mt-8">
                         <a href="{{ $resource->external_link }}" target="_blank" rel="noopener noreferrer"
-                           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                             </svg>
@@ -118,15 +118,15 @@
                 </div>
             @endif
 
-            <div class="mt-8 rounded-lg border-2 p-8 text-center" style="border-color: #d39c27; background-color: rgba(211, 156, 39, 0.05);">
-                <svg class="w-12 h-12 mx-auto mb-4" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="mt-8 rounded-lg border-2 p-8 text-center border-brand-secondary bg-brand-secondary/5">
+                <svg class="w-12 h-12 mx-auto mb-4 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
                 @auth
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Active membership required</h3>
                     <p class="text-sm text-gray-600 mb-6">You need an active membership plan to view this resource.</p>
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-                        <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                        <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                             View Membership Plans
                         </a>
                     </div>
@@ -137,10 +137,10 @@
                         <a href="{{ route('login') }}" class="inline-flex items-center px-5 py-2.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             Log In
                         </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                        <a href="{{ route('register') }}" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                             Sign Up
                         </a>
-                        <a href="{{ route('public.pricing') }}" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #d39c27;">
+                        <a href="{{ route('public.pricing') }}" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md text-white bg-brand-secondary">
                             View Plans
                         </a>
                     </div>

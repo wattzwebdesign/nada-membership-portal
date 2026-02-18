@@ -4,7 +4,7 @@
     <div class="py-16">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold" style="color: #374269;">Certificate Verification</h1>
+                <h1 class="text-3xl font-bold text-brand-primary">Certificate Verification</h1>
                 <p class="mt-2 text-gray-600">Verify NADA Acupuncture Detox Specialist certifications.</p>
             </div>
 
@@ -13,7 +13,7 @@
                 <div class="bg-white shadow-lg rounded-xl overflow-hidden">
                     {{-- Status Header --}}
                     @if ($certificate->status === 'active')
-                        <div class="px-6 py-4" style="background-color: #374269;">
+                        <div class="px-6 py-4 bg-brand-primary">
                             <div class="flex items-center justify-center text-white">
                                 <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <span class="text-lg font-semibold">Verified - Active Certificate</span>
@@ -47,7 +47,7 @@
                             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <dt class="text-xs font-medium text-gray-500 uppercase">NADA ID #</dt>
-                                    <dd class="mt-1 text-lg font-mono font-semibold" style="color: #374269;">{{ $certificate->certificate_code }}</dd>
+                                    <dd class="mt-1 text-lg font-mono font-semibold text-brand-primary">{{ $certificate->certificate_code }}</dd>
                                 </div>
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <dt class="text-xs font-medium text-gray-500 uppercase">Status</dt>
@@ -90,17 +90,17 @@
                     </div>
                     <div class="p-8 text-center">
                         <p class="text-gray-600">No certificate was found matching the code <span class="font-mono font-semibold">{{ $code ?? '' }}</span>.</p>
-                        <p class="mt-2 text-sm text-gray-500">Please double-check the certificate code and try again. If you believe this is an error, contact NADA at <a href="mailto:{{ config('mail.from.address') }}" class="underline" style="color: #374269;">{{ config('mail.from.address') }}</a>.</p>
+                        <p class="mt-2 text-sm text-gray-500">Please double-check the certificate code and try again. If you believe this is an error, contact NADA at <a href="mailto:{{ config('mail.from.address') }}" class="underline text-brand-primary">{{ config('mail.from.address') }}</a>.</p>
                     </div>
                 </div>
             @endif
 
             {{-- Search Form --}}
             <div class="mt-8 bg-white shadow-sm rounded-xl p-6">
-                <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Verify a Certificate</h3>
+                <h3 class="text-lg font-semibold mb-4 text-brand-primary">Verify a Certificate</h3>
                 <form method="GET" action="{{ url('/verify') }}" class="flex flex-col sm:flex-row gap-3">
                     <input type="text" name="code" value="{{ $code ?? '' }}" placeholder="Enter NADA certificate code..." required class="flex-1 rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
-                    <button type="submit" class="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                    <button type="submit" class="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                         Verify
                     </button>
                 </form>

@@ -5,14 +5,13 @@
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
                         <div>
-                            <h2 class="text-2xl font-bold" style="color: #374269;">Attendees</h2>
+                            <h2 class="text-2xl font-bold text-brand-primary">Attendees</h2>
                             <p class="mt-1 text-sm text-gray-600">{{ $training->title }} &mdash; {{ $training->start_date->format('M d, Y') }}</p>
                         </div>
                         @if (count($selectedIds) > 0)
                             <button wire:click="bulkComplete"
                                     wire:confirm="Mark {{ count($selectedIds) }} selected attendee(s) as completed?"
-                                    class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                                    style="background-color: #374269;">
+                                    class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-primary">
                                 Mark Selected Complete ({{ count($selectedIds) }})
                             </button>
                         @endif
@@ -89,8 +88,7 @@
                                                 @if ($attendee->status !== \App\Enums\RegistrationStatus::Completed)
                                                     <button wire:click="markComplete({{ $attendee->id }})"
                                                             wire:confirm="Mark {{ $attendee->user->full_name }} as completed?"
-                                                            class="text-sm font-medium hover:underline"
-                                                            style="color: #d39c27;">
+                                                            class="text-sm font-medium hover:underline text-brand-secondary">
                                                         Mark Complete
                                                     </button>
                                                 @else

@@ -16,7 +16,7 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h2 class="text-2xl font-bold mb-2" style="color: #374269;">Stripe Connect</h2>
+                    <h2 class="text-2xl font-bold mb-2 text-brand-primary">Stripe Connect</h2>
                     <p class="text-gray-600 mb-6">Connect your Stripe account to receive payments from training registrations.</p>
 
                     @if ($isConnected)
@@ -93,8 +93,7 @@
                             </div>
                             <button wire:click="startOnboarding"
                                     wire:loading.attr="disabled"
-                                    class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                                    style="background-color: #d39c27;">
+                                    class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-secondary">
                                 <span wire:loading.remove wire:target="startOnboarding">Continue Onboarding</span>
                                 <span wire:loading wire:target="startOnboarding">Redirecting to Stripe...</span>
                             </button>
@@ -111,8 +110,7 @@
                             </p>
                             <button wire:click="startOnboarding"
                                     wire:loading.attr="disabled"
-                                    class="mt-6 inline-flex items-center px-6 py-3 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                                    style="background-color: #374269;">
+                                    class="mt-6 inline-flex items-center px-6 py-3 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-primary">
                                 <span wire:loading.remove wire:target="startOnboarding">Set Up Stripe Account</span>
                                 <span wire:loading wire:target="startOnboarding">Redirecting to Stripe...</span>
                             </button>

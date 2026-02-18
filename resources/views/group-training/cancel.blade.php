@@ -9,12 +9,11 @@
                 </svg>
             </div>
 
-            <h1 class="text-2xl font-bold mb-2" style="color: #374269;">Payment Canceled</h1>
+            <h1 class="text-2xl font-bold mb-2 text-brand-primary">Payment Canceled</h1>
             <p class="text-gray-600 mb-6">Your payment was not completed. No charges have been made.</p>
 
             <a href="{{ route('group-training.create') }}"
-               class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white shadow-sm hover:opacity-90 transition"
-               style="background-color: #374269;">
+               class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white shadow-sm hover:bg-brand-primary-hover transition bg-brand-primary">
                 Try Again
                 <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             </a>

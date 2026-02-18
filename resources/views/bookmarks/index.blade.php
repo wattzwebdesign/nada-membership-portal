@@ -13,7 +13,7 @@
                     <h3 class="text-lg font-medium text-gray-900 mb-1">No bookmarks yet</h3>
                     <p class="text-sm text-gray-500 mb-6">You haven't bookmarked any resources yet.</p>
                     <a href="{{ route('public.resources.index') }}"
-                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                         Browse Resource Library
                     </a>
                 </div>
@@ -27,7 +27,7 @@
                                     <h3 class="text-base font-semibold text-gray-900">{{ $resource->title }}</h3>
                                     <div class="mt-2 flex flex-wrap gap-1.5">
                                         @foreach ($resource->categories as $cat)
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white" style="background-color: #d39c27;">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white bg-brand-secondary">
                                                 {{ $cat->name }}
                                             </span>
                                         @endforeach
@@ -44,7 +44,7 @@
                                         class="p-1 rounded hover:bg-gray-100 transition-colors"
                                         title="Remove bookmark"
                                     >
-                                        <svg class="w-5 h-5" style="color: #d39c27;" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5 text-brand-secondary" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M5 2h14a1 1 0 011 1v19.143a.5.5 0 01-.766.424L12 18.03l-7.234 4.536A.5.5 0 014 22.143V3a1 1 0 011-1z"/>
                                         </svg>
                                     </button>

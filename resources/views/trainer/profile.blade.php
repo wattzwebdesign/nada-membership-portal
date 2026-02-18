@@ -15,15 +15,15 @@
             @endif
 
             {{-- Preview Banner --}}
-            <div class="border rounded-lg p-4 flex items-center justify-between" style="border-color: #d39c27; background-color: rgba(211, 156, 39, 0.05);">
+            <div class="border rounded-lg p-4 flex items-center justify-between border-brand-secondary bg-brand-secondary/5">
                 <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 flex-shrink-0" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    <svg class="w-5 h-5 flex-shrink-0 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                     <div>
-                        <p class="text-sm font-medium" style="color: #374269;">This information is visible to the public on the trainer directory.</p>
+                        <p class="text-sm font-medium text-brand-primary">This information is visible to the public on the trainer directory.</p>
                         <p class="text-xs text-gray-500 mt-0.5">Potential attendees will see this when they find you.</p>
                     </div>
                 </div>
-                <a href="{{ route('public.trainers.show', $trainer) }}" target="_blank" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md whitespace-nowrap" style="border-color: #374269; color: #374269;">
+                <a href="{{ route('public.trainers.show', $trainer) }}" target="_blank" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md whitespace-nowrap border-brand-primary text-brand-primary">
                     View Public Profile
                     <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </a>
@@ -32,7 +32,7 @@
             {{-- Profile Form --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-2" style="color: #374269;">Edit Public Profile</h3>
+                    <h3 class="text-lg font-semibold mb-2 text-brand-primary">Edit Public Profile</h3>
                     <p class="text-sm text-gray-500 mb-6">Update the information that appears on your public trainer listing and profile page.</p>
 
                     <form method="POST" action="{{ route('trainer.profile.update') }}">
@@ -49,7 +49,7 @@
                                 @endif
                                 <div>
                                     <p class="text-base font-semibold text-gray-900">{{ $trainer->full_name }}</p>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mt-1" style="background-color: #d39c27; color: white;">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mt-1 bg-brand-secondary text-white">
                                         NADA Registered Trainer
                                     </span>
                                 </div>
@@ -120,7 +120,7 @@
                         </div>
 
                         <div class="mt-6 flex items-center gap-3">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 Save Public Profile
                             </button>
                             <a href="{{ route('trainer.dashboard') }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>

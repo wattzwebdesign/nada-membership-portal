@@ -30,7 +30,7 @@
         }
 
         .email-header {
-            background-color: #374269;
+            background-color: #1C3519;
             padding: 30px;
             text-align: center;
         }
@@ -49,7 +49,7 @@
 
         .email-body h1 {
             font-size: 22px;
-            color: #374269;
+            color: #1C3519;
             margin-top: 0;
             margin-bottom: 20px;
         }
@@ -63,7 +63,7 @@
         .email-body .btn {
             display: inline-block;
             padding: 12px 28px;
-            background-color: #374269;
+            background-color: #1C3519;
             color: #ffffff;
             text-decoration: none;
             border-radius: 6px;
@@ -73,12 +73,12 @@
         }
 
         .email-body .btn:hover {
-            background-color: #2a3350;
+            background-color: #152A13;
         }
 
         .email-body .info-box {
             background-color: #f0f2f8;
-            border-left: 4px solid #374269;
+            border-left: 4px solid #1C3519;
             padding: 16px 20px;
             margin: 20px 0;
             border-radius: 0 6px 6px 0;
@@ -90,7 +90,7 @@
         }
 
         .email-body .info-box strong {
-            color: #374269;
+            color: #1C3519;
         }
 
         .email-footer {
@@ -107,7 +107,7 @@
         }
 
         .email-footer a {
-            color: #374269;
+            color: #1C3519;
             text-decoration: none;
         }
     </style>

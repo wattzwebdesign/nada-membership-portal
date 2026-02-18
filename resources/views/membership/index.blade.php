@@ -23,7 +23,7 @@
             {{-- Current Plan Details --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-6" style="color: #374269;">Current Plan</h3>
+                    <h3 class="text-lg font-semibold mb-6 text-brand-primary">Current Plan</h3>
 
                     @if ($subscription)
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -70,7 +70,7 @@
                                 </div>
                                 <form method="POST" action="{{ route('membership.reactivate') }}" class="mt-3">
                                     @csrf
-                                    <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-brand-primary">
                                         Reactivate Membership
                                     </button>
                                 </form>
@@ -105,12 +105,12 @@
 
                         {{-- Action Buttons --}}
                         <div class="mt-6 border-t border-gray-200 pt-6 flex flex-wrap gap-3">
-                            <a href="{{ route('billing.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <a href="{{ route('billing.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                                 Manage Billing
                             </a>
 
-                            <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md" style="border-color: #374269; color: #374269;">
+                            <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md border-brand-primary text-brand-primary">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                 Change Plan
                             </a>
@@ -135,7 +135,7 @@
                             <h3 class="mt-3 text-sm font-medium text-gray-900">No Active Membership</h3>
                             <p class="mt-1 text-sm text-gray-500">Get started by choosing a membership plan.</p>
                             <div class="mt-6">
-                                <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                     View Plans
                                 </a>
                             </div>

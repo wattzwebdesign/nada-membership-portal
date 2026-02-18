@@ -17,7 +17,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="/" class="text-xl font-bold" style="color: #374269;">
+                        <a href="/" class="text-xl font-bold text-brand-primary">
                             NADA
                         </a>
                     </div>
@@ -27,7 +27,7 @@
                             <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Dashboard</a>
                         @else
                             <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Log In</a>
-                            <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-primary-hover">
                                 Sign Up
                             </a>
                         @endauth

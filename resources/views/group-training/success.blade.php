@@ -9,7 +9,7 @@
                 </svg>
             </div>
 
-            <h1 class="text-2xl font-bold mb-2" style="color: #374269;">Payment Confirmed!</h1>
+            <h1 class="text-2xl font-bold mb-2 text-brand-primary">Payment Confirmed!</h1>
             <p class="text-gray-600 mb-6">Your group training registration has been submitted and payment received.</p>
 
             @if ($groupRequest)
@@ -37,8 +37,8 @@
                             <dd class="font-medium text-gray-900">{{ $groupRequest->number_of_tickets }}</dd>
                         </div>
                         <div class="flex justify-between border-t border-gray-200 pt-2 mt-2">
-                            <dt class="font-semibold" style="color: #374269;">Total Paid</dt>
-                            <dd class="font-semibold" style="color: #374269;">{{ $groupRequest->total_formatted }}</dd>
+                            <dt class="font-semibold text-brand-primary">Total Paid</dt>
+                            <dd class="font-semibold text-brand-primary">{{ $groupRequest->total_formatted }}</dd>
                         </div>
                     </dl>
                 </div>

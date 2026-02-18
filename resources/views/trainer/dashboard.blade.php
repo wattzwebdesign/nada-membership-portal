@@ -33,14 +33,14 @@
                                     <li class="flex items-center gap-2 text-sm">
                                         <svg class="h-4 w-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                         <span class="text-amber-800">Connect your Stripe account for payouts</span>
-                                        <a href="{{ route('trainer.payouts.index') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white" style="background-color: #374269;">Connect Stripe</a>
+                                        <a href="{{ route('trainer.payouts.index') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white bg-brand-primary">Connect Stripe</a>
                                     </li>
                                 @endif
                                 @if(!$hasPlan)
                                     <li class="flex items-center gap-2 text-sm">
                                         <svg class="h-4 w-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                         <span class="text-amber-800">Subscribe to a Registered Trainer plan</span>
-                                        <a href="{{ route('membership.plans') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white" style="background-color: #374269;">View Plans</a>
+                                        <a href="{{ route('membership.plans') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white bg-brand-primary">View Plans</a>
                                     </li>
                                 @endif
                             </ul>
@@ -54,12 +54,12 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
-                            <div class="flex-shrink-0 p-3 rounded-lg" style="background-color: rgba(55, 66, 105, 0.1);">
-                                <svg class="w-6 h-6" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-brand-primary/10"
+                                <svg class="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-500">Upcoming Trainings</p>
-                                <p class="text-2xl font-bold" style="color: #374269;">{{ $upcomingTrainings->count() }}</p>
+                                <p class="text-2xl font-bold text-brand-primary">{{ $upcomingTrainings->count() }}</p>
                             </div>
                         </div>
                     </div>
@@ -82,12 +82,12 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
-                            <div class="flex-shrink-0 p-3 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
-                                <svg class="w-6 h-6" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-brand-secondary/10"
+                                <svg class="w-6 h-6 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-500">Total Earnings</p>
-                                <p class="text-2xl font-bold" style="color: #d39c27;">${{ number_format(($earningsSummary['trainer_earnings'] ?? 0) / 100, 2) }}</p>
+                                <p class="text-2xl font-bold text-brand-secondary">${{ number_format(($earningsSummary['trainer_earnings'] ?? 0) / 100, 2) }}</p>
                             </div>
                         </div>
                     </div>
@@ -97,8 +97,8 @@
             {{-- Quick Actions Grid --}}
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
                 <a href="{{ route('trainer.profile.edit') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
-                    <div class="p-2 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
-                        <svg class="w-5 h-5" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <div class="p-2 rounded-lg bg-brand-secondary/10"
+                        <svg class="w-5 h-5 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     </div>
                     <p class="mt-2 text-xs font-medium text-gray-900">Edit Profile</p>
                 </a>
@@ -125,8 +125,8 @@
                 </a>
 
                 <a href="{{ route('trainer.payouts.index') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
-                    <div class="p-2 rounded-lg" style="background-color: rgba(211, 156, 39, 0.1);">
-                        <svg class="w-5 h-5" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div class="p-2 rounded-lg bg-brand-secondary/10"
+                        <svg class="w-5 h-5 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                     <p class="mt-2 text-xs font-medium text-gray-900">Payouts</p>
                 </a>
@@ -150,11 +150,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" x-data="groupTrainingLinkBuilder()">
                 <div class="p-6">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="flex-shrink-0 p-2 rounded-lg" style="background-color: rgba(55, 66, 105, 0.1);">
-                            <svg class="w-5 h-5" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                        <div class="flex-shrink-0 p-2 rounded-lg bg-brand-primary/10"
+                            <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold" style="color: #374269;">Group Training Link</h3>
+                            <h3 class="text-lg font-semibold text-brand-primary">Group Training Link</h3>
                             <p class="text-xs text-gray-500">Share this link with companies to pre-fill your group training form.</p>
                         </div>
                     </div>
@@ -221,7 +221,7 @@
                     <div class="p-6">
                         <div class="flex items-center gap-3 mb-4">
                             <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <h3 class="text-lg font-semibold" style="color: #374269;">Trainings Awaiting Action</h3>
+                            <h3 class="text-lg font-semibold text-brand-primary">Trainings Awaiting Action</h3>
                         </div>
 
                         @foreach ($pendingTrainings as $training)
@@ -231,7 +231,7 @@
                             <div class="border-b border-gray-100 py-3 last:border-0">
                                 <div class="flex items-center justify-between">
                                     <div class="flex-1 min-w-0">
-                                        <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline line-clamp-1" style="color: #374269;">
+                                        <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline line-clamp-1 text-brand-primary">
                                             {{ $training->title }}
                                         </a>
                                         <div class="flex items-center gap-2 mt-1">
@@ -266,8 +266,8 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold" style="color: #374269;">Upcoming Trainings</h3>
-                            <a href="{{ route('trainer.trainings.create') }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white" style="background-color: #374269;">
+                            <h3 class="text-lg font-semibold text-brand-primary">Upcoming Trainings</h3>
+                            <a href="{{ route('trainer.trainings.create') }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-brand-primary">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 New Training
                             </a>
@@ -276,7 +276,7 @@
                         @forelse ($upcomingTrainings as $training)
                             <div class="border-b border-gray-100 py-3 last:border-0">
                                 <div>
-                                    <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline line-clamp-2" style="color: #374269;">
+                                    <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline line-clamp-2 text-brand-primary">
                                         {{ $training->title }}
                                     </a>
                                     <div class="flex items-center justify-between mt-1.5">
@@ -303,7 +303,7 @@
 
                         @if ($upcomingTrainings->count() > 0)
                             <div class="mt-4">
-                                <a href="{{ route('trainer.trainings.index') }}" class="text-sm font-medium hover:underline" style="color: #d39c27;">View All Trainings</a>
+                                <a href="{{ route('trainer.trainings.index') }}" class="text-sm font-medium hover:underline text-brand-secondary">View All Trainings</a>
                             </div>
                         @endif
                     </div>
@@ -313,15 +313,15 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold" style="color: #374269;">Clinicals Pending Review</h3>
-                            <a href="{{ route('trainer.clinicals.index') }}" class="text-sm font-medium hover:underline" style="color: #d39c27;">View All</a>
+                            <h3 class="text-lg font-semibold text-brand-primary">Clinicals Pending Review</h3>
+                            <a href="{{ route('trainer.clinicals.index') }}" class="text-sm font-medium hover:underline text-brand-secondary">View All</a>
                         </div>
 
                         @forelse ($pendingClinicals as $clinical)
                             <div class="border-b border-gray-100 py-3 last:border-0">
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <a href="{{ route('trainer.clinicals.show', $clinical) }}" class="text-sm font-medium hover:underline" style="color: #374269;">
+                                        <a href="{{ route('trainer.clinicals.show', $clinical) }}" class="text-sm font-medium hover:underline text-brand-primary">
                                             {{ $clinical->user->full_name }}
                                         </a>
                                         <p class="text-xs text-gray-500 mt-0.5">Submitted {{ $clinical->created_at->diffForHumans() }}</p>
@@ -345,7 +345,7 @@
             @if (isset($recentCompletions) && $recentCompletions->count() > 0)
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Recent Completions</h3>
+                        <h3 class="text-lg font-semibold mb-4 text-brand-primary">Recent Completions</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">

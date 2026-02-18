@@ -7,7 +7,7 @@ $inactiveClass = $base . ' hover:bg-black/5';
 @endphp
 
 <a href="{{ $href }}"
-   style="{{ $active ? 'background-color: #a5741e;' : 'color: #242424;' }}"
+   style="{{ $active ? 'background-color: #a5741e;' : 'color: #282828;' }}"
    {{ $attributes->merge(['class' => $active ? $activeClass : $inactiveClass]) }}>
     @if(isset($icon))
         <span class="w-5 h-5 shrink-0">{{ $icon }}</span>

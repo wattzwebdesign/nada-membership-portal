@@ -16,7 +16,7 @@
             </div>
         @endif
         <div class="min-w-0">
-            <p class="text-sm font-medium truncate" style="color: #242424;">Welcome back, {{ Auth::user()->first_name }}!</p>
+            <p class="text-sm font-medium truncate text-brand-text">Welcome back, {{ Auth::user()->first_name }}!</p>
             <span class="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium
                 {{ Auth::user()->hasRole('admin')
                     ? 'bg-red-100 text-red-700'
@@ -42,7 +42,7 @@
     <nav x-ref="navScroll" @scroll="check()" class="h-full overflow-y-auto px-3 space-y-6 pb-2">
     {{-- MEMBER section --}}
     <div>
-        <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider" style="color: #254927;">Member</p>
+        <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-brand-accent">Member</p>
         <div class="space-y-1">
             <x-sidebar-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 <x-slot name="icon">
@@ -105,7 +105,7 @@
     {{-- TRAINER section --}}
     @if(auth()->user()->isTrainer())
         <div>
-            <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider" style="color: #254927;">Trainer</p>
+            <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-brand-accent">Trainer</p>
             <div class="space-y-1">
                 <x-sidebar-link :href="route('trainer.dashboard')" :active="request()->routeIs('trainer.dashboard')">
                     <x-slot name="icon">
@@ -177,8 +177,8 @@
         x-cloak
     >
         <div class="h-12" style="background: linear-gradient(to bottom, transparent, #f0e8d3);"></div>
-        <div class="flex justify-center pb-1" style="background-color: #f0e8d3;">
-            <svg class="w-4 h-4 animate-bounce opacity-50" fill="none" stroke="#242424" viewBox="0 0 24 24" stroke-width="2">
+        <div class="flex justify-center pb-1 bg-brand-sidebar">
+            <svg class="w-4 h-4 animate-bounce opacity-50" fill="none" stroke="#282828" viewBox="0 0 24 24" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
         </div>
@@ -210,7 +210,7 @@
 
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button type="submit" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium hover:bg-black/5 transition-colors duration-150 w-full" style="color: #242424;">
+        <button type="submit" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium hover:bg-black/5 transition-colors duration-150 w-full text-brand-text">
             <span class="w-5 h-5 shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" /></svg>
             </span>

@@ -35,14 +35,14 @@
                                         <li class="flex items-center gap-2 text-sm">
                                             <svg class="h-4 w-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                             <span class="text-amber-800">Connect your Stripe account for payouts</span>
-                                            <a href="{{ route('trainer.payouts.index') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white" style="background-color: #374269;">Connect Stripe</a>
+                                            <a href="{{ route('trainer.payouts.index') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white bg-brand-primary">Connect Stripe</a>
                                         </li>
                                     @endif
                                     @if(!$hasPlan)
                                         <li class="flex items-center gap-2 text-sm">
                                             <svg class="h-4 w-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                             <span class="text-amber-800">Subscribe to a Registered Trainer plan</span>
-                                            <a href="{{ route('membership.plans') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white" style="background-color: #374269;">View Plans</a>
+                                            <a href="{{ route('membership.plans') }}" class="ml-auto text-xs font-medium px-2.5 py-1 rounded text-white bg-brand-primary">View Plans</a>
                                         </li>
                                     @endif
                                 </ul>
@@ -59,7 +59,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold" style="color: #374269;">Membership Status</h3>
+                            <h3 class="text-lg font-semibold text-brand-primary">Membership Status</h3>
                             @if ($subscription)
                                 @php
                                     $statusColors = [
@@ -98,7 +98,7 @@
                                 @endif
                             </div>
                             <div class="mt-5">
-                                <a href="{{ route('billing.index') }}" class="inline-flex items-center text-sm font-medium hover:underline" style="color: #d39c27;">
+                                <a href="{{ route('billing.index') }}" class="inline-flex items-center text-sm font-medium hover:underline text-brand-secondary">
                                     Manage Billing
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
@@ -106,7 +106,7 @@
                         @else
                             <div class="text-center py-4">
                                 <p class="text-gray-500 mb-4">You do not have an active membership.</p>
-                                <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                     View Plans
                                 </a>
                             </div>
@@ -118,7 +118,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold" style="color: #374269;">Certificates</h3>
+                            <h3 class="text-lg font-semibold text-brand-primary">Certificates</h3>
                             @if ($certificates->count() > 0)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                     {{ $certificates->where('status', 'active')->count() }} Active
@@ -150,7 +150,7 @@
                                 @endforeach
                             </div>
                             <div class="mt-4">
-                                <a href="{{ route('certificates.index') }}" class="inline-flex items-center text-sm font-medium hover:underline" style="color: #d39c27;">
+                                <a href="{{ route('certificates.index') }}" class="inline-flex items-center text-sm font-medium hover:underline text-brand-secondary">
                                     View All Certificates
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
@@ -173,7 +173,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold" style="color: #374269;">Upcoming Trainings</h3>
+                            <h3 class="text-lg font-semibold text-brand-primary">Upcoming Trainings</h3>
                         </div>
 
                         @if ($upcomingTrainings->count() > 0)
@@ -203,7 +203,7 @@
                                 @endforeach
                             </div>
                             <div class="mt-4">
-                                <a href="{{ route('trainings.my-registrations') }}" class="inline-flex items-center text-sm font-medium hover:underline" style="color: #d39c27;">
+                                <a href="{{ route('trainings.my-registrations') }}" class="inline-flex items-center text-sm font-medium hover:underline text-brand-secondary">
                                     View All Registrations
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
@@ -212,7 +212,7 @@
                             <div class="text-center py-4">
                                 <svg class="mx-auto h-10 w-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                                 <p class="mt-2 text-sm text-gray-500">No upcoming trainings.</p>
-                                <a href="{{ route('trainings.index') }}" class="mt-1 text-xs font-medium hover:underline" style="color: #d39c27;">Browse Trainings</a>
+                                <a href="{{ route('trainings.index') }}" class="mt-1 text-xs font-medium hover:underline text-brand-secondary">Browse Trainings</a>
                             </div>
                         @endif
                     </div>
@@ -221,28 +221,28 @@
                 {{-- Quick Actions Card --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Quick Actions</h3>
+                        <h3 class="text-lg font-semibold mb-4 text-brand-primary">Quick Actions</h3>
 
                         <div class="grid grid-cols-2 gap-3">
                             @if ($certificates->where('status', 'active')->count() > 0)
                                 <a href="{{ route('certificates.index') }}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
-                                    <svg class="w-6 h-6 mb-2" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    <svg class="w-6 h-6 mb-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     <span class="text-sm font-medium text-gray-700">Download Certificate</span>
                                 </a>
                             @endif
 
                             <a href="{{ route('trainings.index') }}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
-                                <svg class="w-6 h-6 mb-2" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <svg class="w-6 h-6 mb-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                 <span class="text-sm font-medium text-gray-700">Register for Training</span>
                             </a>
 
                             <a href="{{ route('clinicals.create') }}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
-                                <svg class="w-6 h-6 mb-2" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                <svg class="w-6 h-6 mb-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 <span class="text-sm font-medium text-gray-700">Submit Clinicals</span>
                             </a>
 
                             <a href="{{ route('discount.request.create') }}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition">
-                                <svg class="w-6 h-6 mb-2" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>
+                                <svg class="w-6 h-6 mb-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>
                                 <span class="text-sm font-medium text-gray-700">Request Discount</span>
                             </a>
                         </div>

@@ -67,7 +67,7 @@
                 <div class="p-6">
                     {{-- Status Bar --}}
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold" style="color: #374269;">Training Details</h3>
+                        <h3 class="text-lg font-semibold text-brand-primary">Training Details</h3>
                         @php
                             $statusBadgeColors = [
                                 'pending_approval' => 'bg-yellow-100 text-yellow-800',
@@ -186,7 +186,7 @@
                                 @if (!$training->is_group)
                                     <div class="border border-gray-200 rounded-lg p-4">
                                         <label class="flex items-center cursor-pointer">
-                                            <input type="checkbox" name="is_paid" value="1" class="rounded border-gray-300 shadow-sm" style="color: #374269;" x-model="isPaid" {{ old('is_paid', $training->is_paid) ? 'checked' : '' }}>
+                                            <input type="checkbox" name="is_paid" value="1" class="rounded border-gray-300 shadow-sm text-brand-primary" x-model="isPaid" {{ old('is_paid', $training->is_paid) ? 'checked' : '' }}>
                                             <span class="ml-2 text-sm font-medium text-gray-700">This is a paid training</span>
                                         </label>
                                         <div x-show="isPaid" x-cloak class="mt-4">
@@ -248,7 +248,7 @@
                                                 </div>
                                             </div>
                                         </template>
-                                        <button type="button" @click="addInvitee()" class="mt-1 inline-flex items-center text-sm font-medium" style="color: #374269;">
+                                        <button type="button" @click="addInvitee()" class="mt-1 inline-flex items-center text-sm font-medium text-brand-primary">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                             Add Another Email
                                         </button>
@@ -268,7 +268,7 @@
                                     <p x-show="!canSubmit" x-cloak class="text-sm text-red-600">All invitees must be active members</p>
                                 @endif
                                 @if ($statusValue === 'pending_approval')
-                                    <button type="submit" :disabled="!canSubmit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #374269;">
+                                    <button type="submit" :disabled="!canSubmit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white disabled:opacity-50 disabled:cursor-not-allowed bg-brand-primary">
                                         Save Changes
                                     </button>
                                 @elseif ($statusValue === 'denied')

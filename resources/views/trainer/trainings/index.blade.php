@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('My Trainings') }}
             </h2>
-            <a href="{{ route('trainer.trainings.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+            <a href="{{ route('trainer.trainings.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 New Training
             </a>
@@ -47,7 +47,7 @@
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-2">
-                                                <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline" style="color: #374269;">{{ $training->title }}</a>
+                                                <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline text-brand-primary">{{ $training->title }}</a>
                                                 @if ($training->is_group)
                                                     <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700">Group</span>
                                                 @endif
@@ -105,7 +105,7 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
-                                            <a href="{{ route('trainer.trainings.show', $training) }}" class="font-medium" style="color: #374269;">View</a>
+                                            <a href="{{ route('trainer.trainings.show', $training) }}" class="font-medium text-brand-primary">View</a>
                                             <a href="{{ route('trainer.trainings.edit', $training) }}" class="font-medium text-gray-600 hover:text-gray-900">Edit</a>
                                             <a href="{{ route('trainer.attendees.index', $training) }}" class="font-medium text-gray-600 hover:text-gray-900">Attendees</a>
                                         </td>
@@ -141,7 +141,7 @@
                             <div class="p-4">
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex items-center gap-2 min-w-0">
-                                        <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline truncate" style="color: #374269;">{{ $training->title }}</a>
+                                        <a href="{{ route('trainer.trainings.show', $training) }}" class="text-sm font-medium hover:underline truncate text-brand-primary">{{ $training->title }}</a>
                                         @if ($training->is_group)
                                             <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700 flex-shrink-0">Group</span>
                                         @endif
@@ -153,7 +153,7 @@
                                 <p class="text-xs text-gray-500">{{ $training->start_date->format('M j, Y \a\t g:i A') }}</p>
                                 <p class="text-xs text-gray-400">{{ $training->registrations_count ?? 0 }} attendees | {{ ucfirst(str_replace('_', ' ', $typeValue)) }}</p>
                                 <div class="mt-2 flex space-x-3">
-                                    <a href="{{ route('trainer.trainings.show', $training) }}" class="text-xs font-medium" style="color: #374269;">View</a>
+                                    <a href="{{ route('trainer.trainings.show', $training) }}" class="text-xs font-medium text-brand-primary">View</a>
                                     <a href="{{ route('trainer.trainings.edit', $training) }}" class="text-xs font-medium text-gray-600">Edit</a>
                                     <a href="{{ route('trainer.attendees.index', $training) }}" class="text-xs font-medium text-gray-600">Attendees</a>
                                 </div>
@@ -172,7 +172,7 @@
                         <h3 class="mt-3 text-sm font-medium text-gray-900">No Trainings Yet</h3>
                         <p class="mt-1 text-sm text-gray-500">Create your first training to get started.</p>
                         <div class="mt-6">
-                            <a href="{{ route('trainer.trainings.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <a href="{{ route('trainer.trainings.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 Create Training
                             </a>
                         </div>

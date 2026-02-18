@@ -2,7 +2,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-8">
-                <h2 class="text-2xl font-bold" style="color: #374269;">Browse Trainings</h2>
+                <h2 class="text-2xl font-bold text-brand-primary">Browse Trainings</h2>
                 <p class="mt-1 text-gray-600">Find and register for upcoming NADA trainings.</p>
             </div>
 
@@ -43,11 +43,10 @@
                             <div class="p-6 flex-1">
                                 {{-- Type Badge --}}
                                 <div class="flex items-center justify-between mb-3">
-                                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium text-white"
-                                          style="background-color: #374269;">
+                                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium text-white bg-brand-primary">
                                         {{ $training->type->label() }}
                                     </span>
-                                    <span class="text-sm font-semibold" style="color: #d39c27;">
+                                    <span class="text-sm font-semibold text-brand-secondary">
                                         {{ $training->price_formatted }}
                                     </span>
                                 </div>
@@ -96,8 +95,7 @@
                                         <span class="text-xs text-gray-500">Open enrollment</span>
                                     @endif
                                     <a href="{{ route('trainings.show', $training) }}"
-                                       class="inline-flex items-center px-3 py-1.5 rounded-md text-white text-xs font-medium hover:opacity-90 transition-opacity"
-                                       style="background-color: #d39c27;">
+                                       class="inline-flex items-center px-3 py-1.5 rounded-md text-white text-xs font-medium hover:opacity-90 transition-opacity bg-brand-secondary">
                                         View Details
                                     </a>
                                 </div>

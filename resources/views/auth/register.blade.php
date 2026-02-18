@@ -1,8 +1,8 @@
 <x-guest-layout>
     @if ($plan ?? null)
-        <div class="mb-6 rounded-lg border border-[#374269]/20 bg-[#374269]/5 p-4">
-            <p class="text-sm font-medium text-[#374269]">Selected Plan</p>
-            <p class="mt-1 text-lg font-semibold text-[#374269]">{{ $plan->name }}</p>
+        <div class="mb-6 rounded-lg border border-brand-primary/20 bg-brand-primary/5 p-4">
+            <p class="text-sm font-medium text-brand-primary">Selected Plan</p>
+            <p class="mt-1 text-lg font-semibold text-brand-primary">{{ $plan->name }}</p>
             <p class="text-sm text-gray-600">{{ $plan->price_formatted }} {{ $plan->billing_label }}</p>
         </div>
     @endif

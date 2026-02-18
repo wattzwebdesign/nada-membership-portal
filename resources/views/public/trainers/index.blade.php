@@ -2,7 +2,7 @@
     <x-slot name="title">Find a NADA Trainer</x-slot>
 
     {{-- Hero Banner --}}
-    <div class="py-10 text-center text-white" style="background-color: #374269;">
+    <div class="py-10 text-center text-white bg-brand-primary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold">Find a NADA Trainer</h1>
             <p class="mt-2 text-blue-100 text-lg">Locate a NADA Registered Trainer near you</p>
@@ -39,7 +39,7 @@
                         <option value="city" {{ $sort === 'city' ? 'selected' : '' }}>City</option>
                         <option value="state" {{ $sort === 'state' ? 'selected' : '' }}>State</option>
                     </select>
-                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                         Search
                     </button>
                     <a href="{{ route('public.trainers.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
@@ -84,7 +84,7 @@
                                         </p>
                                     @endif
                                     @if (isset($trainer->distance) && $trainer->distance !== null)
-                                        <p class="text-xs mt-0.5 font-medium" style="color: #d39c27;">{{ round($trainer->distance, 1) }} mi away</p>
+                                        <p class="text-xs mt-0.5 font-medium text-brand-secondary">{{ round($trainer->distance, 1) }} mi away</p>
                                     @endif
                                 </div>
                             </div>
@@ -163,7 +163,7 @@
                             icon: {
                                 path: google.maps.SymbolPath.CIRCLE,
                                 scale: 10,
-                                fillColor: '#d39c27',
+                                fillColor: '#AD7E07',
                                 fillOpacity: 0.9,
                                 strokeColor: '#ffffff',
                                 strokeWeight: 2,
@@ -188,7 +188,7 @@
                             title: trainer.name,
                         });
 
-                        const distanceHtml = trainer.distance !== null ? `<p style="color: #d39c27; font-size: 0.75rem; font-weight: 600; margin: 0 0 6px;">${trainer.distance} mi away</p>` : '';
+                        const distanceHtml = trainer.distance !== null ? `<p style="color: #AD7E07; font-size: 0.75rem; font-weight: 600; margin: 0 0 6px;">${trainer.distance} mi away</p>` : '';
 
                         marker.addListener('click', () => {
                             this.infoWindow.setContent(`
@@ -196,7 +196,7 @@
                                     <p style="font-weight: 600; margin: 0 0 4px;">${trainer.name}</p>
                                     ${trainer.location ? `<p style="color: #6b7280; font-size: 0.875rem; margin: 0 0 4px;">${trainer.location}</p>` : ''}
                                     ${distanceHtml}
-                                    <a href="${trainer.url}" style="color: #374269; font-size: 0.875rem; font-weight: 500; text-decoration: none;">View Profile &rarr;</a>
+                                    <a href="${trainer.url}" style="color: #1C3519; font-size: 0.875rem; font-weight: 500; text-decoration: none;">View Profile &rarr;</a>
                                 </div>
                             `);
                             this.infoWindow.open(this.map, marker);

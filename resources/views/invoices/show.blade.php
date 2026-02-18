@@ -37,7 +37,7 @@
                     {{-- Header --}}
                     <div class="flex items-start justify-between mb-8">
                         <div>
-                            <h3 class="text-2xl font-bold" style="color: #374269;">Invoice</h3>
+                            <h3 class="text-2xl font-bold text-brand-primary">Invoice</h3>
                             <p class="text-sm text-gray-500 mt-1">{{ $invoice->number }}</p>
                         </div>
                         <div class="text-right">
@@ -112,8 +112,8 @@
                                 </div>
                             @endif
                             <div class="flex justify-between py-3">
-                                <span class="text-base font-semibold" style="color: #374269;">Amount Due</span>
-                                <span class="text-base font-bold" style="color: #374269;">
+                                <span class="text-base font-semibold text-brand-primary">Amount Due</span>
+                                <span class="text-base font-bold text-brand-primary">
                                     ${{ number_format(max(0, $invoice->amount_due - $invoice->amount_paid), 2) }}
                                 </span>
                             </div>
@@ -137,7 +137,7 @@
                             @if (in_array($invoice->status, ['open', 'draft']))
                                 <form action="{{ route('invoices.pay', $invoice) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #d39c27;">
+                                    <button type="submit" class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-secondary">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                                         Pay Now — ${{ number_format(max(0, $invoice->amount_due - $invoice->amount_paid), 2) }}
                                     </button>

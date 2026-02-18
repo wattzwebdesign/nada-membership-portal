@@ -33,7 +33,7 @@
                     {{-- Member Info --}}
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Member Information</h3>
+                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Member Information</h3>
                             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Name</dt>
@@ -54,7 +54,7 @@
                     {{-- Training Details --}}
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Training Details</h3>
+                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Training Details</h3>
                             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Estimated Training Date</dt>
@@ -67,7 +67,7 @@
                     {{-- Treatment Logs --}}
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Treatment Logs</h3>
+                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Treatment Logs</h3>
                             @php
                                 $media = $clinical->getMedia('treatment_logs');
                             @endphp
@@ -94,7 +94,7 @@
                     @if ($clinical->notes)
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Notes</h3>
+                                <h3 class="text-lg font-semibold mb-4 text-brand-primary">Notes</h3>
                                 <p class="text-sm text-gray-700 whitespace-pre-line">{{ $clinical->notes }}</p>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                     {{-- Review Status --}}
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Review Status</h3>
+                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Review Status</h3>
                             <div class="flex items-center gap-3 mb-4">
                                 @if ($clinical->status === 'submitted')
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">Submitted</span>
@@ -129,7 +129,7 @@
                     @if (in_array($clinical->status, ['submitted', 'under_review']))
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Actions</h3>
+                                <h3 class="text-lg font-semibold mb-4 text-brand-primary">Actions</h3>
                                 <div class="flex flex-col sm:flex-row gap-4">
                                     {{-- Approve --}}
                                     <form method="POST" action="{{ route('trainer.clinicals.approve', $clinical) }}">
@@ -174,7 +174,7 @@
                 <div class="lg:col-span-1">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg sticky top-8">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Certificate</h3>
+                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Certificate</h3>
 
                             @if ($clinical->status === 'approved' && $hasCertificate)
                                 {{-- Certificate already issued --}}
@@ -189,14 +189,14 @@
                             @elseif ($clinical->status === 'approved' && !$hasCertificate)
                                 {{-- Ready to issue --}}
                                 <div class="text-center">
-                                    <div class="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-3" style="background-color: rgba(211, 156, 39, 0.1);">
-                                        <svg class="w-8 h-8" style="color: #d39c27;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625l-2.625 2.625L9.75 15"/></svg>
+                                    <div class="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-3 bg-brand-secondary/10"
+                                        <svg class="w-8 h-8 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625l-2.625 2.625L9.75 15"/></svg>
                                     </div>
                                     <p class="text-sm font-medium text-gray-900">Ready to Issue</p>
                                     <p class="text-xs text-gray-500 mt-1 mb-4">Clinicals approved. Issue the NADA certificate for this member.</p>
                                     <form method="POST" action="{{ route('trainer.clinicals.issue-certificate', $clinical) }}" onsubmit="return confirm('Are you sure you want to issue a certificate for this member? This action cannot be undone.')">
                                         @csrf
-                                        <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md text-white hover:opacity-90 transition" style="background-color: #d39c27;">
+                                        <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md text-white hover:opacity-90 transition bg-brand-secondary">
                                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625l-2.625 2.625L9.75 15"/></svg>
                                             Issue Certificate
                                         </button>

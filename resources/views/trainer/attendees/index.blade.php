@@ -44,7 +44,7 @@
                         @endphp
                         <span class="font-medium text-gray-900">{{ ucfirst(str_replace('_', ' ', $typeValue)) }}</span>
                     </div>
-                    <a href="{{ route('trainer.trainings.edit', $training) }}" class="ml-auto text-sm font-medium" style="color: #374269;">Edit Training</a>
+                    <a href="{{ route('trainer.trainings.edit', $training) }}" class="ml-auto text-sm font-medium text-brand-primary">Edit Training</a>
                 </div>
             </div>
 
@@ -60,7 +60,7 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left">
-                                            <input type="checkbox" id="select-all" class="rounded border-gray-300" style="color: #374269;">
+                                            <input type="checkbox" id="select-all" class="rounded border-gray-300 text-brand-primary">
                                         </th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
@@ -86,7 +86,7 @@
                                         <tr class="hover:bg-gray-50">
                                             <td class="px-6 py-4">
                                                 @if ($regStatusValue !== 'completed')
-                                                    <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 attendee-check" style="color: #374269;">
+                                                    <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 attendee-check text-brand-primary">
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -136,7 +136,7 @@
                                     <div class="flex items-center justify-between mb-1">
                                         <div class="flex items-center space-x-2">
                                             @if ($regStatusValue !== 'completed')
-                                                <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 attendee-check" style="color: #374269;">
+                                                <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 attendee-check text-brand-primary">
                                             @endif
                                             <span class="text-sm font-medium text-gray-900">{{ $reg->user->full_name }}</span>
                                         </div>

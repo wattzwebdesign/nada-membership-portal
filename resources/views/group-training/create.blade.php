@@ -3,7 +3,7 @@
 
     <div class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold" style="color: #374269;">Group Training Registration</h1>
+            <h1 class="text-3xl font-bold text-brand-primary">Group Training Registration</h1>
             <p class="mt-2 text-gray-600">Register your team for a NADA training session. Fill in the details below and complete payment to confirm your booking.</p>
         </div>
 
@@ -32,7 +32,7 @@
 
             {{-- Company Contact --}}
             <div class="bg-white shadow-sm rounded-lg p-6">
-                <h2 class="text-lg font-semibold mb-4" style="color: #374269;">Company Contact</h2>
+                <h2 class="text-lg font-semibold mb-4 text-brand-primary">Company Contact</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="company_first_name" class="block text-sm font-medium text-gray-700">First Name</label>
@@ -54,7 +54,7 @@
 
             {{-- Training Details --}}
             <div class="bg-white shadow-sm rounded-lg p-6">
-                <h2 class="text-lg font-semibold mb-4" style="color: #374269;">Training Details</h2>
+                <h2 class="text-lg font-semibold mb-4 text-brand-primary">Training Details</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="sm:col-span-2">
                         <label for="training_name" class="block text-sm font-medium text-gray-700">Training Name</label>
@@ -99,7 +99,7 @@
 
             {{-- Pricing --}}
             <div class="bg-white shadow-sm rounded-lg p-6">
-                <h2 class="text-lg font-semibold mb-4" style="color: #374269;">Pricing</h2>
+                <h2 class="text-lg font-semibold mb-4 text-brand-primary">Pricing</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="cost_per_ticket_display" class="block text-sm font-medium text-gray-700">Cost Per Ticket ($)</label>
@@ -135,8 +135,8 @@
                             <span class="font-medium" x-text="'$' + feeFormatted"></span>
                         </div>
                         <div class="flex justify-between border-t border-gray-200 pt-2">
-                            <span class="font-semibold" style="color: #374269;">Total</span>
-                            <span class="font-semibold" style="color: #374269;" x-text="'$' + totalFormatted"></span>
+                            <span class="font-semibold text-brand-primary">Total</span>
+                            <span class="font-semibold text-brand-primary" x-text="'$' + totalFormatted"></span>
                         </div>
                     </div>
                 </div>
@@ -145,7 +145,7 @@
             {{-- Members Repeater --}}
             <div class="bg-white shadow-sm rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold" style="color: #374269;">Team Members</h2>
+                    <h2 class="text-lg font-semibold text-brand-primary">Team Members</h2>
                     <span class="text-sm text-gray-500" x-text="members.length + ' of ' + numberOfTickets + ' members'"></span>
                 </div>
                 <p class="text-sm text-gray-500 mb-4">Enter the details for each team member who will attend the training.</p>
@@ -188,8 +188,7 @@
             {{-- Submit --}}
             <div class="flex justify-end">
                 <button type="submit"
-                        class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white shadow-sm hover:opacity-90 transition"
-                        style="background-color: #374269;">
+                        class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white shadow-sm hover:bg-brand-primary-hover transition bg-brand-primary">
                     Proceed to Payment
                     <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                 </button>

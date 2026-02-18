@@ -31,7 +31,7 @@
                 {{-- Name + Actions --}}
                 <div class="flex-1 min-w-0">
                     <h1 class="text-2xl font-bold text-gray-900">{{ $trainer->full_name }}</h1>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium mt-1" style="background-color: #d39c27; color: white;">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium mt-1 bg-brand-secondary text-white">
                         NADA Registered Trainer
                     </span>
 
@@ -44,7 +44,7 @@
 
                     <div class="flex items-center gap-2 mt-4">
                         {{-- Message Button --}}
-                        <button @click="showContactModal = true" class="inline-flex items-center px-4 py-2 border-2 text-sm font-medium rounded-md transition-colors" style="border-color: #374269; color: #374269;" onmouseover="this.style.backgroundColor='#374269'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#374269'">
+                        <button @click="showContactModal = true" class="inline-flex items-center px-4 py-2 border-2 text-sm font-medium rounded-md transition-colors border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                             Message
                         </button>
@@ -64,17 +64,17 @@
                             @if ($trainer->email)
                                 <div class="text-center">
                                     <div class="flex justify-center mb-1.5">
-                                        <svg class="w-5 h-5" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
+                                        <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
                                     </div>
-                                    <a href="mailto:{{ $trainer->email }}" class="text-sm hover:underline" style="color: #374269;">{{ $trainer->email }}</a>
+                                    <a href="mailto:{{ $trainer->email }}" class="text-sm hover:underline text-brand-primary">{{ $trainer->email }}</a>
                                 </div>
                             @endif
                             @if ($trainer->phone)
                                 <div class="text-center">
                                     <div class="flex justify-center mb-1.5">
-                                        <svg class="w-5 h-5" style="color: #374269;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                        <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                                     </div>
-                                    <a href="tel:{{ $trainer->phone }}" class="text-sm hover:underline" style="color: #374269;">{{ $trainer->phone_formatted }}</a>
+                                    <a href="tel:{{ $trainer->phone }}" class="text-sm hover:underline text-brand-primary">{{ $trainer->phone_formatted }}</a>
                                 </div>
                             @endif
                         </div>
@@ -86,7 +86,7 @@
         {{-- Bio Section --}}
         @if ($trainer->bio)
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8 mt-6">
-                <h2 class="text-lg font-semibold mb-3" style="color: #374269;">About</h2>
+                <h2 class="text-lg font-semibold mb-3 text-brand-primary">About</h2>
                 <div class="text-sm text-gray-700 leading-relaxed">
                     {!! nl2br(e($trainer->bio)) !!}
                 </div>
@@ -96,7 +96,7 @@
         {{-- Trainings I am Hosting --}}
         @if ($upcomingTrainings->isNotEmpty())
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8 mt-6">
-                <h2 class="text-lg font-semibold mb-4" style="color: #374269;">Trainings I am Hosting</h2>
+                <h2 class="text-lg font-semibold mb-4 text-brand-primary">Trainings I am Hosting</h2>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     @foreach ($upcomingTrainings as $training)
@@ -137,7 +137,7 @@
                 <div x-show="showContactModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     <div class="bg-white px-6 pt-5 pb-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold" style="color: #374269;" id="modal-title">Message {{ $trainer->first_name }}</h3>
+                            <h3 class="text-lg font-semibold text-brand-primary" id="modal-title">Message {{ $trainer->first_name }}</h3>
                             <button @click="showContactModal = false" class="text-gray-400 hover:text-gray-600">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             </button>
@@ -180,7 +180,7 @@
                                     <button type="button" @click="showContactModal = false" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                         Cancel
                                     </button>
-                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                                         Send Message
                                     </button>

@@ -42,12 +42,12 @@
 
                     <div class="mt-8 flex justify-center gap-4">
                         @unless($hasStripe)
-                            <a href="{{ route('trainer.payouts.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <a href="{{ route('trainer.payouts.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 Connect Stripe
                             </a>
                         @endunless
                         @unless($hasPlan)
-                            <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 View Plans
                             </a>
                         @endunless

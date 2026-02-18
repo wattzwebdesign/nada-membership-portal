@@ -26,7 +26,7 @@
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
                                 <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-lg font-semibold" style="color: #374269;">
+                                    <h3 class="text-lg font-semibold text-brand-primary">
                                         {{ $discountRequest->discount_type->label() }} Discount Request
                                     </h3>
                                     @php
@@ -140,7 +140,7 @@
                                 {{-- Actions --}}
                                 @if ($discountRequest->status === 'approved')
                                     <div class="mt-4 pt-4 border-t border-gray-100">
-                                        <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #d39c27;">
+                                        <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-secondary">
                                             View Discounted Plans
                                         </a>
                                     </div>
@@ -153,7 +153,7 @@
                 {{-- Submit another if latest is denied --}}
                 @if ($discountRequests->first()->status === 'denied')
                     <div class="mt-6 text-center">
-                        <a href="{{ route('discount.request.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                        <a href="{{ route('discount.request.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                             Submit New Request
                         </a>
                     </div>
@@ -165,7 +165,7 @@
                         <h3 class="mt-3 text-sm font-medium text-gray-900">No Discount Requests</h3>
                         <p class="mt-1 text-sm text-gray-500">You haven't submitted a discount request yet.</p>
                         <div class="mt-6">
-                            <a href="{{ route('discount.request.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <a href="{{ route('discount.request.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 Request a Discount
                             </a>
                         </div>

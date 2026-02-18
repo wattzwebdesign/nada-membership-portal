@@ -25,7 +25,7 @@
                 <div class="lg:col-span-2">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold mb-2" style="color: #374269;">Profile Information</h3>
+                            <h3 class="text-lg font-semibold mb-2 text-brand-primary">Profile Information</h3>
                             <p class="text-sm text-gray-500 mb-6">Update your personal information and contact details.</p>
 
                             <form method="POST" action="{{ route('account.update') }}">
@@ -109,7 +109,7 @@
                                 </div>
 
                                 <div class="mt-6">
-                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                         Save Changes
                                     </button>
                                 </div>
@@ -122,7 +122,7 @@
                 <div class="lg:col-span-1">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Account Actions</h3>
+                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Account Actions</h3>
 
                             <div class="space-y-4">
                                 {{-- Request Discount --}}
@@ -135,7 +135,7 @@
                                                 {{ $user->discount_type->label() }} Approved
                                             </span>
                                         @else
-                                            <a href="{{ route('discount.request.create') }}" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md" style="border-color: #374269; color: #374269;">
+                                            <a href="{{ route('discount.request.create') }}" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md border-brand-primary text-brand-primary">
                                                 Request Discount
                                             </a>
                                         @endif
@@ -153,11 +153,11 @@
                                                     Application Pending
                                                 </span>
                                             @elseif ($user->trainer_application_status === 'denied')
-                                                <a href="{{ route('trainer-application.create') }}" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md" style="border-color: #374269; color: #374269;">
+                                                <a href="{{ route('trainer-application.create') }}" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md border-brand-primary text-brand-primary">
                                                     Reapply
                                                 </a>
                                             @else
-                                                <a href="{{ route('trainer-application.create') }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white" style="background-color: #d39c27;">
+                                                <a href="{{ route('trainer-application.create') }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-brand-secondary">
                                                     Apply Now
                                                 </a>
                                             @endif
@@ -168,7 +168,7 @@
                                         <p class="text-sm font-medium text-green-800">Registered Trainer</p>
                                         <p class="text-xs text-green-600 mt-1">You are an approved NADA Registered Trainer.</p>
                                         <div class="mt-3">
-                                            <a href="{{ route('trainer.dashboard') }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white" style="background-color: #374269;">
+                                            <a href="{{ route('trainer.dashboard') }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-brand-primary">
                                                 Trainer Portal
                                             </a>
                                         </div>

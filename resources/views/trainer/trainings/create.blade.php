@@ -9,7 +9,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-2" style="color: #374269;">New Training</h3>
+                    <h3 class="text-lg font-semibold mb-2 text-brand-primary">New Training</h3>
                     <p class="text-sm text-gray-500 mb-6">Fill out the details below to create a new training. It will be submitted for admin approval before being published.</p>
 
                     <form method="POST" action="{{ route('trainer.trainings.store') }}" x-data="trainingForm()">
@@ -116,7 +116,7 @@
                             {{-- Group Training Toggle --}}
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="checkbox" name="is_group" value="1" class="rounded border-gray-300 shadow-sm" style="color: #374269;" x-model="isGroup" {{ old('is_group') ? 'checked' : '' }}>
+                                    <input type="checkbox" name="is_group" value="1" class="rounded border-gray-300 shadow-sm text-brand-primary" x-model="isGroup" {{ old('is_group') ? 'checked' : '' }}>
                                     <span class="ml-2 text-sm font-medium text-gray-700">Group Training (Invite Only)</span>
                                 </label>
                                 <p class="mt-1 ml-6 text-xs text-gray-500">Group trainings are always free and only visible to invited members.</p>
@@ -161,7 +161,7 @@
                                             </div>
                                         </div>
                                     </template>
-                                    <button type="button" @click="addInvitee()" class="mt-1 inline-flex items-center text-sm font-medium" style="color: #374269;">
+                                    <button type="button" @click="addInvitee()" class="mt-1 inline-flex items-center text-sm font-medium text-brand-primary">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                         Add Another Email
                                     </button>
@@ -174,7 +174,7 @@
                             {{-- Paid Toggle & Price (hidden when group) --}}
                             <div x-show="!isGroup" class="border border-gray-200 rounded-lg p-4">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="checkbox" name="is_paid" value="1" class="rounded border-gray-300 shadow-sm" style="color: #374269;" x-model="isPaid" {{ old('is_paid') ? 'checked' : '' }}>
+                                    <input type="checkbox" name="is_paid" value="1" class="rounded border-gray-300 shadow-sm text-brand-primary" x-model="isPaid" {{ old('is_paid') ? 'checked' : '' }}>
                                     <span class="ml-2 text-sm font-medium text-gray-700">This is a paid training</span>
                                 </label>
                                 <div x-show="isPaid" x-cloak class="mt-4">
@@ -197,7 +197,7 @@
                             <a href="{{ route('trainer.trainings.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
                             <div class="flex items-center gap-3">
                                 <p x-show="isGroup && !canSubmit" x-cloak class="text-sm text-red-600">All invitees must be active members</p>
-                                <button type="submit" :disabled="!canSubmit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #374269;">
+                                <button type="submit" :disabled="!canSubmit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white disabled:opacity-50 disabled:cursor-not-allowed bg-brand-primary">
                                     Submit for Review
                                 </button>
                             </div>

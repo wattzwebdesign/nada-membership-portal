@@ -11,7 +11,7 @@
             {{-- Date Filter --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Filter by Date Range</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-brand-primary">Filter by Date Range</h3>
                     <form method="GET" action="{{ route('trainer.payouts.reports') }}" class="flex flex-col sm:flex-row items-end gap-4">
                         <div class="flex-1 w-full sm:w-auto">
                             <label for="from" class="block text-sm font-medium text-gray-700">From</label>
@@ -22,7 +22,7 @@
                             <input type="text" name="to" id="to" value="{{ request('to') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"altInput":true,"altFormat":"M j, Y","dateFormat":"Y-m-d"}'>
                         </div>
                         <div class="flex gap-2">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                                 Filter
                             </button>
@@ -41,7 +41,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <p class="text-sm font-medium text-gray-500">Your Earnings</p>
-                        <p class="mt-2 text-3xl font-bold" style="color: #d39c27;">${{ number_format(($report['trainer_earnings'] ?? 0) / 100, 2) }}</p>
+                        <p class="mt-2 text-3xl font-bold text-brand-secondary">${{ number_format(($report['trainer_earnings'] ?? 0) / 100, 2) }}</p>
                         @if (request('from') || request('to'))
                             <p class="mt-1 text-xs text-gray-400">
                                 {{ request('from') ? request('from') : 'All time' }} - {{ request('to') ? request('to') : 'Present' }}
@@ -55,7 +55,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <p class="text-sm font-medium text-gray-500">Total Revenue</p>
-                        <p class="mt-2 text-3xl font-bold" style="color: #374269;">${{ number_format(($report['total_revenue'] ?? 0) / 100, 2) }}</p>
+                        <p class="mt-2 text-3xl font-bold text-brand-primary">${{ number_format(($report['total_revenue'] ?? 0) / 100, 2) }}</p>
                         <p class="mt-1 text-xs text-gray-400">Gross revenue from paid trainings</p>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
             {{-- Per-Training Breakdown --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Per-Training Breakdown</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-brand-primary">Per-Training Breakdown</h3>
 
                     @if (isset($report['per_training']) && count($report['per_training']) > 0)
                         {{-- Desktop Table --}}
@@ -96,7 +96,7 @@
                                             <td class="px-6 py-4 text-sm text-gray-500">{{ $item['paid_attendees'] }}</td>
                                             <td class="px-6 py-4 text-sm text-gray-900">${{ number_format($item['total_revenue'] / 100, 2) }}</td>
                                             <td class="px-6 py-4 text-sm text-gray-500">${{ number_format($item['platform_fee'] / 100, 2) }}</td>
-                                            <td class="px-6 py-4 text-sm font-semibold" style="color: #d39c27;">${{ number_format($item['trainer_payout'] / 100, 2) }}</td>
+                                            <td class="px-6 py-4 text-sm font-semibold text-brand-secondary">${{ number_format($item['trainer_payout'] / 100, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -105,7 +105,7 @@
                                         <td colspan="3" class="px-6 py-3 text-sm font-semibold text-gray-900">Total</td>
                                         <td class="px-6 py-3 text-sm font-semibold text-gray-900">${{ number_format(($report['total_revenue'] ?? 0) / 100, 2) }}</td>
                                         <td class="px-6 py-3 text-sm font-semibold text-gray-500">${{ number_format(($report['platform_fees'] ?? 0) / 100, 2) }}</td>
-                                        <td class="px-6 py-3 text-sm font-bold" style="color: #d39c27;">${{ number_format(($report['trainer_earnings'] ?? 0) / 100, 2) }}</td>
+                                        <td class="px-6 py-3 text-sm font-bold text-brand-secondary">${{ number_format(($report['trainer_earnings'] ?? 0) / 100, 2) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -119,7 +119,7 @@
                                     <p class="text-xs text-gray-500 mt-1">{{ $item['date'] ?? '' }} | {{ $item['paid_attendees'] }} paid attendees</p>
                                     <div class="flex items-center justify-between mt-2">
                                         <span class="text-xs text-gray-500">Revenue: ${{ number_format($item['total_revenue'] / 100, 2) }}</span>
-                                        <span class="text-sm font-semibold" style="color: #d39c27;">Payout: ${{ number_format($item['trainer_payout'] / 100, 2) }}</span>
+                                        <span class="text-sm font-semibold text-brand-secondary">Payout: ${{ number_format($item['trainer_payout'] / 100, 2) }}</span>
                                     </div>
                                 </div>
                             @endforeach

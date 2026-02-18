@@ -23,7 +23,7 @@
             {{-- Current Payment Method --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Current Payment Method</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-brand-primary">Current Payment Method</h3>
 
                     @if (isset($paymentMethod) && $paymentMethod)
                         <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
@@ -37,7 +37,7 @@
                                     ];
                                     $brand = $paymentMethod->card->brand ?? 'card';
                                 @endphp
-                                <div class="w-12 h-8 rounded flex items-center justify-center text-white text-xs font-bold" style="background-color: #374269;">
+                                <div class="w-12 h-8 rounded flex items-center justify-center text-white text-xs font-bold bg-brand-primary">
                                     {{ $brandIcons[$brand] ?? strtoupper(substr($brand, 0, 2)) }}
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
             {{-- Update Payment Method --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Update Payment Method</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-brand-primary">Update Payment Method</h3>
                     <p class="text-sm text-gray-500 mb-6">Enter your new card details below. Your current payment method will be replaced.</p>
 
                     <form method="POST" action="{{ route('billing.update-payment-method') }}" id="payment-form">
@@ -80,7 +80,7 @@
                         <input type="hidden" name="payment_method_id" id="payment-method-input">
 
                         <div class="flex items-center justify-between">
-                            <button type="submit" id="submit-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <button type="submit" id="submit-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                 Update Payment Method
                             </button>
@@ -95,7 +95,7 @@
             {{-- Quick Links --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Billing Links</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-brand-primary">Billing Links</h3>
                     <div class="flex flex-wrap gap-3">
                         <a href="{{ route('invoices.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
@@ -122,7 +122,7 @@
                 style: {
                     base: {
                         fontSize: '16px',
-                        color: '#374269',
+                        color: '#1C3519',
                         '::placeholder': { color: '#9ca3af' },
                     },
                 },

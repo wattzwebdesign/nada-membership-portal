@@ -26,7 +26,7 @@
                 <div class="lg:col-span-2">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6" x-data="broadcastForm()">
-                            <h3 class="text-lg font-semibold mb-4" style="color: #374269;">Compose Broadcast</h3>
+                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Compose Broadcast</h3>
 
                             <form method="POST" action="{{ route('trainer.broadcasts.store') }}" @submit="return confirmSend($event)">
                                 @csrf
@@ -42,7 +42,7 @@
                                     {{-- Selected Pills --}}
                                     <div class="flex flex-wrap gap-1.5 mb-2" x-show="selectedIds.length > 0">
                                         <template x-for="id in selectedIds" :key="id">
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-white" style="background-color: #374269;">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-white bg-brand-primary">
                                                 <span x-text="getTrainingTitle(id)"></span>
                                                 <button type="button" @click="toggleTraining(id)" class="hover:text-gray-200">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -109,8 +109,7 @@
                                 {{-- Submit --}}
                                 <button type="submit"
                                         :disabled="selectedIds.length === 0 || recipientCount === 0"
-                                        class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                        style="background-color: #374269;">
+                                        class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md text-white transition disabled:opacity-50 disabled:cursor-not-allowed bg-brand-primary">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                                     Send Broadcast
                                 </button>
@@ -123,7 +122,7 @@
                 <div class="lg:col-span-1" x-data="{ showBroadcast: null }">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h4 class="text-lg font-semibold mb-4" style="color: #374269;">Sent History</h4>
+                            <h4 class="text-lg font-semibold mb-4 text-brand-primary">Sent History</h4>
 
                             @forelse ($broadcasts as $broadcast)
                                 <button type="button"

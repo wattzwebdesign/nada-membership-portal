@@ -2,7 +2,7 @@
     <x-slot name="title">{{ $category->name }} - Resource Library - NADA</x-slot>
 
     {{-- Hero Banner --}}
-    <div class="py-10 text-center text-white" style="background-color: #374269;">
+    <div class="py-10 text-center text-white bg-brand-primary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold">{{ $category->name }}</h1>
             <p class="mt-2 text-blue-100 text-lg">{{ $resources->total() }} {{ Str::plural('resource', $resources->total()) }}</p>
@@ -27,7 +27,7 @@
                             <h3 class="text-base font-semibold text-gray-900">{{ $resource->title }}</h3>
                             <div class="mt-2 flex flex-wrap gap-1.5">
                                 @foreach ($resource->categories as $cat)
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white" style="background-color: #d39c27;">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white bg-brand-secondary">
                                         {{ $cat->name }}
                                     </span>
                                 @endforeach
@@ -51,7 +51,7 @@
                                         class="p-1 rounded hover:bg-gray-100 transition-colors"
                                         :title="bookmarked ? 'Remove bookmark' : 'Bookmark this resource'"
                                     >
-                                        <svg x-show="bookmarked" class="w-5 h-5" style="color: #d39c27;" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg x-show="bookmarked" class="w-5 h-5 text-brand-secondary" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M5 2h14a1 1 0 011 1v19.143a.5.5 0 01-.766.424L12 18.03l-7.234 4.536A.5.5 0 014 22.143V3a1 1 0 011-1z"/>
                                         </svg>
                                         <svg x-show="!bookmarked" class="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

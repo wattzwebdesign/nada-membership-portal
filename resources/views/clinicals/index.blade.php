@@ -17,8 +17,8 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold" style="color: #374269;">Submission History</h3>
-                        <a href="{{ route('clinicals.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                        <h3 class="text-lg font-semibold text-brand-primary">Submission History</h3>
+                        <a href="{{ route('clinicals.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             New Submission
                         </a>
@@ -105,7 +105,7 @@
                             <h3 class="mt-3 text-sm font-medium text-gray-900">No Submissions</h3>
                             <p class="mt-1 text-sm text-gray-500">You haven't submitted any clinical documents yet.</p>
                             <div class="mt-6">
-                                <a href="{{ route('clinicals.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                                <a href="{{ route('clinicals.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                     Submit Clinicals
                                 </a>
                             </div>

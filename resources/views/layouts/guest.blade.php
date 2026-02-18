@@ -9,7 +9,7 @@
         <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
         <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-        <meta name="theme-color" content="#374269">
+        <meta name="theme-color" content="#1C3519">
         <meta name="apple-mobile-web-app-title" content="NADA Portal">
 
         <!-- Fonts -->

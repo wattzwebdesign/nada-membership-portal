@@ -16,7 +16,7 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-2" style="color: #374269;">Clinical Submission Form</h3>
+                    <h3 class="text-lg font-semibold mb-2 text-brand-primary">Clinical Submission Form</h3>
                     <p class="text-sm text-gray-500 mb-6">Submit your clinical treatment logs for review. All fields marked with * are required.</p>
 
                     <form method="POST" action="{{ route('clinicals.store') }}" enctype="multipart/form-data">
@@ -27,7 +27,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="first_name" class="block text-sm font-medium text-gray-700">First Name *</label>
-                                    <input type="text" name="first_name" id="first_name" value="{{ old('first_name', auth()->user()->first_name) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" style="focus:border-color: #374269;">
+                                    <input type="text" name="first_name" id="first_name" value="{{ old('first_name', auth()->user()->first_name) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm focus:border-brand-primary">
                                     @error('first_name')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
@@ -72,7 +72,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        <button type="button" x-on:click="trainerNotListed = true" class="mt-1 text-sm hover:underline" style="color: #374269;">
+                                        <button type="button" x-on:click="trainerNotListed = true" class="mt-1 text-sm hover:underline text-brand-primary">
                                             My trainer is not listed
                                         </button>
                                     </div>
@@ -81,7 +81,7 @@
                                     <div>
                                         <input type="hidden" name="trainer_id" value="">
                                         <p class="mt-1 text-sm text-gray-500">Your submission will be sent to a NADA administrator for review.</p>
-                                        <button type="button" x-on:click="trainerNotListed = false" class="mt-1 text-sm hover:underline" style="color: #374269;">
+                                        <button type="button" x-on:click="trainerNotListed = false" class="mt-1 text-sm hover:underline text-brand-primary">
                                             Select a trainer instead
                                         </button>
                                     </div>
@@ -125,7 +125,7 @@
                                     x-on:dragover.prevent="dragging = true"
                                     x-on:dragleave.prevent="dragging = false"
                                     x-on:drop.prevent="dragging = false; handleFiles($event.dataTransfer.files)"
-                                    :class="dragging ? 'border-[#374269] bg-blue-50' : 'border-gray-300'"
+                                    :class="dragging ? 'border-brand-primary bg-blue-50' : 'border-gray-300'"
                                     class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md cursor-pointer hover:border-gray-400 transition-colors"
                                 >
                                     <div class="space-y-1 text-center">
@@ -133,7 +133,7 @@
                                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                         <div class="flex text-sm text-gray-600">
-                                            <span class="font-medium hover:underline" style="color: #374269;">Upload files</span>
+                                            <span class="font-medium hover:underline text-brand-primary">Upload files</span>
                                             <p class="pl-1">or drag and drop</p>
                                         </div>
                                         <p class="text-xs text-gray-500">PDF, JPG, PNG, DOC, DOCX up to 10MB each</p>
@@ -193,7 +193,7 @@
                         {{-- Submit --}}
                         <div class="mt-6 flex items-center justify-between">
                             <a href="{{ route('clinicals.index') }}" class="text-sm text-gray-500 hover:text-gray-700">View Submission History</a>
-                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                                 Submit Clinicals
                             </button>

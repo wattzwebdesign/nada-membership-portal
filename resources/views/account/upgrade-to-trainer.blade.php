@@ -32,7 +32,7 @@
                     <svg class="mx-auto h-12 w-12 text-green-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <h3 class="text-lg font-semibold text-green-800">You Are a Registered Trainer</h3>
                     <p class="text-sm text-green-600 mt-1">Your trainer account is active. Access the Trainer Portal to manage trainings and payouts.</p>
-                    <a href="{{ route('trainer.dashboard') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                    <a href="{{ route('trainer.dashboard') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                         Go to Trainer Portal
                     </a>
                 </div>
@@ -53,7 +53,7 @@
                     <div class="p-6">
                         {{-- Intro --}}
                         <div class="mb-6">
-                            <h3 class="text-lg font-semibold" style="color: #374269;">Trainer Application</h3>
+                            <h3 class="text-lg font-semibold text-brand-primary">Trainer Application</h3>
                             <p class="text-sm text-gray-500 mt-2">Registered Trainers can host NADA trainings, manage attendees, issue certificates, and earn payouts through Stripe Connect. Complete the application below, upload the required documents, and pay the $75 application fee. An administrator will review your submission.</p>
                         </div>
 
@@ -152,7 +152,7 @@
                                             <h4 class="text-sm font-semibold text-gray-700">Application Fee</h4>
                                             <p class="text-xs text-gray-500 mt-0.5">One-time, non-refundable fee</p>
                                         </div>
-                                        <span class="text-lg font-bold" style="color: #374269;">$75.00</span>
+                                        <span class="text-lg font-bold text-brand-primary">$75.00</span>
                                     </div>
                                 </div>
                             </div>
@@ -160,7 +160,7 @@
                             {{-- Submit --}}
                             <div class="mt-6 flex items-center justify-between">
                                 <a href="{{ route('account.edit') }}" class="text-sm text-gray-500 hover:text-gray-700">Back to Account</a>
-                                <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #d39c27;">
+                                <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-brand-secondary">
                                     Submit Application & Pay $75
                                 </button>
                             </div>

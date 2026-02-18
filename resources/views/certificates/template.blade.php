@@ -18,7 +18,7 @@
         }
 
         .sub-header h3 {
-            text-align: center; color: #374269;
+            text-align: center; color: #1C3519;
             letter-spacing: 1.5px; padding-top: 15px; margin: 0;
         }
 
@@ -33,7 +33,7 @@
 
         .description { position: relative; top: -50px; }
         .description p {
-            text-align: center; color: #374269;
+            text-align: center; color: #1C3519;
             margin: 5px 0; font-size: 24px;
         }
 
@@ -43,7 +43,7 @@
         .signatures img:last-child { float: right; margin-right: 10%; }
 
         .cert-meta { position: absolute; bottom: 20px; left: 20px; font-size: 22px; }
-        .cert-meta p { margin: 15px 0; color: #d39c27; }
+        .cert-meta p { margin: 15px 0; color: #AD7E07; }
         .cert-meta p span { color: #000; }
 
         .footer {

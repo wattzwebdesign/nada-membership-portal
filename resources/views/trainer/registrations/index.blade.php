@@ -46,7 +46,7 @@
 
                         {{-- Buttons --}}
                         <div class="flex gap-2">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                 Filter
                             </button>
@@ -78,7 +78,7 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left">
-                                            <input type="checkbox" id="select-all" class="rounded border-gray-300" style="color: #374269;">
+                                            <input type="checkbox" id="select-all" class="rounded border-gray-300 text-brand-primary">
                                         </th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
@@ -105,7 +105,7 @@
                                         <tr class="hover:bg-gray-50">
                                             <td class="px-6 py-4">
                                                 @if ($regStatusValue !== 'completed')
-                                                    <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 reg-check" style="color: #374269;">
+                                                    <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 reg-check text-brand-primary">
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -115,7 +115,7 @@
                                                 {{ $reg->user->email }}
                                             </td>
                                             <td class="px-6 py-4 text-sm">
-                                                <a href="{{ route('trainer.attendees.index', $reg->training) }}" class="font-medium hover:underline" style="color: #374269;">
+                                                <a href="{{ route('trainer.attendees.index', $reg->training) }}" class="font-medium hover:underline text-brand-primary">
                                                     {{ $reg->training->title }}
                                                 </a>
                                                 <p class="text-xs text-gray-400">{{ $reg->training->start_date->format('M j, Y') }}</p>
@@ -168,7 +168,7 @@
                                     <div class="flex items-center justify-between mb-1">
                                         <div class="flex items-center space-x-2">
                                             @if ($regStatusValue !== 'completed')
-                                                <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 reg-check" style="color: #374269;">
+                                                <input type="checkbox" name="registration_ids[]" value="{{ $reg->id }}" class="rounded border-gray-300 reg-check text-brand-primary">
                                             @endif
                                             <span class="text-sm font-medium text-gray-900">{{ $reg->user->full_name }}</span>
                                         </div>
@@ -178,7 +178,7 @@
                                     </div>
                                     <p class="text-xs text-gray-500 ml-6">{{ $reg->user->email }}</p>
                                     <p class="text-xs text-gray-400 mt-1 ml-6">
-                                        <a href="{{ route('trainer.attendees.index', $reg->training) }}" class="hover:underline" style="color: #374269;">{{ $reg->training->title }}</a>
+                                        <a href="{{ route('trainer.attendees.index', $reg->training) }}" class="hover:underline text-brand-primary">{{ $reg->training->title }}</a>
                                         — {{ $reg->training->start_date->format('M j, Y') }}
                                     </p>
                                     @if ($regStatusValue !== 'completed')

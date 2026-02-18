@@ -34,13 +34,13 @@
                 <div class="flex flex-col items-center">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full
                         @if ($states[$i] === 'completed')
-                            text-white
+                            text-white bg-brand-primary
                         @elseif ($states[$i] === 'current')
-                            text-white
+                            text-white bg-brand-secondary
                         @else
                             bg-gray-300 text-gray-500
                         @endif
-                    " @if ($states[$i] === 'completed') style="background-color: #374269;" @elseif ($states[$i] === 'current') style="background-color: #d39c27;" @endif>
+                    ">
                         @if ($states[$i] === 'completed')
                             {{-- Checkmark --}}
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
@@ -61,18 +61,20 @@
                     </div>
                     <span class="mt-2 text-xs font-medium text-center
                         @if ($states[$i] === 'completed')
+                            text-brand-primary
                         @elseif ($states[$i] === 'current')
+                            text-brand-secondary
                         @else
                             text-gray-400
                         @endif
-                    " @if ($states[$i] === 'completed') style="color: #374269;" @elseif ($states[$i] === 'current') style="color: #d39c27;" @endif>{{ $step['label'] }}</span>
+                    ">{{ $step['label'] }}</span>
                 </div>
 
                 {{-- Connector line --}}
                 @if ($i < count($steps) - 1)
                     <div class="flex-1 mx-3 mt-[-1.25rem]">
                         @if ($states[$i] === 'completed' && $states[$i + 1] === 'completed')
-                            <div class="h-0.5" style="background-color: #374269;"></div>
+                            <div class="h-0.5 bg-brand-primary"></div>
                         @else
                             <div class="h-0.5 border-t-2 border-dashed border-gray-300"></div>
                         @endif
@@ -90,13 +92,13 @@
             {{-- Circle --}}
             <div class="flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0
                 @if ($states[$i] === 'completed')
-                    text-white
+                    text-white bg-brand-primary
                 @elseif ($states[$i] === 'current')
-                    text-white
+                    text-white bg-brand-secondary
                 @else
                     bg-gray-300 text-gray-500
                 @endif
-            " @if ($states[$i] === 'completed') style="background-color: #374269;" @elseif ($states[$i] === 'current') style="background-color: #d39c27;" @endif>
+            ">
                 @if ($states[$i] === 'completed')
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                 @else
@@ -107,18 +109,20 @@
             {{-- Label --}}
             <span class="text-sm font-medium
                 @if ($states[$i] === 'completed')
+                    text-brand-primary
                 @elseif ($states[$i] === 'current')
+                    text-brand-secondary
                 @else
                     text-gray-400
                 @endif
-            " @if ($states[$i] === 'completed') style="color: #374269;" @elseif ($states[$i] === 'current') style="color: #d39c27;" @endif>{{ $step['label'] }}</span>
+            ">{{ $step['label'] }}</span>
         </div>
 
         {{-- Vertical connector --}}
         @if ($i < count($steps) - 1)
             <div class="ml-4 pl-px">
                 @if ($states[$i] === 'completed' && $states[$i + 1] === 'completed')
-                    <div class="w-0.5 h-2" style="background-color: #374269;"></div>
+                    <div class="w-0.5 h-2 bg-brand-primary"></div>
                 @else
                     <div class="w-0.5 h-2 border-l-2 border-dashed border-gray-300"></div>
                 @endif

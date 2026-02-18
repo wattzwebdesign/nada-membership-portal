@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold" style="color: #374269;">Invoices</h3>
+                        <h3 class="text-lg font-semibold text-brand-primary">Invoices</h3>
                         <a href="{{ route('membership.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Back to Membership</a>
                     </div>
 
@@ -34,7 +34,7 @@
                                                 {{ $invoice->created_at->format('M j, Y') }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                                                <a href="{{ route('invoices.show', $invoice) }}" class="hover:underline" style="color: #374269;">
+                                                <a href="{{ route('invoices.show', $invoice) }}" class="hover:underline text-brand-primary">
                                                     {{ $invoice->number ?? 'N/A' }}
                                                 </a>
                                             </td>
@@ -61,13 +61,13 @@
                                                     @if (in_array($invoice->status, ['open', 'draft']))
                                                         <form action="{{ route('invoices.pay', $invoice) }}" method="POST" class="inline">
                                                             @csrf
-                                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white" style="background-color: #d39c27;">
+                                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-brand-secondary">
                                                                 Pay Now
                                                             </button>
                                                         </form>
                                                     @endif
                                                     @if ($invoice->invoice_pdf_url)
-                                                        <a href="{{ $invoice->invoice_pdf_url }}" target="_blank" class="inline-flex items-center text-sm font-medium hover:underline" style="color: #374269;">
+                                                        <a href="{{ $invoice->invoice_pdf_url }}" target="_blank" class="inline-flex items-center text-sm font-medium hover:underline text-brand-primary">
                                                             Download
                                                         </a>
                                                     @endif

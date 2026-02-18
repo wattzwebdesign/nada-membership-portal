@@ -41,7 +41,7 @@
                             <span class="text-gray-400 text-sm">to</span>
                             <input type="text" name="date_to" value="{{ request('date_to') }}" class="w-full sm:w-auto rounded-md border-gray-300 shadow-sm text-sm" placeholder="To" data-datepicker='{"altInput":true,"altFormat":"M j, Y","dateFormat":"Y-m-d"}'>
                         </div>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                             Filter
                         </button>
                         @if(request()->hasAny(['search', 'type', 'price', 'date_from', 'date_to']))
@@ -73,7 +73,7 @@
                                         {{ ucfirst(str_replace('_', ' ', $training->type->value)) }}
                                     </span>
                                     @if ($training->is_paid)
-                                        <span class="text-lg font-bold" style="color: #d39c27;">${{ number_format($training->price_cents / 100, 2) }}</span>
+                                        <span class="text-lg font-bold text-brand-secondary">${{ number_format($training->price_cents / 100, 2) }}</span>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Free</span>
                                     @endif
@@ -115,13 +115,13 @@
                                             <span>{{ $spotsLeft }} spots left</span>
                                         </div>
                                         <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                            <div class="h-1.5 rounded-full" style="width: {{ min(100, (($training->registrations_count ?? 0) / $training->max_attendees) * 100) }}%; background-color: {{ $spotsLeft <= 5 ? '#ef4444' : '#374269' }};"></div>
+                                            <div class="h-1.5 rounded-full {{ $spotsLeft <= 5 ? 'bg-red-500' : 'bg-brand-primary' }}" style="width: {{ min(100, (($training->registrations_count ?? 0) / $training->max_attendees) * 100) }}%;"></div>
                                         </div>
                                     </div>
                                 @endif
 
                                 {{-- Register Button --}}
-                                <a href="{{ route('trainings.show', $training) }}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white transition" style="background-color: #374269;">
+                                <a href="{{ route('trainings.show', $training) }}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white transition bg-brand-primary">
                                     View Details
                                 </a>
                             </div>

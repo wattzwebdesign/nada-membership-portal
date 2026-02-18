@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h2 class="text-2xl font-bold mb-6" style="color: #374269;">Invoice History</h2>
+                    <h2 class="text-2xl font-bold mb-6 text-brand-primary">Invoice History</h2>
 
                     @if ($invoices->isEmpty())
                         <div class="text-center py-12">
@@ -29,7 +29,7 @@
                                     @foreach ($invoices as $invoice)
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                <a href="{{ route('invoices.show', $invoice) }}" class="hover:underline" style="color: #374269;">
+                                                <a href="{{ route('invoices.show', $invoice) }}" class="hover:underline text-brand-primary">
                                                     {{ $invoice->number ?? '-' }}
                                                 </a>
                                             </td>
@@ -57,14 +57,12 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm space-x-3">
                                                 @if (in_array($invoice->status, ['open', 'draft']))
                                                     <a href="{{ route('invoices.show', $invoice) }}"
-                                                       class="font-medium hover:underline"
-                                                       style="color: #d39c27;">
+                                                       class="font-medium hover:underline text-brand-secondary">
                                                         Pay Now
                                                     </a>
                                                 @endif
                                                 <a href="{{ route('invoices.show', $invoice) }}"
-                                                   class="font-medium hover:underline"
-                                                   style="color: #374269;">
+                                                   class="font-medium hover:underline text-brand-primary">
                                                     View
                                                 </a>
                                             </td>

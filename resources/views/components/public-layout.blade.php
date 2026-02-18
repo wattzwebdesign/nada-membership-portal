@@ -8,7 +8,7 @@
         <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
         <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-        <meta name="theme-color" content="#374269">
+        <meta name="theme-color" content="#1C3519">
         <meta name="apple-mobile-web-app-title" content="NADA Portal">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -36,7 +36,7 @@
                                 <x-slot name="trigger">
                                     <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                         <div class="flex items-center gap-2">
-                                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold" style="background-color: #374269;">
+                                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold bg-brand-primary">
                                                 {{ strtoupper(substr(Auth::user()->first_name, 0, 1) . substr(Auth::user()->last_name, 0, 1)) }}
                                             </div>
                                             <span>{{ Auth::user()->full_name }}</span>
@@ -67,7 +67,7 @@
                             </x-dropdown>
                         @else
                             <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Log In</a>
-                            <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #374269;">Sign Up</a>
+                            <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-primary-hover">Sign Up</a>
                         @endauth
                     </div>
 
@@ -96,7 +96,7 @@
                     @auth
                         <div class="px-4 mb-3">
                             <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold" style="background-color: #374269;">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold bg-brand-primary">
                                     {{ strtoupper(substr(Auth::user()->first_name, 0, 1) . substr(Auth::user()->last_name, 0, 1)) }}
                                 </div>
                                 <div>
@@ -117,7 +117,7 @@
                     @else
                         <div class="space-y-1 px-4">
                             <a href="{{ route('login') }}" class="block w-full py-2 text-base font-medium text-gray-600 hover:text-gray-800 transition duration-150 ease-in-out">Log In</a>
-                            <a href="{{ route('register') }}" class="block w-full py-2 text-base font-medium text-white text-center rounded-md" style="background-color: #374269;">Sign Up</a>
+                            <a href="{{ route('register') }}" class="block w-full py-2 text-base font-medium text-white text-center rounded-md bg-brand-primary hover:bg-brand-primary-hover">Sign Up</a>
                         </div>
                     @endauth
                 </div>

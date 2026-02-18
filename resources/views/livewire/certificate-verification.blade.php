@@ -3,7 +3,7 @@
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h2 class="text-2xl font-bold mb-2" style="color: #374269;">Verify Certificate</h2>
+                    <h2 class="text-2xl font-bold mb-2 text-brand-primary">Verify Certificate</h2>
                     <p class="text-gray-600 mb-6">Enter a certificate code to verify its authenticity and status.</p>
 
                     <form wire:submit="verify" class="mb-8">
@@ -12,15 +12,13 @@
                                 <input type="text"
                                        wire:model="code"
                                        placeholder="Enter certificate code..."
-                                       class="w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 text-sm"
-                                       style="focus:border-color: #374269;">
+                                       class="w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 text-sm focus:border-brand-primary">
                                 @error('code')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
                             <button type="submit"
-                                    class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                                    style="background-color: #374269;">
+                                    class="inline-flex items-center px-4 py-2 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-primary">
                                 <svg wire:loading wire:target="verify" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

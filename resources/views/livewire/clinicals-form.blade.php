@@ -3,7 +3,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h2 class="text-2xl font-bold mb-6" style="color: #374269;">Submit Clinical Documentation</h2>
+                    <h2 class="text-2xl font-bold mb-6 text-brand-primary">Submit Clinical Documentation</h2>
 
                     @if (session('success'))
                         <div class="mb-6 rounded-md bg-green-50 p-4">
@@ -73,8 +73,7 @@
                             <label for="treatment_logs" class="block text-sm font-medium text-gray-700">Treatment Logs</label>
                             <p class="mt-1 text-xs text-gray-500">Upload PDF, JPG, PNG, DOC, or DOCX files (max 10MB each).</p>
                             <input type="file" id="treatment_logs" wire:model="treatment_logs" multiple
-                                   class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:text-white file:cursor-pointer"
-                                   style="file:background-color: #374269;"
+                                   class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:text-white file:cursor-pointer file:bg-brand-primary"
                                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
 
                             <div wire:loading wire:target="treatment_logs" class="mt-2 text-sm text-gray-500">
@@ -116,8 +115,7 @@
                         {{-- Submit Button --}}
                         <div class="flex justify-end">
                             <button type="submit"
-                                    class="inline-flex items-center px-6 py-2.5 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                                    style="background-color: #374269;"
+                                    class="inline-flex items-center px-6 py-2.5 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-primary"
                                     wire:loading.attr="disabled">
                                 <svg wire:loading wire:target="submit" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

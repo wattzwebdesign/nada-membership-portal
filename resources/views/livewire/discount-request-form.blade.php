@@ -3,7 +3,7 @@
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h2 class="text-2xl font-bold mb-2" style="color: #374269;">Request a Discount</h2>
+                    <h2 class="text-2xl font-bold mb-2 text-brand-primary">Request a Discount</h2>
                     <p class="text-gray-600 mb-6">If you qualify for a student or senior discount, please submit proof documentation below.</p>
 
                     @if (session('success'))
@@ -17,19 +17,19 @@
                         <fieldset>
                             <legend class="block text-sm font-medium text-gray-700 mb-3">Discount Type</legend>
                             <div class="space-y-3">
-                                <label class="flex items-center p-4 border rounded-lg cursor-pointer transition-colors {{ $discount_type === 'student' ? 'border-2' : 'border-gray-200 hover:bg-gray-50' }}"
-                                       style="{{ $discount_type === 'student' ? 'border-color: #374269; background-color: #f8f9fc;' : '' }}">
+                                <label class="flex items-center p-4 border rounded-lg cursor-pointer transition-colors {{ $discount_type === 'student' ? 'border-2 border-brand-primary' : 'border-gray-200 hover:bg-gray-50' }}"
+                                       style="{{ $discount_type === 'student' ? 'background-color: #f8f9fc;' : '' }}">
                                     <input type="radio" wire:model.live="discount_type" value="student"
-                                           class="h-4 w-4" style="color: #374269;">
+                                           class="h-4 w-4 text-brand-primary">
                                     <div class="ml-3">
                                         <span class="block text-sm font-medium text-gray-900">Student Discount</span>
                                         <span class="block text-sm text-gray-500">For currently enrolled students with valid student ID.</span>
                                     </div>
                                 </label>
-                                <label class="flex items-center p-4 border rounded-lg cursor-pointer transition-colors {{ $discount_type === 'senior' ? 'border-2' : 'border-gray-200 hover:bg-gray-50' }}"
-                                       style="{{ $discount_type === 'senior' ? 'border-color: #374269; background-color: #f8f9fc;' : '' }}">
+                                <label class="flex items-center p-4 border rounded-lg cursor-pointer transition-colors {{ $discount_type === 'senior' ? 'border-2 border-brand-primary' : 'border-gray-200 hover:bg-gray-50' }}"
+                                       style="{{ $discount_type === 'senior' ? 'background-color: #f8f9fc;' : '' }}">
                                     <input type="radio" wire:model.live="discount_type" value="senior"
-                                           class="h-4 w-4" style="color: #374269;">
+                                           class="h-4 w-4 text-brand-primary">
                                     <div class="ml-3">
                                         <span class="block text-sm font-medium text-gray-900">Senior Discount</span>
                                         <span class="block text-sm text-gray-500">For individuals aged 65 and older.</span>
@@ -57,8 +57,7 @@
                             <label for="proof_documents" class="block text-sm font-medium text-gray-700">Proof Documents</label>
                             <p class="mt-1 text-xs text-gray-500">Upload supporting documents (max 10MB each).</p>
                             <input type="file" id="proof_documents" wire:model="proof_documents" multiple
-                                   class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:text-white file:cursor-pointer"
-                                   style="file:background-color: #374269;">
+                                   class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:text-white file:cursor-pointer file:bg-brand-primary">
 
                             <div wire:loading wire:target="proof_documents" class="mt-2 text-sm text-gray-500">
                                 Uploading files...
@@ -88,8 +87,7 @@
                         {{-- Submit --}}
                         <div class="flex justify-end">
                             <button type="submit"
-                                    class="inline-flex items-center px-6 py-2.5 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
-                                    style="background-color: #374269;"
+                                    class="inline-flex items-center px-6 py-2.5 rounded-md text-white text-sm font-medium shadow-sm hover:opacity-90 transition-opacity bg-brand-primary"
                                     wire:loading.attr="disabled">
                                 <svg wire:loading wire:target="submit" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
