@@ -27,6 +27,7 @@ class OrderController extends Controller
         }
 
         $orders = $vendorProfile->vendorOrderSplits()
+            ->whereHas('order')
             ->with(['order', 'order.items' => fn ($q) => $q->where('vendor_profile_id', $vendorProfile->id)])
             ->orderByDesc('created_at')
             ->paginate(20);
