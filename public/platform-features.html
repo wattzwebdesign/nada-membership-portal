@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NADA Membership Portal - Platform Features</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #333; line-height: 1.6; background: #fafaf8; }
+
+        .hero {
+            background: linear-gradient(135deg, #1C3519 0%, #2E522A 50%, #1C3519 100%);
+            color: white; text-align: center; padding: 80px 24px;
+        }
+        .hero h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .hero p { font-size: 1.2rem; color: #c8d8c6; max-width: 640px; margin: 0 auto; }
+        .hero .badge { display: inline-block; background: #AD7E07; color: white; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px; }
+
+        .stats-bar {
+            background: white; border-bottom: 1px solid #e5e5e5; padding: 32px 24px;
+            display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+        }
+        .stat { text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: 800; color: #1C3519; }
+        .stat-label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        .section { padding: 64px 0; }
+        .section:nth-child(even) { background: white; }
+        .section-header { text-align: center; margin-bottom: 48px; }
+        .section-header h2 { font-size: 2rem; font-weight: 700; color: #1C3519; margin-bottom: 8px; }
+        .section-header p { color: #777; font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+        .section-tag { display: inline-block; background: #f0e8d3; color: #AD7E07; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 12px; border-radius: 12px; margin-bottom: 12px; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .feature-card {
+            background: white; border: 1px solid #e8e8e5; border-radius: 12px; padding: 28px;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+        .section:nth-child(even) .feature-card { background: #fafaf8; }
+        .feature-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-color: #d0d0c8; }
+        .feature-card h3 { font-size: 1.05rem; font-weight: 700; color: #1C3519; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .feature-card p { font-size: 0.9rem; color: #666; line-height: 1.55; }
+        .feature-icon { font-size: 1.3rem; }
+
+        .highlight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .highlight-card {
+            background: linear-gradient(135deg, #1C3519, #2E522A); color: white;
+            border-radius: 12px; padding: 28px; text-align: center;
+        }
+        .highlight-card .icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .highlight-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+        .highlight-card p { font-size: 0.85rem; color: #b8d4b6; }
+
+        .notification-list { columns: 2; column-gap: 32px; list-style: none; }
+        .notification-list li { padding: 6px 0; font-size: 0.9rem; color: #555; break-inside: avoid; display: flex; align-items: baseline; gap: 8px; }
+        .notification-list li::before { content: ""; display: inline-block; width: 6px; height: 6px; background: #AD7E07; border-radius: 50%; flex-shrink: 0; }
+
+        .tech-stack { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 24px; }
+        .tech-pill { background: white; border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; color: #444; }
+
+        footer { background: #1C3519; color: white; text-align: center; padding: 40px 24px; }
+        footer p { color: #8aa888; font-size: 0.9rem; }
+        footer strong { color: #DDAD26; }
+
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 2rem; }
+            .stats-bar { gap: 24px; }
+            .notification-list { columns: 1; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="badge">Platform Overview</div>
+    <h1>NADA Membership Portal</h1>
+    <p>A comprehensive membership, training, certification, and multi-vendor marketplace platform for the National Acupuncture Detoxification Association.</p>
+</div>
+
+<div class="stats-bar">
+    <div class="stat"><div class="stat-number">237+</div><div class="stat-label">Routes</div></div>
+    <div class="stat"><div class="stat-number">54</div><div class="stat-label">Controllers</div></div>
+    <div class="stat"><div class="stat-number">33</div><div class="stat-label">Models</div></div>
+    <div class="stat"><div class="stat-number">42</div><div class="stat-label">Notifications</div></div>
+    <div class="stat"><div class="stat-number">24</div><div class="stat-label">Admin Resources</div></div>
+    <div class="stat"><div class="stat-number">16</div><div class="stat-label">Livewire Components</div></div>
+</div>
+
+<!-- Standout Features -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">What Sets It Apart</span>
+            <h2>Standout Features</h2>
+            <p>The capabilities that make this platform unique</p>
+        </div>
+        <div class="highlight-grid">
+            <div class="highlight-card">
+                <div class="icon">&#127917;</div>
+                <h3>Apple &amp; Google Wallet</h3>
+                <p>Membership cards and training tickets in your phone with geofencing alerts and auto-updating passes</p>
+            </div>
+            <div class="highlight-card">
+                <div class="icon">&#129302;</div>
+                <h3>AI Support Chatbot</h3>
+                <p>Claude-powered assistant with full portal knowledge, user context awareness, and interactive page highlighting</p>
+            </div>
+            <div class="highlight-card">
+                <div class="icon">&#128722;</div>
+                <h3>Multi-Vendor Marketplace</h3>
+                <p>Full shop with per-vendor Stripe Connect payouts, member pricing, digital products, and guest checkout</p>
+            </div>
+            <div class="highlight-card">
+                <div class="icon">&#128737;</div>
+                <h3>Dispute-Proof Consent</h3>
+                <p>Forensic consent capture with branded PDF evidence documents for chargeback defense</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Membership & Billing -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Membership</span>
+            <h2>Membership &amp; Subscription Management</h2>
+            <p>Full subscription lifecycle powered by Stripe</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128179;</span> Stripe-Powered Billing</h3>
+                <p>Recurring subscriptions via Stripe Checkout with support for 5 plan types: Membership, Registered Trainer, Senior, Student, and Comped. Members subscribe, switch plans with prorated billing, cancel, and reactivate.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128179;</span> Payment Method Management</h3>
+                <p>Members add, update, or remove payment methods directly in the portal. Card removal stops auto-renewal without canceling &mdash; members receive reminder emails and an invoice they can pay anytime.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128196;</span> Invoice History</h3>
+                <p>Full invoice management synced from Stripe. Members view past invoices, download PDFs, and pay outstanding balances through a hosted checkout session.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#127991;</span> Discount Request System</h3>
+                <p>Students and seniors request reduced-rate plans. Admins receive one-click approve/deny email links that work without authentication &mdash; streamlined token-based approval flow.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128276;</span> Smart Renewal Reminders</h3>
+                <p>Automated tiered reminders as expiration approaches. Failed payment notifications with retry guidance. Upcoming renewal alerts so members are never surprised.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128241;</span> Digital Wallet Cards</h3>
+                <p>Members add their NADA membership card to Apple Wallet or Google Wallet with QR code for instant verification. Passes auto-update when subscription or certificate details change.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trainings -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Trainings</span>
+            <h2>Training &amp; Education System</h2>
+            <p>End-to-end training management for members and trainers</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128197;</span> Training Catalog</h3>
+                <p>Browse upcoming trainings with filters for type (In Person, Virtual, Hybrid), price (Free/Paid), date range, and keyword search. Each training shows capacity, spots remaining, and a progress bar.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#127915;</span> Registration &amp; Payment</h3>
+                <p>One-click registration with integrated Stripe Checkout for paid trainings. Members accept terms and the consent is captured with full forensic detail. Trainers are notified of every new registration.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128241;</span> Training Wallet Passes</h3>
+                <p>Save training tickets to Apple or Google Wallet. Passes include date, time, location, and trainer. In-person trainings get geofence alerts when you arrive. Virtual trainings include the meeting link on the pass.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128101;</span> Group Training Requests</h3>
+                <p>Organizations request institutional trainings via a public form. The system calculates fees using configurable flat-rate or percentage-based pricing. Confirmation and payment notifications are sent automatically.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#9200;</span> Automated Reminders</h3>
+                <p>Training reminder emails are sent automatically before upcoming events, keeping attendees informed and reducing no-shows.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128203;</span> Clinical Submissions</h3>
+                <p>Members submit clinical documentation with file uploads for trainer review. Trainers approve, reject, or request revisions. Approved clinicals can trigger certificate issuance directly.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Certificates -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Certification</span>
+            <h2>Certificates &amp; Verification</h2>
+            <p>Automated issuance with public trust verification</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#127942;</span> Automated Certificate Issuance</h3>
+                <p>Certificates are generated with unique 16-digit codes (XXXXXX-XXX-XXX-XXXX), branded landscape PDF via DomPDF, and stored for download. Expiration dates auto-sync with the member's subscription period.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128270;</span> Public Verification</h3>
+                <p>Anyone can verify a NADA certificate at <code>/verify/{code}</code> without logging in. A trust mechanism for employers, institutions, and regulatory bodies.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128260;</span> Lifecycle Management</h3>
+                <p>Certificates can be active, expired, or revoked. When subscriptions renew, certificate dates update automatically. When subscriptions lapse, certificates expire. Admin can reactivate or revoke at any time.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trainer Portal -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Trainer Portal</span>
+            <h2>Trainer Ecosystem</h2>
+            <p>A full suite of tools for NADA registered trainers</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128200;</span> Trainer Dashboard</h3>
+                <p>Dedicated dashboard with training CRUD, attendee management, clinical review, earnings overview, and broadcast messaging &mdash; everything a trainer needs in one place.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128101;</span> Attendee Management</h3>
+                <p>View attendee lists per training, mark individual or bulk completions, export attendee data, and manage registrations across all trainings from a single view.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#127760;</span> Public Directory &amp; Profiles</h3>
+                <p>Trainers appear in a public directory at <code>/trainers</code> with geocoded locations via OpenStreetMap. Visitors can contact trainers through a rate-limited form.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128227;</span> Broadcast Messaging</h3>
+                <p>Send targeted broadcast emails to training attendees. Live recipient count preview before sending so trainers know exactly who will receive the message.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128176;</span> Stripe Connect Payouts</h3>
+                <p>Trainers onboard to Stripe Connect Express for automatic payouts from paid training registrations. Configurable revenue splits with detailed earnings reports filterable by date range.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128221;</span> Clinical Review</h3>
+                <p>Review clinical documentation submitted by trainees, approve or reject with notes, and issue certificates directly after approval &mdash; all from the trainer portal.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Multi-Vendor Marketplace -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Marketplace</span>
+            <h2>Multi-Vendor NADA Shop</h2>
+            <p>A full-featured marketplace with Stripe Connect payouts</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128722;</span> Public Storefront</h3>
+                <p>Browse products by category, vendor, keyword, or price. Each vendor has a dedicated storefront page. No login required to shop.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#127991;</span> Member Pricing</h3>
+                <p>Products support dual pricing: regular and member price. Active NADA members automatically receive discounted pricing at checkout.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128722;</span> Session-Based Cart</h3>
+                <p>No account needed to shop. Cart persists in the session with real-time stock validation, quantity management, and separate shipping fee calculations for physical and digital products.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128179;</span> Guest Checkout &amp; Auto-Accounts</h3>
+                <p>Guests checkout via Stripe. The system auto-creates an account with a set-password email, or links the order to an existing account if the email matches.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128178;</span> Per-Vendor Splits &amp; Payouts</h3>
+                <p>Multi-vendor orders are automatically split. Each vendor's share is calculated and transferred to their Stripe Connect account immediately upon payment.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128230;</span> Per-Vendor Shipping &amp; Tracking</h3>
+                <p>Each vendor manages their own fulfillment independently. Customers see per-vendor shipping status, tracking numbers, and delivery dates on their order detail page.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128190;</span> Digital Products</h3>
+                <p>Vendors sell downloadable files up to 50MB. Digital products skip shipping and are available for instant download from the order detail page after purchase.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128172;</span> Vendor Contact System</h3>
+                <p>Customers message vendors about specific orders through a rate-limited contact form. Messages arrive by email with the customer's address as reply-to for direct conversation.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#127919;</span> AJAX Add to Cart</h3>
+                <p>Products are added to cart without page refresh. The button shows a spinner, then a green checkmark confirmation, and the cart icon updates in real-time via Livewire events.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vendor Portal -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Vendor Portal</span>
+            <h2>Vendor Management Tools</h2>
+            <p>Everything vendors need to run their store</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128736;</span> Vendor Dashboard</h3>
+                <p>At-a-glance stats (total orders, revenue, active products, pending shipments), quick action links, and a recent orders table. Setup wizard guides new vendors through profile and Stripe onboarding.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128444;</span> Store Profile</h3>
+                <p>Business name, description, contact info, default shipping fee, logo, and gallery images. Each vendor gets a public storefront at <code>/shop/vendor/{slug}</code>.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128230;</span> Product Management</h3>
+                <p>Full CRUD with multi-image upload (drag-to-reorder), dual pricing, stock tracking, SKU, category management, digital file support, and draft/active/archived status control.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128666;</span> Order Fulfillment</h3>
+                <p>View orders containing your products, mark as shipped with optional tracking number (customer notified by email), then mark as delivered. Each vendor manages their portion independently.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128200;</span> Earnings &amp; Reports</h3>
+                <p>Earnings overview with total revenue, platform fees, and net payouts. Detailed date-filterable reports showing per-order breakdown of subtotals, fees, and vendor payouts.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128279;</span> Stripe Connect Onboarding</h3>
+                <p>Guided Stripe Express onboarding with status indicators (charges enabled, payouts enabled, details submitted) and a direct link to the Stripe dashboard for account management.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Chatbot -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">AI</span>
+            <h2>AI-Powered Support Chatbot</h2>
+            <p>Instant, contextual help powered by Claude</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#129302;</span> Claude-Powered Chat</h3>
+                <p>Anthropic Claude (Sonnet) with a 594-line system prompt covering the entire portal. Multi-turn conversation with 20-message history. Rate-limited to 30 requests/hour per IP. Stays strictly on-topic.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128100;</span> User Context Awareness</h3>
+                <p>When logged in, the chatbot knows your name, role, subscription status, certificates, training registrations, clinicals, discount status, vendor profile, recent orders, and tracking numbers.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128161;</span> Interactive Page Highlighting</h3>
+                <p>Ask "Where do I find X?" and the chatbot highlights the actual element on the page with a smooth scroll and overlay animation. 31 highlightable elements across 12 pages plus full sidebar navigation.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Consent & Disputes -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Legal</span>
+            <h2>Consent Tracking &amp; Dispute Defense</h2>
+            <p>Forensic-grade proof for every agreement acceptance</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128221;</span> Versioned Agreements</h3>
+                <p>NDA and Terms of Service are versioned. Users must accept the current version after login. The middleware chain enforces: auth &rarr; email verified &rarr; NDA accepted before portal access.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128270;</span> Forensic Consent Capture</h3>
+                <p>Every consent event records: user, agreement version, IP address, user agent, consent context (subscription, plan switch, training, trainer application), the related entity, dollar amount, Stripe transaction ID, and a full snapshot of the agreement text.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128196;</span> PDF Evidence Generation</h3>
+                <p>One-click branded PDF export from the admin panel with all consent details &mdash; ready to submit to Stripe for chargeback defense. Named by user and agreement for easy filing.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Panel -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Administration</span>
+            <h2>Filament Admin Panel</h2>
+            <p>24 managed resources with dashboard widgets and site settings</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128202;</span> Dashboard Widgets</h3>
+                <p>Six at-a-glance KPIs: Active Members, New This Month, Revenue This Month, Expiring in 30 Days, Pending Discounts, and Pending Trainer Applications.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128736;</span> 24 Admin Resources</h3>
+                <p>Full CRUD management for Users, Subscriptions, Plans, Certificates, Trainings, Registrations, Clinicals, Discount Requests, Trainer &amp; Vendor Applications, Invoices, Orders, Products, Categories, Vendor Profiles, Payout Settings, Stripe Accounts, Agreements, Consent Signatures, Checkout Fields, Email Templates, Resources, and Group Training Requests.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#9881;</span> Site Settings</h3>
+                <p>Admin-configurable notification email, group training fee type (flat/percentage) and value, plus a live Stripe panel showing connection status, account details, webhook config, and API mode (test/live).</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#9993;</span> Custom Email Templates</h3>
+                <p>Admin-editable email templates with variable placeholders. Notifications use templates when available and fall back to coded defaults &mdash; giving admins control over messaging without touching code.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notifications -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Communications</span>
+            <h2>42 Email Notifications</h2>
+            <p>Contextual emails at every step of every workflow</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px;">
+            <div>
+                <h4 style="color: #1C3519; margin-bottom: 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Membership &amp; Billing</h4>
+                <ul class="notification-list" style="columns: 1;">
+                    <li>Welcome</li>
+                    <li>Subscription Confirmed</li>
+                    <li>Subscription Renewed</li>
+                    <li>Subscription Canceled</li>
+                    <li>Renewal Reminder</li>
+                    <li>Upcoming Renewal</li>
+                    <li>Payment Failed</li>
+                    <li>Payment Overdue</li>
+                    <li>Payment Method Updated</li>
+                    <li>Payment Method Removed</li>
+                    <li>Invoice Created</li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color: #1C3519; margin-bottom: 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Trainings &amp; Certificates</h4>
+                <ul class="notification-list" style="columns: 1;">
+                    <li>Training Submitted / Approved / Denied</li>
+                    <li>Training Canceled / Completed</li>
+                    <li>Training Reminder</li>
+                    <li>New Registration &amp; Registered</li>
+                    <li>Group Training Confirmation &amp; Invite</li>
+                    <li>Clinical Submitted / Approved</li>
+                    <li>Certificate Ready</li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color: #1C3519; margin-bottom: 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Shop, Vendors &amp; More</h4>
+                <ul class="notification-list" style="columns: 1;">
+                    <li>Order Confirmation &amp; New Order</li>
+                    <li>Order Shipped / Delivered</li>
+                    <li>Order Contact &amp; Customer Set Password</li>
+                    <li>Vendor Application Submitted / Approved / Denied</li>
+                    <li>Trainer Application Submitted / Approved / Denied</li>
+                    <li>Discount Requested / Approved / Denied</li>
+                    <li>Payout Received</li>
+                    <li>Trainer Broadcast &amp; Contact</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Operations -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Operations</span>
+            <h2>Artisan Commands &amp; Automation</h2>
+            <p>16 custom commands for operations and data migration</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#9881;</span> Operational Commands</h3>
+                <p>Expiring membership checks, tiered renewal reminders, training reminders, discount token expiration, certificate-subscription sync, certificate PDF regeneration, trainer geocoding, Stripe data auditing, and resource link repair.</p>
+            </div>
+            <div class="feature-card">
+                <h3><span class="feature-icon">&#128259;</span> WordPress Migration Toolkit</h3>
+                <p>Dedicated import commands for certificates, subscriptions, and resources from the legacy WordPress/Voxel platform. Includes plan mapping, data seeding, integrity validation, and safe rollback capabilities.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tech Stack -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Built With</span>
+            <h2>Technology Stack</h2>
+        </div>
+        <div class="tech-stack">
+            <span class="tech-pill">Laravel 11</span>
+            <span class="tech-pill">Blade Templates</span>
+            <span class="tech-pill">Livewire 3.x</span>
+            <span class="tech-pill">Filament 3.x</span>
+            <span class="tech-pill">Tailwind CSS</span>
+            <span class="tech-pill">Stripe PHP SDK</span>
+            <span class="tech-pill">Stripe Connect</span>
+            <span class="tech-pill">Stripe Webhooks</span>
+            <span class="tech-pill">Anthropic Claude API</span>
+            <span class="tech-pill">Apple Wallet (PKPass)</span>
+            <span class="tech-pill">Google Wallet API</span>
+            <span class="tech-pill">DomPDF</span>
+            <span class="tech-pill">Spatie Permissions</span>
+            <span class="tech-pill">Spatie Media Library</span>
+            <span class="tech-pill">Spatie Activity Log</span>
+            <span class="tech-pill">OpenStreetMap Geocoding</span>
+            <span class="tech-pill">MySQL / SQLite</span>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p><strong>National Acupuncture Detoxification Association</strong></p>
+    <p style="margin-top: 8px;">NADA Membership Portal &mdash; Built with Laravel 11</p>
+</footer>
+
+</body>
+</html>
