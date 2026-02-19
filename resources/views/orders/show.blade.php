@@ -170,8 +170,9 @@
                     @endif
                 </div>
 
-                {{-- Sidebar: Order Summary --}}
-                <div class="lg:col-span-1">
+                {{-- Sidebar --}}
+                <div class="lg:col-span-1 space-y-6">
+                    {{-- Order Summary --}}
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg sticky top-6">
                         <div class="p-6 space-y-4">
                             <h4 class="text-lg font-semibold text-brand-primary">Order Summary</h4>
@@ -205,6 +206,67 @@
                             </a>
                         </div>
                     </div>
+
+                    {{-- Contact Vendor --}}
+                    @if (in_array($order->status, [\App\Enums\OrderStatus::Paid, \App\Enums\OrderStatus::Processing, \App\Enums\OrderStatus::Shipped, \App\Enums\OrderStatus::Delivered]))
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <div class="p-6">
+                                <h4 class="text-lg font-semibold text-brand-primary mb-2">Need Help?</h4>
+
+                                @php
+                                    $vendorNames = $order->vendorOrderSplits
+                                        ->pluck('vendorProfile')
+                                        ->filter()
+                                        ->pluck('business_name')
+                                        ->unique()
+                                        ->values();
+                                @endphp
+
+                                @if ($vendorNames->isNotEmpty())
+                                    <p class="text-sm text-gray-500 mb-4">
+                                        Contact {{ $vendorNames->join(', ', ' & ') }} about this order.
+                                    </p>
+                                @endif
+
+                                @if (session('success'))
+                                    <div class="mb-4 rounded-md bg-green-50 border border-green-200 p-3">
+                                        <p class="text-sm text-green-700">{{ session('success') }}</p>
+                                    </div>
+                                @endif
+
+                                <form action="{{ route('orders.contact', $order) }}" method="POST">
+                                    @csrf
+
+                                    <div class="mb-3">
+                                        <label for="contact-subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                        <select id="contact-subject" name="subject" class="w-full rounded-md border-gray-300 shadow-sm text-sm focus:border-brand-accent focus:ring-brand-accent" required>
+                                            <option value="">Select a topic...</option>
+                                            <option value="Shipping question" @selected(old('subject') === 'Shipping question')>Shipping question</option>
+                                            <option value="Item issue" @selected(old('subject') === 'Item issue')>Item issue</option>
+                                            <option value="Return / exchange" @selected(old('subject') === 'Return / exchange')>Return / exchange</option>
+                                            <option value="Other" @selected(old('subject') === 'Other')>Other</option>
+                                        </select>
+                                        @error('subject')
+                                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="contact-message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                        <textarea id="contact-message" name="message" rows="4" maxlength="2000" class="w-full rounded-md border-gray-300 shadow-sm text-sm focus:border-brand-accent focus:ring-brand-accent" placeholder="Describe your question or issue..." required>{{ old('message') }}</textarea>
+                                        @error('message')
+                                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2.5 text-sm font-medium text-white bg-brand-primary hover:bg-brand-accent rounded-md transition">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        Send Message
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

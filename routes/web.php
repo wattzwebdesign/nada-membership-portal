@@ -26,6 +26,7 @@ use App\Http\Controllers\VendorApplicationController;
 use App\Http\Controllers\PublicShopController;
 use App\Http\Controllers\ShopCartController;
 use App\Http\Controllers\ShopCheckoutController;
+use App\Http\Controllers\OrderContactController;
 use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\WalletPassController;
 use Illuminate\Support\Facades\Route;
@@ -141,6 +142,7 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     // Order History (available to all authenticated users)
     Route::get('/orders', [OrderHistoryController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderHistoryController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/contact', [OrderContactController::class, 'store'])->name('orders.contact')->middleware('throttle:5,10');
 
     // Account / Profile
     Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');

@@ -125,7 +125,8 @@
                             <h3 class="text-lg font-semibold mb-4 text-brand-primary">Account Actions</h3>
 
                             <div class="space-y-4">
-                                {{-- Request Discount --}}
+                                {{-- Request Discount (members only) --}}
+                                @role('member')
                                 <div class="p-4 border border-gray-200 rounded-lg">
                                     <p class="text-sm font-medium text-gray-900">Student / Senior Discount</p>
                                     <p class="text-xs text-gray-500 mt-1">Request a discounted membership rate.</p>
@@ -174,6 +175,7 @@
                                         </div>
                                     </div>
                                 @endif
+                                @endrole
 
                                 {{-- Become a Vendor --}}
                                 @if (!$user->isVendor())
