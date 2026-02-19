@@ -37,7 +37,6 @@ class AppleWalletService
             'backgroundColor' => 'rgb(28, 53, 25)',
             'foregroundColor' => 'rgb(255, 255, 255)',
             'labelColor' => 'rgb(221, 173, 38)',
-            'webServiceURL' => config('services.apple_wallet.web_service_url'),
             'authenticationToken' => $walletPass->authentication_token,
             'generic' => [
                 'primaryFields' => [
@@ -92,6 +91,12 @@ class AppleWalletService
                     'messageEncoding' => 'iso-8859-1',
                 ],
             ];
+        }
+
+        // Only include web service URL if configured (null value causes Apple to reject the pass)
+        $webServiceUrl = config('services.apple_wallet.web_service_url');
+        if ($webServiceUrl) {
+            $passDefinition['webServiceURL'] = $webServiceUrl;
         }
 
         $pass->setData($passDefinition);
