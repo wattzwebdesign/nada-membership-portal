@@ -12,7 +12,7 @@ class PendingVendorApplicationsWidget extends TableWidget
 {
     protected static ?int $sort = 8;
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 1;
 
     protected int $defaultPaginationPageOption = 5;
 
