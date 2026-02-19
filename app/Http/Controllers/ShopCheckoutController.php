@@ -107,56 +107,63 @@ class ShopCheckoutController extends Controller
         $shipping = $this->cartService->getShippingCents();
         $total = $subtotal + $shipping;
 
-        // Create order
-        $order = Order::create(array_merge($validated, [
-            'user_id' => $user?->id,
-            'subtotal_cents' => $subtotal,
-            'shipping_cents' => $shipping,
-            'tax_cents' => 0,
-            'total_cents' => $total,
-            'status' => 'pending',
-        ]));
-
-        // Create order items
-        foreach ($items as $item) {
-            $product = Product::find($item['product_id']);
-            $effectivePrice = $product ? $product->getEffectivePrice($user) : $item['price_cents'];
-            $wasMemberPrice = $user && $item['member_price_cents'] && $user->hasActiveSubscription() && $effectivePrice === $item['member_price_cents'];
-
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item['product_id'],
-                'vendor_profile_id' => $item['vendor_profile_id'],
-                'product_title' => $item['title'],
-                'product_sku' => $product?->sku,
-                'unit_price_cents' => $effectivePrice,
-                'quantity' => $item['quantity'],
-                'total_cents' => $effectivePrice * $item['quantity'],
-                'shipping_fee_cents' => $item['is_digital'] ? 0 : $item['shipping_fee_cents'] * $item['quantity'],
-                'was_member_price' => $wasMemberPrice,
-                'is_digital' => $item['is_digital'],
-            ]);
-        }
-
-        // Calculate vendor splits
-        $this->checkoutService->calculateVendorSplits($order);
-
-        // Create Stripe Checkout session
         try {
+            // Create order
+            $order = Order::create(array_merge($validated, [
+                'user_id' => $user?->id,
+                'subtotal_cents' => $subtotal,
+                'shipping_cents' => $shipping,
+                'tax_cents' => 0,
+                'total_cents' => $total,
+                'currency' => 'usd',
+                'status' => 'pending',
+            ]));
+
+            // Create order items
+            foreach ($items as $item) {
+                $product = Product::find($item['product_id']);
+                $effectivePrice = $product ? $product->getEffectivePrice($user) : $item['price_cents'];
+                $wasMemberPrice = $user && $item['member_price_cents'] && $user->hasActiveSubscription() && $effectivePrice === $item['member_price_cents'];
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['product_id'],
+                    'vendor_profile_id' => $item['vendor_profile_id'],
+                    'product_title' => $item['title'],
+                    'product_sku' => $product?->sku,
+                    'unit_price_cents' => $effectivePrice,
+                    'quantity' => $item['quantity'],
+                    'total_cents' => $effectivePrice * $item['quantity'],
+                    'shipping_fee_cents' => $item['is_digital'] ? 0 : $item['shipping_fee_cents'] * $item['quantity'],
+                    'was_member_price' => $wasMemberPrice,
+                    'is_digital' => $item['is_digital'],
+                ]);
+            }
+
+            // Reload items relationship so Stripe session and splits use fresh data
+            $order->load('items.vendorProfile.user');
+
+            // Calculate vendor splits
+            $this->checkoutService->calculateVendorSplits($order);
+
+            // Create Stripe Checkout session
             $session = $this->checkoutService->createCheckoutSession($order);
             $order->update(['stripe_checkout_session_id' => $session->id]);
 
             return redirect($session->url);
         } catch (\Exception $e) {
             Log::error('Store checkout failed', [
-                'order_id' => $order->id,
+                'order_id' => $order->id ?? null,
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
-            $order->delete();
+            if (isset($order)) {
+                $order->delete();
+            }
 
             return redirect()->route('shop.checkout.index')
-                ->with('error', 'Unable to process payment. Please try again.');
+                ->with('error', 'Unable to process payment: ' . $e->getMessage());
         }
     }
 
