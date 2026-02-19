@@ -70,12 +70,19 @@
                         <div class="p-6">
                             <h3 class="text-lg font-semibold mb-4 text-brand-primary">Items</h3>
 
+                            @php
+                                $isMultiVendor = $order->vendorOrderSplits->pluck('vendor_profile_id')->unique()->count() > 1;
+                            @endphp
+
                             {{-- Desktop Table --}}
                             <div class="hidden sm:block overflow-x-auto">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                            @if ($isMultiVendor)
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendor</th>
+                                            @endif
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
@@ -85,11 +92,18 @@
                                         @foreach ($order->items as $item)
                                             <tr>
                                                 <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                                                    {{ $item->product_title }}
+                                                    @if ($item->product)
+                                                        <a href="{{ route('public.shop.show', $item->product) }}" class="text-brand-secondary hover:underline">{{ $item->product_title }}</a>
+                                                    @else
+                                                        {{ $item->product_title }}
+                                                    @endif
                                                     @if ($item->is_digital)
                                                         <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 ml-1">Digital</span>
                                                     @endif
                                                 </td>
+                                                @if ($isMultiVendor)
+                                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $item->vendorProfile?->business_name }}</td>
+                                                @endif
                                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $item->quantity }}</td>
                                                 <td class="px-6 py-4 text-sm text-gray-500">${{ number_format($item->unit_price_cents / 100, 2) }}</td>
                                                 <td class="px-6 py-4 text-sm text-gray-900">${{ number_format($item->total_cents / 100, 2) }}</td>
@@ -104,11 +118,18 @@
                                 @foreach ($order->items as $item)
                                     <div class="border border-gray-100 rounded-lg p-3">
                                         <p class="text-sm font-medium text-gray-900">
-                                            {{ $item->product_title }}
+                                            @if ($item->product)
+                                                <a href="{{ route('public.shop.show', $item->product) }}" class="text-brand-secondary hover:underline">{{ $item->product_title }}</a>
+                                            @else
+                                                {{ $item->product_title }}
+                                            @endif
                                             @if ($item->is_digital)
                                                 <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 ml-1">Digital</span>
                                             @endif
                                         </p>
+                                        @if ($isMultiVendor && $item->vendorProfile)
+                                            <p class="text-xs text-gray-400 mt-0.5">{{ $item->vendorProfile->business_name }}</p>
+                                        @endif
                                         <div class="flex items-center justify-between mt-1 text-sm text-gray-500">
                                             <span>Qty: {{ $item->quantity }}</span>
                                             <span class="font-medium text-gray-900">${{ number_format($item->total_cents / 100, 2) }}</span>

@@ -1,6 +1,6 @@
 {{-- Logo --}}
 <div class="flex items-center px-4 py-5 shrink-0">
-    <a href="{{ route('dashboard') }}">
+    <a href="{{ auth()->user()->hasAnyRole(['member', 'registered_trainer', 'admin']) ? route('dashboard') : route('vendor.dashboard') }}">
         <img src="{{ asset('NADAWebsiteLogo.svg') }}" alt="NADA" class="h-10" />
     </a>
 </div>
