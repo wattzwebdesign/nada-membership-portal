@@ -58,6 +58,7 @@ class ProductController extends Controller
             'member_price' => ['nullable', 'numeric', 'min:0.01', 'max:99999.99'],
             'shipping_fee' => ['nullable', 'numeric', 'min:0', 'max:999.99'],
             'product_category_id' => ['nullable', 'exists:product_categories,id'],
+            'new_category' => ['nullable', 'string', 'max:255'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'track_stock' => ['boolean'],
             'is_digital' => ['boolean'],
@@ -66,9 +67,11 @@ class ProductController extends Controller
             'digital_file' => ['nullable', 'file', 'max:51200'],
         ]);
 
+        $categoryId = $this->resolveCategory($validated);
+
         $product = Product::create([
             'vendor_profile_id' => $vendorProfile->id,
-            'product_category_id' => $validated['product_category_id'] ?? null,
+            'product_category_id' => $categoryId,
             'title' => $validated['title'],
             'slug' => Str::slug($validated['title']) . '-' . Str::random(6),
             'description' => $validated['description'] ?? null,
@@ -124,6 +127,7 @@ class ProductController extends Controller
             'member_price' => ['nullable', 'numeric', 'min:0.01', 'max:99999.99'],
             'shipping_fee' => ['nullable', 'numeric', 'min:0', 'max:999.99'],
             'product_category_id' => ['nullable', 'exists:product_categories,id'],
+            'new_category' => ['nullable', 'string', 'max:255'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'track_stock' => ['boolean'],
             'is_digital' => ['boolean'],
@@ -132,8 +136,10 @@ class ProductController extends Controller
             'digital_file' => ['nullable', 'file', 'max:51200'],
         ]);
 
+        $categoryId = $this->resolveCategory($validated);
+
         $product->update([
-            'product_category_id' => $validated['product_category_id'] ?? null,
+            'product_category_id' => $categoryId,
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
             'sku' => $validated['sku'] ?? null,
@@ -169,6 +175,20 @@ class ProductController extends Controller
 
         return redirect()->route('vendor.products.index')
             ->with('success', 'Product deleted successfully.');
+    }
+
+    protected function resolveCategory(array $validated): ?int
+    {
+        if (! empty($validated['new_category'])) {
+            $category = ProductCategory::firstOrCreate(
+                ['slug' => Str::slug($validated['new_category'])],
+                ['name' => $validated['new_category'], 'is_active' => true]
+            );
+
+            return $category->id;
+        }
+
+        return $validated['product_category_id'] ?? null;
     }
 
     protected function authorizeVendorProduct(Request $request, Product $product): void

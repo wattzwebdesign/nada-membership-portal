@@ -219,15 +219,25 @@
                                 </div>
 
                                 {{-- Category --}}
-                                <div>
-                                    <label for="category_id" class="block text-sm font-medium text-gray-700">Category</label>
-                                    <select name="category_id" id="category_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
-                                        <option value="">-- Select Category --</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('category_id')
+                                <div x-data="{ showNew: false }">
+                                    <label for="product_category_id" class="block text-sm font-medium text-gray-700">Category</label>
+                                    <div x-show="!showNew">
+                                        <select name="product_category_id" id="product_category_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                            <option value="">-- Select Category --</option>
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->id }}" {{ old('product_category_id', $product->product_category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="button" @click="showNew = true" class="mt-1.5 text-xs text-brand-primary hover:underline">+ Add new category</button>
+                                    </div>
+                                    <div x-show="showNew" x-cloak>
+                                        <input type="text" name="new_category" id="new_category" value="{{ old('new_category') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="New category name">
+                                        <button type="button" @click="showNew = false; document.getElementById('new_category').value = ''" class="mt-1.5 text-xs text-gray-500 hover:underline">Cancel, select existing</button>
+                                    </div>
+                                    @error('product_category_id')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                    @error('new_category')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
