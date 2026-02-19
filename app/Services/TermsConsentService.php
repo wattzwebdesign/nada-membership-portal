@@ -43,11 +43,11 @@ class TermsConsentService
     public function stripeMetadata(AgreementSignature $signature): array
     {
         return [
-            'tc_signature_id' => $signature->id,
-            'tc_agreement_id' => $signature->agreement_id,
-            'tc_version' => $signature->agreement->version,
+            'tc_signature_id' => (string) $signature->id,
+            'tc_agreement_id' => (string) $signature->agreement_id,
+            'tc_version' => (string) $signature->agreement->version,
             'tc_accepted_at' => $signature->signed_at->toIso8601String(),
-            'tc_ip_address' => $signature->ip_address,
+            'tc_ip_address' => $signature->ip_address ?? 'unknown',
         ];
     }
 }
