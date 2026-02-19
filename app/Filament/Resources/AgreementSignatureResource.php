@@ -4,10 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AgreementSignatureResource\Pages;
 use App\Models\AgreementSignature;
+use App\Models\Plan;
+use App\Models\Training;
 use App\Services\DisputeEvidenceService;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class AgreementSignatureResource extends Resource
 {
@@ -57,6 +60,25 @@ class AgreementSignatureResource extends Resource
                         'trainer_application' => 'danger',
                         default => 'gray',
                     }),
+                Tables\Columns\TextColumn::make('context_reference')
+                    ->label('Reference')
+                    ->state(function (AgreementSignature $record): string {
+                        if (! $record->context_reference_type || ! $record->context_reference_id) {
+                            return '—';
+                        }
+
+                        $model = $record->context_reference_type::find($record->context_reference_id);
+
+                        if (! $model) {
+                            return 'Deleted (#' . $record->context_reference_id . ')';
+                        }
+
+                        return match ($record->context_reference_type) {
+                            'App\Models\Plan' => $model->name,
+                            'App\Models\Training' => $model->title,
+                            default => '#' . $record->context_reference_id,
+                        };
+                    }),
                 Tables\Columns\TextColumn::make('signed_at')
                     ->label('Signed At')
                     ->dateTime()
@@ -89,6 +111,22 @@ class AgreementSignatureResource extends Resource
                         'training_registration' => 'Training Registration',
                         'trainer_application' => 'Trainer Application',
                     ]),
+                Tables\Filters\SelectFilter::make('training')
+                    ->label('Training')
+                    ->options(fn () => Training::orderBy('start_date', 'desc')->pluck('title', 'id'))
+                    ->query(fn (Builder $query, array $data) => $data['value']
+                        ? $query->where('context_reference_type', 'App\Models\Training')
+                            ->where('context_reference_id', $data['value'])
+                        : $query
+                    ),
+                Tables\Filters\SelectFilter::make('plan')
+                    ->label('Plan')
+                    ->options(fn () => Plan::orderBy('sort_order')->pluck('name', 'id'))
+                    ->query(fn (Builder $query, array $data) => $data['value']
+                        ? $query->where('context_reference_type', 'App\Models\Plan')
+                            ->where('context_reference_id', $data['value'])
+                        : $query
+                    ),
             ])
             ->actions([
                 Tables\Actions\Action::make('export_evidence')
