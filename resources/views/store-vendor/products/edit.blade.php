@@ -213,6 +213,12 @@
 
                     {{-- Right Column (1/3) --}}
                     <div class="lg:col-span-1 space-y-6">
+                        {{-- Preview --}}
+                        <a href="{{ route('public.shop.show', $product) }}" target="_blank" class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-brand-secondary text-sm font-medium rounded-md text-brand-secondary hover:bg-brand-secondary/5 transition">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            Preview in Shop
+                        </a>
+
                         {{-- Status --}}
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <div class="flex items-center justify-between mb-4">
@@ -315,7 +321,22 @@
                             </div>
                         </div>
 
-                        {{-- Delete Product --}}
+                    </div>
+                </div>
+
+                {{-- Submit --}}
+                <div class="mt-6 flex items-center justify-between">
+                    <a href="{{ route('vendor.products.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+                    <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+
+            {{-- Delete Product (separate form, outside main form to avoid nesting) --}}
+            <div class="max-w-7xl mx-auto mt-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-start-3">
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <h3 class="text-sm font-semibold mb-3 text-red-600">Danger Zone</h3>
                             <form method="POST" action="{{ route('vendor.products.destroy', $product) }}" onsubmit="return confirm('Are you sure you want to delete this product? This action cannot be undone.');">
@@ -329,15 +350,7 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- Submit --}}
-                <div class="mt-6 flex items-center justify-between">
-                    <a href="{{ route('vendor.products.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
-                    <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
-                        Save Changes
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </x-app-layout>

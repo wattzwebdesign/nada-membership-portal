@@ -117,6 +117,7 @@
                                             {{ $product->created_at->format('M j, Y') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
+                                            <a href="{{ route('public.shop.show', $product) }}" target="_blank" class="font-medium text-brand-secondary" title="Preview in shop">Preview</a>
                                             <a href="{{ route('vendor.products.show', $product) }}" class="font-medium text-brand-primary">View</a>
                                             <a href="{{ route('vendor.products.edit', $product) }}" class="font-medium text-gray-600 hover:text-gray-900">Edit</a>
                                         </td>
@@ -152,6 +153,7 @@
                                 </div>
                                 <p class="text-xs text-gray-500">${{ number_format($product->price_cents / 100, 2) }} | {{ $product->is_digital ? 'Digital' : 'Physical' }} | {{ $product->created_at->format('M j, Y') }}</p>
                                 <div class="mt-2 flex space-x-3">
+                                    <a href="{{ route('public.shop.show', $product) }}" target="_blank" class="text-xs font-medium text-brand-secondary">Preview</a>
                                     <a href="{{ route('vendor.products.show', $product) }}" class="text-xs font-medium text-brand-primary">View</a>
                                     <a href="{{ route('vendor.products.edit', $product) }}" class="text-xs font-medium text-gray-600">Edit</a>
                                 </div>
