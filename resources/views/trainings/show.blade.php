@@ -163,28 +163,18 @@
 
                                 @if ($userRegistration->status === App\Enums\RegistrationStatus::Registered && $training->start_date->isFuture())
                                     <div class="mb-4 border-t border-gray-200 pt-4">
+                                        <p class="text-sm font-semibold mb-2">Wallet Pass</p>
+                                        <p class="text-xs text-gray-500 mb-3">Get a reminder before your training.</p>
+                                        <div class="flex flex-wrap items-center gap-3">
+                                            <a href="{{ route('trainings.wallet.apple', $training) }}">
+                                                <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-11">
+                                            </a>
+                                            <a href="{{ route('trainings.wallet.google', $training) }}">
+                                                <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-11">
+                                            </a>
+                                        </div>
                                         @if ($hasTrainingWalletPass)
-                                            <p class="text-sm font-semibold mb-2">Wallet Pass</p>
-                                            <p class="text-xs text-gray-500 mb-3">Pass added to your wallet.</p>
-                                            <form method="POST" action="{{ route('trainings.wallet.remove', $training) }}" onsubmit="return confirm('Remove this training from your wallet?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition">
-                                                    <svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                                    Remove from Wallet
-                                                </button>
-                                            </form>
-                                        @else
-                                            <p class="text-sm font-semibold mb-2">Add to Wallet</p>
-                                            <p class="text-xs text-gray-500 mb-3">Get a reminder before your training.</p>
-                                            <div class="flex flex-wrap items-center gap-3">
-                                                <a href="{{ route('trainings.wallet.apple', $training) }}">
-                                                    <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-11">
-                                                </a>
-                                                <a href="{{ route('trainings.wallet.google', $training) }}">
-                                                    <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-11">
-                                                </a>
-                                            </div>
+                                            <p class="text-xs text-gray-400 mt-3">Already added? Re-downloading updates your existing pass.</p>
                                         @endif
                                     </div>
                                 @endif

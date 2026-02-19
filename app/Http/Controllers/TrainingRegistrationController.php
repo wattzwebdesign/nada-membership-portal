@@ -36,7 +36,7 @@ class TrainingRegistrationController extends Controller
     {
         $registrations = $request->user()
             ->trainingRegistrations()
-            ->with(['training.trainer', 'invoice', 'walletPasses'])
+            ->with(['training.trainer', 'invoice'])
             ->orderByDesc('created_at')
             ->paginate(15);
 

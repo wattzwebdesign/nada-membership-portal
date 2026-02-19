@@ -138,30 +138,6 @@ class WalletPassController extends Controller
         return redirect()->away($url);
     }
 
-    /**
-     * Remove wallet passes for a training registration.
-     */
-    public function removeTrainingPasses(Request $request, Training $training)
-    {
-        $user = $request->user();
-
-        $registration = TrainingRegistration::where('training_id', $training->id)
-            ->where('user_id', $user->id)
-            ->whereHas('walletPasses')
-            ->first();
-
-        if (! $registration) {
-            return back()->with('error', 'No wallet passes found for this training.');
-        }
-
-        $this->walletPassService->voidTrainingPasses($registration);
-
-        // Delete the pass records so the user can re-add later if desired
-        $registration->walletPasses()->delete();
-
-        return back()->with('success', 'Wallet pass removed. It may take a moment to disappear from your device.');
-    }
-
     // ------------------------------------------------------------------
     // Apple Web Service Callbacks (token-verified, no auth middleware)
     // ------------------------------------------------------------------

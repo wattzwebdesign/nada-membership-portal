@@ -6,7 +6,6 @@ use App\Enums\RegistrationStatus;
 use App\Enums\TrainingStatus;
 use App\Models\Training;
 use App\Models\TrainingInvitee;
-use App\Models\WalletPass;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
