@@ -47,8 +47,9 @@ class WalletPassController extends Controller
 
         return response($pkpass, 200, [
             'Content-Type' => 'application/vnd.apple.pkpass',
-            'Content-Disposition' => 'attachment; filename="nada-membership.pkpass"',
+            'Content-Disposition' => 'inline; filename="nada-membership.pkpass"',
             'Content-Length' => strlen($pkpass),
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
         ]);
     }
 
