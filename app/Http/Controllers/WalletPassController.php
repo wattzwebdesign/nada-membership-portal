@@ -18,14 +18,33 @@ class WalletPassController extends Controller
     /**
      * Download Apple Wallet .pkpass file (authenticated).
      */
-    public function downloadApplePass(Request $request): Response
+    public function downloadApplePass(Request $request)
     {
         $user = $request->user();
-        $pkpass = $this->walletPassService->generateApplePass($user);
+
+        try {
+            $pkpass = $this->walletPassService->generateApplePass($user);
+        } catch (\Exception $e) {
+            Log::error('Apple Wallet pass generation failed.', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Unable to generate your wallet pass. Please try again later.');
+        }
+
+        if (empty($pkpass)) {
+            Log::error('Apple Wallet pass generation returned empty content.', [
+                'user_id' => $user->id,
+            ]);
+
+            return back()->with('error', 'Unable to generate your wallet pass. Please try again later.');
+        }
 
         return response($pkpass, 200, [
             'Content-Type' => 'application/vnd.apple.pkpass',
             'Content-Disposition' => 'attachment; filename="nada-membership.pkpass"',
+            'Content-Length' => strlen($pkpass),
         ]);
     }
 
