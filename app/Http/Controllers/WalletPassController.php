@@ -28,18 +28,22 @@ class WalletPassController extends Controller
             Log::error('Apple Wallet pass generation failed.', [
                 'user_id' => $user->id,
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
-            return back()->with('error', 'Unable to generate your wallet pass. Please try again later.');
+            return back()->with('error', 'Unable to generate your wallet pass: ' . $e->getMessage());
         }
 
         if (empty($pkpass)) {
-            Log::error('Apple Wallet pass generation returned empty content.', [
-                'user_id' => $user->id,
-            ]);
+            Log::error('Apple Wallet pass generation returned empty content.', ['user_id' => $user->id]);
 
-            return back()->with('error', 'Unable to generate your wallet pass. Please try again later.');
+            return back()->with('error', 'Wallet pass generated empty content. Check server logs.');
         }
+
+        Log::info('Apple Wallet pass generated.', [
+            'user_id' => $user->id,
+            'size' => strlen($pkpass),
+        ]);
 
         return response($pkpass, 200, [
             'Content-Type' => 'application/vnd.apple.pkpass',
