@@ -7,6 +7,7 @@ use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\VendorOrderSplit;
 use App\Notifications\Concerns\SafelyNotifies;
+use App\Notifications\StoreOrderDeliveredNotification;
 use App\Notifications\StoreOrderShippedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -95,6 +96,12 @@ class OrderController extends Controller
         $allDelivered = $order->vendorOrderSplits()->whereNull('delivered_at')->whereNull('canceled_at')->count() === 0;
         if ($allDelivered) {
             $order->update(['status' => OrderStatus::Delivered]);
+        }
+
+        // Notify customer
+        if ($order->customer_email) {
+            Notification::route('mail', $order->customer_email)
+                ->notify(new StoreOrderDeliveredNotification($order, $split));
         }
 
         return redirect()->route('vendor.orders.show', $order)
