@@ -134,6 +134,10 @@ class ProductController extends Controller
             'status' => ['required', 'in:draft,active,archived'],
             'images.*' => ['nullable', 'image', 'max:5120'],
             'digital_file' => ['nullable', 'file', 'max:51200'],
+            'image_order' => ['nullable', 'array'],
+            'image_order.*' => ['integer'],
+            'remove_images' => ['nullable', 'array'],
+            'remove_images.*' => ['integer'],
         ]);
 
         $categoryId = $this->resolveCategory($validated);
@@ -152,6 +156,23 @@ class ProductController extends Controller
             'status' => $validated['status'],
         ]);
 
+        // Remove marked images
+        if (! empty($validated['remove_images'])) {
+            $product->getMedia('images')
+                ->whereIn('id', $validated['remove_images'])
+                ->each(fn ($media) => $media->delete());
+        }
+
+        // Reorder remaining images
+        if (! empty($validated['image_order'])) {
+            foreach ($validated['image_order'] as $position => $mediaId) {
+                $product->getMedia('images')
+                    ->firstWhere('id', (int) $mediaId)
+                    ?->update(['order_column' => $position + 1]);
+            }
+        }
+
+        // Add new images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $product->addMedia($image)->toMediaCollection('images');

@@ -122,22 +122,61 @@
                             <h3 class="text-lg font-semibold mb-4 text-brand-primary">Images</h3>
 
                             <div class="space-y-5">
-                                {{-- Existing Images --}}
-                                @if ($product->getMedia('images') && count($product->getMedia('images')) > 0)
-                                    <div>
+                                {{-- Existing Images with Drag to Reorder --}}
+                                @php $mediaImages = $product->getMedia('images')->sortBy('order_column'); @endphp
+                                @if ($mediaImages->count() > 0)
+                                    <div x-data="{
+                                        dragging: null,
+                                        items: @js($mediaImages->map(fn ($m) => ['id' => $m->id, 'url' => $m->getUrl()])->values()),
+                                        removing: [],
+                                        toggleRemove(id) {
+                                            if (this.removing.includes(id)) {
+                                                this.removing = this.removing.filter(i => i !== id);
+                                            } else {
+                                                this.removing.push(id);
+                                            }
+                                        },
+                                        dragStart(index, event) {
+                                            this.dragging = index;
+                                            event.dataTransfer.effectAllowed = 'move';
+                                        },
+                                        dragOver(index, event) {
+                                            event.preventDefault();
+                                            if (this.dragging === null || this.dragging === index) return;
+                                            const item = this.items[this.dragging];
+                                            this.items.splice(this.dragging, 1);
+                                            this.items.splice(index, 0, item);
+                                            this.dragging = index;
+                                        },
+                                        dragEnd() { this.dragging = null; }
+                                    }">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Current Images</label>
+                                        <p class="text-xs text-gray-400 mb-3">Drag to reorder. First image is the featured image. Click to mark for removal.</p>
                                         <div class="flex flex-wrap gap-3">
-                                            @foreach ($product->getMedia('images') as $image)
-                                                <div class="relative group">
-                                                    <img src="{{ $image->url }}" alt="{{ $product->title }}" class="h-24 w-24 rounded-lg object-cover border border-gray-200">
-                                                    <label class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition rounded-lg cursor-pointer">
-                                                        <input type="checkbox" name="remove_images[]" value="{{ $image->id }}" class="sr-only">
-                                                        <span class="text-xs text-white font-medium" onclick="this.previousElementSibling.checked = !this.previousElementSibling.checked; this.textContent = this.previousElementSibling.checked ? 'Removing' : 'Remove';">Remove</span>
-                                                    </label>
+                                            <template x-for="(item, index) in items" :key="item.id">
+                                                <div class="relative group cursor-grab active:cursor-grabbing"
+                                                     draggable="true"
+                                                     @dragstart="dragStart(index, $event)"
+                                                     @dragover="dragOver(index, $event)"
+                                                     @dragend="dragEnd()">
+                                                    <img :src="item.url" alt="" class="h-24 w-24 rounded-lg object-cover border-2 transition-all"
+                                                         :class="removing.includes(item.id) ? 'border-red-400 opacity-40' : (index === 0 ? 'border-brand-secondary ring-2 ring-brand-secondary/30' : 'border-gray-200')">
+                                                    <span x-show="index === 0 && !removing.includes(item.id)" class="absolute -top-2 -left-2 bg-brand-secondary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">Featured</span>
+                                                    <button type="button" @click="toggleRemove(item.id)"
+                                                            class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs opacity-0 group-hover:opacity-100 transition"
+                                                            :class="removing.includes(item.id) ? 'bg-gray-500' : 'bg-red-500'">
+                                                        <span x-text="removing.includes(item.id) ? '↩' : '×'"></span>
+                                                    </button>
                                                 </div>
-                                            @endforeach
+                                            </template>
                                         </div>
-                                        <p class="mt-1 text-xs text-gray-400">Hover over an image and click to mark it for removal.</p>
+                                        {{-- Hidden inputs for order + removal --}}
+                                        <template x-for="(item, index) in items" :key="'order-'+item.id">
+                                            <input type="hidden" name="image_order[]" :value="item.id">
+                                        </template>
+                                        <template x-for="id in removing" :key="'rm-'+id">
+                                            <input type="hidden" name="remove_images[]" :value="id">
+                                        </template>
                                     </div>
                                 @endif
 
