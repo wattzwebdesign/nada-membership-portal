@@ -5,14 +5,12 @@ namespace App\Notifications;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\Concerns\UsesEmailTemplate;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class OrderContactNotification extends Notification implements ShouldQueue
+class OrderContactNotification extends Notification
 {
-    use Queueable, UsesEmailTemplate;
+    use UsesEmailTemplate;
 
     public function __construct(
         public Order $order,
