@@ -31,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('NADA Admin')
             ->brandLogo(fn () => new HtmlString('<img src="' . asset('NADAWebsiteLogo.svg') . '" alt="NADA Admin" style="height: 2.5rem;" />'))
             ->brandLogoHeight('2.5rem')
+            ->favicon(asset('favicon.png'))
             ->colors([
                 'primary' => Color::hex('#1C3519'),
                 'danger' => Color::Red,
