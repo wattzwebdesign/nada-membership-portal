@@ -63,10 +63,11 @@ class TrainingRegistrationResource extends Resource
                 Forms\Components\Section::make('Payment')
                     ->schema([
                         Forms\Components\TextInput::make('amount_paid_cents')
-                            ->label('Amount Paid (cents)')
+                            ->label('Amount Paid')
                             ->numeric()
-                            ->suffix('cents')
-                            ->helperText('Amount in cents (e.g., 5000 = $50.00)'),
+                            ->prefix('$')
+                            ->formatStateUsing(fn (?int $state): ?string => $state ? number_format($state / 100, 2, '.', '') : null)
+                            ->dehydrateStateUsing(fn (?string $state): ?int => $state ? (int) round((float) $state * 100) : null),
                         Forms\Components\TextInput::make('stripe_payment_intent_id')
                             ->maxLength(255),
                     ])->columns(2),

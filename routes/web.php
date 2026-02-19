@@ -95,6 +95,7 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::delete('/trainings/{training}/cancel-registration', [TrainingRegistrationController::class, 'destroy'])->name('trainings.cancel-registration');
     Route::get('/trainings/{training}/wallet/apple', [WalletPassController::class, 'downloadAppleTrainingPass'])->name('trainings.wallet.apple');
     Route::get('/trainings/{training}/wallet/google', [WalletPassController::class, 'getGoogleTrainingPassUrl'])->name('trainings.wallet.google');
+    Route::delete('/trainings/{training}/wallet', [WalletPassController::class, 'removeTrainingPasses'])->name('trainings.wallet.remove');
 
     // Clinicals
     Route::get('/clinicals', fn () => redirect()->route('clinicals.index'));

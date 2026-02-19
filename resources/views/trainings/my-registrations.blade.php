@@ -87,12 +87,20 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-3">
                                                 @if ($registration->status === App\Enums\RegistrationStatus::Registered && $registration->training->start_date->isFuture())
-                                                    <a href="{{ route('trainings.wallet.apple', $registration->training) }}" class="inline-block" title="Add to Apple Wallet">
-                                                        <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-8 inline">
-                                                    </a>
-                                                    <a href="{{ route('trainings.wallet.google', $registration->training) }}" class="inline-block" title="Add to Google Wallet">
-                                                        <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-8 inline">
-                                                    </a>
+                                                    @if ($registration->walletPasses->isNotEmpty())
+                                                        <form method="POST" action="{{ route('trainings.wallet.remove', $registration->training) }}" onsubmit="return confirm('Remove from wallet?');" class="inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="text-gray-500 hover:text-gray-700 text-sm font-medium">Remove Pass</button>
+                                                        </form>
+                                                    @else
+                                                        <a href="{{ route('trainings.wallet.apple', $registration->training) }}" class="inline-block" title="Add to Apple Wallet">
+                                                            <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-8 inline">
+                                                        </a>
+                                                        <a href="{{ route('trainings.wallet.google', $registration->training) }}" class="inline-block" title="Add to Google Wallet">
+                                                            <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-8 inline">
+                                                        </a>
+                                                    @endif
                                                     <form method="POST" action="{{ route('trainings.cancel-registration', $registration->training) }}" onsubmit="return confirm('Cancel your registration?');" class="inline">
                                                         @csrf
                                                         @method('DELETE')
@@ -138,12 +146,20 @@
                                     @endif
                                     <div class="flex flex-wrap items-center gap-3 mt-3 pt-2 border-t border-gray-100">
                                         @if ($registration->status === App\Enums\RegistrationStatus::Registered && $registration->training->start_date->isFuture())
-                                            <a href="{{ route('trainings.wallet.apple', $registration->training) }}" title="Add to Apple Wallet">
-                                                <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-7">
-                                            </a>
-                                            <a href="{{ route('trainings.wallet.google', $registration->training) }}" title="Add to Google Wallet">
-                                                <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-7">
-                                            </a>
+                                            @if ($registration->walletPasses->isNotEmpty())
+                                                <form method="POST" action="{{ route('trainings.wallet.remove', $registration->training) }}" onsubmit="return confirm('Remove from wallet?');" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-gray-500 hover:text-gray-700 text-xs font-medium">Remove Pass</button>
+                                                </form>
+                                            @else
+                                                <a href="{{ route('trainings.wallet.apple', $registration->training) }}" title="Add to Apple Wallet">
+                                                    <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-7">
+                                                </a>
+                                                <a href="{{ route('trainings.wallet.google', $registration->training) }}" title="Add to Google Wallet">
+                                                    <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-7">
+                                                </a>
+                                            @endif
                                             <form method="POST" action="{{ route('trainings.cancel-registration', $registration->training) }}" onsubmit="return confirm('Cancel your registration?');" class="inline">
                                                 @csrf
                                                 @method('DELETE')

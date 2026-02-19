@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RegistrationStatus;
 use App\Enums\TrainingStatus;
 use App\Models\Training;
 use App\Models\TrainingInvitee;
+use App\Models\WalletPass;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -103,13 +105,18 @@ class TrainingController extends Controller
 
         // Check if the authenticated user (if any) is already registered
         $userRegistration = null;
+        $hasTrainingWalletPass = false;
         if ($request->user()) {
             $userRegistration = $training->registrations()
                 ->where('user_id', $request->user()->id)
-                ->where('status', '!=', 'canceled')
+                ->where('status', '!=', RegistrationStatus::Canceled->value)
                 ->first();
+
+            if ($userRegistration) {
+                $hasTrainingWalletPass = $userRegistration->walletPasses()->exists();
+            }
         }
 
-        return view('trainings.show', compact('training', 'spotsRemaining', 'isFull', 'userRegistration'));
+        return view('trainings.show', compact('training', 'spotsRemaining', 'isFull', 'userRegistration', 'hasTrainingWalletPass'));
     }
 }
