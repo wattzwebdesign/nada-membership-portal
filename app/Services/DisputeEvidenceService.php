@@ -77,18 +77,18 @@ class DisputeEvidenceService
         <head>
             <meta charset="utf-8">
             <style>
-                body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #333; line-height: 1.6; margin: 40px; }
-                .header { text-align: center; border-bottom: 3px solid #1C3519; padding-bottom: 14px; margin-bottom: 24px; }
-                .header img { margin-bottom: 6px; }
-                .header-subtitle { color: #AD7E07; font-size: 11px; margin: 4px 0 0 0; }
-                .header-doc-type { color: #777; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin: 6px 0 0 0; }
-                h2 { color: #1C3519; font-size: 14px; margin-top: 24px; border-bottom: 1px solid #e5e5e5; padding-bottom: 4px; }
-                .section { margin-bottom: 20px; }
-                .field { margin-bottom: 6px; }
+                body { font-family: DejaVu Sans, sans-serif; font-size: 11px; color: #333; line-height: 1.4; margin: 30px; }
+                .header { text-align: center; border-bottom: 3px solid #1C3519; padding-bottom: 10px; margin-bottom: 16px; }
+                .header img { margin-bottom: 4px; }
+                .header-subtitle { color: #AD7E07; font-size: 11px; margin: 2px 0 0 0; }
+                .header-doc-type { color: #777; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0 0; }
+                h2 { color: #1C3519; font-size: 13px; margin-top: 14px; margin-bottom: 6px; border-bottom: 1px solid #e5e5e5; padding-bottom: 3px; }
+                .section { margin-bottom: 10px; }
+                .field { margin-bottom: 3px; }
                 .label { font-weight: bold; color: #555; display: inline-block; width: 140px; }
                 .value { color: #111; }
-                .snapshot { border: 1px solid #ddd; padding: 16px; background: #fafafa; margin-top: 12px; font-size: 11px; }
-                .footer { margin-top: 40px; padding-top: 12px; border-top: 2px solid #1C3519; font-size: 10px; color: #777; text-align: center; }
+                .snapshot { border: 1px solid #ddd; padding: 12px; background: #fafafa; margin-top: 8px; font-size: 11px; }
+                .footer { margin-top: 20px; padding-top: 10px; border-top: 2px solid #1C3519; font-size: 10px; color: #777; text-align: center; }
                 .footer strong { color: #1C3519; }
             </style>
         </head>
