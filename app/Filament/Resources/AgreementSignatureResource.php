@@ -80,6 +80,15 @@ class AgreementSignatureResource extends Resource
                             'App\Models\Training' => $model->title,
                             default => '#' . $record->context_reference_id,
                         };
+                    })
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->where(function ($q) use ($search) {
+                            $q->whereIn('context_reference_id', Plan::where('name', 'like', "%{$search}%")->pluck('id'))
+                                ->where('context_reference_type', 'App\\Models\\Plan');
+                        })->orWhere(function ($q) use ($search) {
+                            $q->whereIn('context_reference_id', Training::where('title', 'like', "%{$search}%")->pluck('id'))
+                                ->where('context_reference_type', 'App\\Models\\Training');
+                        });
                     }),
                 Tables\Columns\TextColumn::make('amount_cents')
                     ->label('Amount')
