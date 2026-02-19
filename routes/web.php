@@ -26,6 +26,7 @@ use App\Http\Controllers\VendorApplicationController;
 use App\Http\Controllers\PublicShopController;
 use App\Http\Controllers\ShopCartController;
 use App\Http\Controllers\ShopCheckoutController;
+use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\WalletPassController;
 use Illuminate\Support\Facades\Route;
 
@@ -136,6 +137,10 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     // Bookmarks
     Route::get('/bookmarks', [ResourceBookmarkController::class, 'index'])->name('bookmarks.index');
     Route::post('/bookmarks/{resource}/toggle', [ResourceBookmarkController::class, 'toggle'])->name('bookmarks.toggle');
+
+    // Order History (available to all authenticated users)
+    Route::get('/orders', [OrderHistoryController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderHistoryController::class, 'show'])->name('orders.show');
 
     // Account / Profile
     Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');

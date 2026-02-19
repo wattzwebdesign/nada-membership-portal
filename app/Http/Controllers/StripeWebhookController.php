@@ -98,6 +98,11 @@ class StripeWebhookController extends Controller
         );
 
         if ($localSubscription) {
+            // Ensure user has the member role (handles customer-to-member upgrade)
+            if (!$user->hasRole('member')) {
+                $user->assignRole('member');
+            }
+
             $this->safeNotify($user, new SubscriptionConfirmedNotification($localSubscription));
         }
 

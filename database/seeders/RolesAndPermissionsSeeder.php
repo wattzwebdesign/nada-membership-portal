@@ -83,6 +83,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'connect stripe account',
         ]);
 
+        $customer = Role::firstOrCreate(['name' => 'customer']);
+        $customer->syncPermissions([
+            'view dashboard',
+            'view own orders',
+        ]);
+
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $admin->syncPermissions(Permission::all());
     }

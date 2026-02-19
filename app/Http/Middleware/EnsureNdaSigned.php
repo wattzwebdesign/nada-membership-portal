@@ -11,6 +11,10 @@ class EnsureNdaSigned
 {
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->user() && $request->user()->isCustomerOnly()) {
+            return $next($request);
+        }
+
         if ($request->user() && !$request->user()->hasSignedNda()) {
             // Only enforce if there's actually an active NDA published
             if (Agreement::getActiveNda()) {

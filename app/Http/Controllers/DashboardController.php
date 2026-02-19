@@ -17,6 +17,18 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
+        // Customer-only users get a simplified dashboard
+        if ($user->isCustomerOnly()) {
+            $recentOrders = $user->shopOrders()
+                ->where('status', '!=', 'pending')
+                ->with('items')
+                ->latest()
+                ->take(5)
+                ->get();
+
+            return view('dashboard-customer', compact('user', 'recentOrders'));
+        }
+
         // Check for a pending plan from registration flow
         $pendingPlanId = Cache::pull("pending_plan:{$user->id}");
         if ($pendingPlanId && !$user->hasActiveSubscription()) {

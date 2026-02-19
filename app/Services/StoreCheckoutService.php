@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Enums\OrderStatus;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\VendorOrderSplit;
+use App\Notifications\CustomerSetPasswordNotification;
 use App\Notifications\NewStoreOrderNotification;
 use App\Notifications\StoreOrderConfirmationNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use Stripe\Checkout\Session as CheckoutSession;
 use Stripe\Stripe;
 use Stripe\Transfer;
@@ -75,6 +78,9 @@ class StoreCheckoutService
             'paid_at' => now(),
         ]);
 
+        // Link or create customer account
+        $this->findOrCreateCustomerAccount($order);
+
         // Decrement stock
         foreach ($order->items as $item) {
             if ($item->product) {
@@ -107,6 +113,45 @@ class StoreCheckoutService
                     'error' => $e->getMessage(),
                 ]);
             }
+        }
+    }
+
+    public function findOrCreateCustomerAccount(Order $order): void
+    {
+        // Already linked to a user (logged-in checkout)
+        if ($order->user_id) {
+            return;
+        }
+
+        $existingUser = User::where('email', $order->customer_email)->first();
+
+        if ($existingUser) {
+            $order->update(['user_id' => $existingUser->id]);
+
+            return;
+        }
+
+        // Create new customer account
+        try {
+            $user = User::create([
+                'first_name' => $order->customer_first_name,
+                'last_name' => $order->customer_last_name,
+                'email' => $order->customer_email,
+                'password' => Str::random(32),
+                'email_verified_at' => now(),
+            ]);
+
+            $user->assignRole('customer');
+
+            $order->update(['user_id' => $user->id]);
+
+            $user->notify(new CustomerSetPasswordNotification($user));
+        } catch (\Throwable $e) {
+            Log::error('Failed to create customer account for order', [
+                'order_id' => $order->id,
+                'email' => $order->customer_email,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 

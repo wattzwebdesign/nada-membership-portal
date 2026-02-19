@@ -197,6 +197,17 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return $this->hasRole('vendor');
     }
 
+    public function isCustomer(): bool
+    {
+        return $this->hasRole('customer');
+    }
+
+    public function isCustomerOnly(): bool
+    {
+        return $this->hasRole('customer')
+            && !$this->hasAnyRole(['member', 'registered_trainer', 'vendor', 'admin']);
+    }
+
     public function hasActiveVendorProfile(): bool
     {
         return $this->vendorProfile && $this->vendorProfile->is_active;
