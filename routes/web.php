@@ -21,6 +21,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ResourceBookmarkController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\TrainingRegistrationController;
+use App\Http\Controllers\WalletPassController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -76,6 +77,10 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::post('/membership/invoices/{invoice}/pay', [InvoiceController::class, 'pay'])->name('invoices.pay');
     Route::get('/membership/invoices/{invoice}/pay/success', [InvoiceController::class, 'paySuccess'])->name('invoices.pay.success');
     Route::get('/membership/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+
+    // Wallet Passes
+    Route::get('/membership/wallet/apple', [WalletPassController::class, 'downloadApplePass'])->name('membership.wallet.apple');
+    Route::get('/membership/wallet/google', [WalletPassController::class, 'getGooglePassUrl'])->name('membership.wallet.google');
 
     // Certificates
     Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');

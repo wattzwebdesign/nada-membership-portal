@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ae25afc76d004780891f7ee1f4a56218",
+    "content-hash": "c00426811a013ed86eb7a27c1c40dcd5",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -71,6 +71,58 @@
                 "source": "https://github.com/AnourValar/eloquent-serialize/tree/1.3.5"
             },
             "time": "2025-12-04T13:38:21+00:00"
+        },
+        {
+            "name": "antwerpes/data-transfer-object",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/antwerpes/data-transfer-object.git",
+                "reference": "1508218840093662a45a8485b340fd4ac358cd45"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/antwerpes/data-transfer-object/zipball/1508218840093662a45a8485b340fd4ac358cd45",
+                "reference": "1508218840093662a45a8485b340fd4ac358cd45",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "chiiya/code-style-php": "^3.0",
+                "friendsofphp/php-cs-fixer": "^3.21.1",
+                "phpro/grumphp": "^2.7",
+                "phpunit/phpunit": "^10.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Antwerpes\\DataTransferObject\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Elisha Witte",
+                    "email": "github@chiiya.moe",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Simple json encoding and decoding for PHP data objects",
+            "homepage": "https://github.com/antwerpes/data-transfer-object",
+            "keywords": [
+                "chiiya",
+                "json-encoding"
+            ],
+            "support": {
+                "issues": "https://github.com/antwerpes/data-transfer-object/issues",
+                "source": "https://github.com/antwerpes/data-transfer-object/tree/1.0.5"
+            },
+            "time": "2024-10-10T11:46:37+00:00"
         },
         {
             "name": "barryvdh/laravel-dompdf",
@@ -427,6 +479,149 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "chiiya/laravel-passes",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chiiya/laravel-passes.git",
+                "reference": "54f5e92e99675c9aeb0a5f616e12177a0068471b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chiiya/laravel-passes/zipball/54f5e92e99675c9aeb0a5f616e12177a0068471b",
+                "reference": "54f5e92e99675c9aeb0a5f616e12177a0068471b",
+                "shasum": ""
+            },
+            "require": {
+                "chiiya/passes": "^1.2",
+                "illuminate/contracts": "^9.0|^10.0|^11.0|^12.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.11"
+            },
+            "require-dev": {
+                "chiiya/laravel-code-style": "^3.0",
+                "nunomaduro/collision": "^6.1|^7.0|^8.0",
+                "orchestra/testbench": "^7.1|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^9.5|^10.0|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Chiiya\\LaravelPasses\\LaravelPassesServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Chiiya\\LaravelPasses\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Elisha Witte",
+                    "email": "github@chiiya.moe",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel library for creating iOS and Android Wallet Passes",
+            "homepage": "https://github.com/chiiya/laravel-passes",
+            "keywords": [
+                "android",
+                "apple",
+                "chiiya",
+                "google",
+                "ios",
+                "laravel",
+                "passes",
+                "wallet"
+            ],
+            "support": {
+                "issues": "https://github.com/chiiya/laravel-passes/issues",
+                "source": "https://github.com/chiiya/laravel-passes/tree/1.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/chiiya",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-20T12:41:46+00:00"
+        },
+        {
+            "name": "chiiya/passes",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chiiya/passes.git",
+                "reference": "ca79723d6fe335d74731b069ec534ed2fea9aa60"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chiiya/passes/zipball/ca79723d6fe335d74731b069ec534ed2fea9aa60",
+                "reference": "ca79723d6fe335d74731b069ec534ed2fea9aa60",
+                "shasum": ""
+            },
+            "require": {
+                "antwerpes/data-transfer-object": "^1.0",
+                "ext-openssl": "*",
+                "ext-zip": "*",
+                "google/auth": "^1.18",
+                "php": "^8.1",
+                "symfony/validator": "^7.1"
+            },
+            "require-dev": {
+                "chiiya/code-style-php": "^3.0",
+                "phpro/grumphp": "^2.7",
+                "phpunit/phpunit": "^11.3",
+                "symfony/var-dumper": "^7.1",
+                "vlucas/phpdotenv": "^5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Chiiya\\Passes\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Elisha Witte",
+                    "email": "github@chiiya.moe",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP library for creating iOS and Android Wallet Passes",
+            "homepage": "https://github.com/chiiya/passes",
+            "keywords": [
+                "android",
+                "apple",
+                "chiiya",
+                "google",
+                "ios",
+                "passes",
+                "wallet"
+            ],
+            "support": {
+                "issues": "https://github.com/chiiya/passes/issues",
+                "source": "https://github.com/chiiya/passes/tree/1.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/chiiya",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-20T10:24:22+00:00"
         },
         {
             "name": "composer/pcre",
@@ -1903,6 +2098,69 @@
             "time": "2026-02-07T21:51:58+00:00"
         },
         {
+            "name": "firebase/php-jwt",
+            "version": "v7.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "5645b43af647b6947daac1d0f659dd1fbe8d3b65"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/5645b43af647b6947daac1d0f659dd1fbe8d3b65",
+                "reference": "5645b43af647b6947daac1d0f659dd1fbe8d3b65",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^7.4",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.5",
+                "psr/cache": "^2.0||^3.0",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0"
+            },
+            "suggest": {
+                "ext-sodium": "Support EdDSA (Ed25519) signatures",
+                "paragonie/sodium_compat": "Support EdDSA (Ed25519) signatures when libsodium is not present"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "keywords": [
+                "jwt",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/firebase/php-jwt/issues",
+                "source": "https://github.com/firebase/php-jwt/tree/v7.0.2"
+            },
+            "time": "2025-12-16T22:17:28+00:00"
+        },
+        {
             "name": "fruitcake/php-cors",
             "version": "v1.4.0",
             "source": {
@@ -1972,6 +2230,68 @@
                 }
             ],
             "time": "2025-12-03T09:33:47+00:00"
+        },
+        {
+            "name": "google/auth",
+            "version": "v1.50.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
+                "reference": "e1c26a718198e16d8a3c69b1cae136b73f959b0f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/e1c26a718198e16d8a3c69b1cae136b73f959b0f",
+                "reference": "e1c26a718198e16d8a3c69b1cae136b73f959b0f",
+                "shasum": ""
+            },
+            "require": {
+                "firebase/php-jwt": "^6.0||^7.0",
+                "guzzlehttp/guzzle": "^7.4.5",
+                "guzzlehttp/psr7": "^2.4.5",
+                "php": "^8.1",
+                "psr/cache": "^2.0||^3.0",
+                "psr/http-message": "^1.1||^2.0",
+                "psr/log": "^3.0"
+            },
+            "require-dev": {
+                "guzzlehttp/promises": "^2.0",
+                "kelvinmo/simplejwt": "^1.1.0",
+                "phpseclib/phpseclib": "^3.0.35",
+                "phpspec/prophecy-phpunit": "^2.1",
+                "phpunit/phpunit": "^9.6",
+                "sebastian/comparator": ">=1.2.3",
+                "squizlabs/php_codesniffer": "^4.0",
+                "symfony/filesystem": "^6.3||^7.3",
+                "symfony/process": "^6.0||^7.0",
+                "webmozart/assert": "^1.11||^2.0"
+            },
+            "suggest": {
+                "phpseclib/phpseclib": "May be used in place of OpenSSL for signing strings or for token management. Please require version ^2."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\Auth\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Google Auth Library for PHP",
+            "homepage": "https://github.com/google/google-auth-library-php",
+            "keywords": [
+                "Authentication",
+                "google",
+                "oauth2"
+            ],
+            "support": {
+                "docs": "https://cloud.google.com/php/docs/reference/auth/latest",
+                "issues": "https://github.com/googleapis/google-auth-library-php/issues",
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.50.0"
+            },
+            "time": "2026-01-08T21:33:57+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -4753,6 +5073,69 @@
                 }
             ],
             "time": "2025-12-27T19:41:33+00:00"
+        },
+        {
+            "name": "pkpass/pkpass",
+            "version": "v2.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tschoffelen/php-pkpass.git",
+                "reference": "d735bb0dda737573fbd099684b90b33707f767d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tschoffelen/php-pkpass/zipball/d735bb0dda737573fbd099684b90b33707f767d7",
+                "reference": "d735bb0dda737573fbd099684b90b33707f767d7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "ext-zip": "*",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PKPass\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Schoffelen",
+                    "email": "thomas@includable.com",
+                    "homepage": "https://schof.co/"
+                }
+            ],
+            "description": "PHP PKPass class for iOS Wallet",
+            "homepage": "https://github.com/includable/php-pkpass",
+            "keywords": [
+                "apple",
+                "ios",
+                "ipad",
+                "iphone",
+                "passbook",
+                "php",
+                "wallet"
+            ],
+            "support": {
+                "issues": "https://github.com/tschoffelen/php-pkpass/issues",
+                "source": "https://github.com/tschoffelen/php-pkpass/tree/v2.5.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/tschoffelen",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-01-02T19:00:21+00:00"
         },
         {
             "name": "psr/cache",
@@ -8762,6 +9145,110 @@
                 }
             ],
             "time": "2026-01-03T23:30:35+00:00"
+        },
+        {
+            "name": "symfony/validator",
+            "version": "v7.4.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/validator.git",
+                "reference": "fcec92c40df1c93507857da08226005573b655c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/fcec92c40df1c93507857da08226005573b655c6",
+                "reference": "fcec92c40df1c93507857da08226005573b655c6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/polyfill-ctype": "~1.8",
+                "symfony/polyfill-mbstring": "~1.0",
+                "symfony/polyfill-php83": "^1.27",
+                "symfony/translation-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "doctrine/lexer": "<1.1",
+                "symfony/dependency-injection": "<6.4",
+                "symfony/doctrine-bridge": "<7.0",
+                "symfony/expression-language": "<6.4",
+                "symfony/http-kernel": "<6.4",
+                "symfony/intl": "<6.4",
+                "symfony/property-info": "<6.4",
+                "symfony/translation": "<6.4.3|>=7.0,<7.0.3",
+                "symfony/var-exporter": "<6.4.25|>=7.0,<7.3.3",
+                "symfony/yaml": "<6.4"
+            },
+            "require-dev": {
+                "egulias/email-validator": "^2.1.10|^3|^4",
+                "symfony/cache": "^6.4|^7.0|^8.0",
+                "symfony/config": "^6.4|^7.0|^8.0",
+                "symfony/console": "^6.4|^7.0|^8.0",
+                "symfony/dependency-injection": "^6.4|^7.0|^8.0",
+                "symfony/expression-language": "^6.4|^7.0|^8.0",
+                "symfony/finder": "^6.4|^7.0|^8.0",
+                "symfony/http-client": "^6.4|^7.0|^8.0",
+                "symfony/http-foundation": "^6.4|^7.0|^8.0",
+                "symfony/http-kernel": "^6.4|^7.0|^8.0",
+                "symfony/intl": "^6.4|^7.0|^8.0",
+                "symfony/mime": "^6.4|^7.0|^8.0",
+                "symfony/process": "^6.4|^7.0|^8.0",
+                "symfony/property-access": "^6.4|^7.0|^8.0",
+                "symfony/property-info": "^6.4|^7.0|^8.0",
+                "symfony/string": "^6.4|^7.0|^8.0",
+                "symfony/translation": "^6.4.3|^7.0.3|^8.0",
+                "symfony/type-info": "^7.1.8",
+                "symfony/yaml": "^6.4|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Validator\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/",
+                    "/Resources/bin/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides tools to validate values",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/validator/tree/v7.4.5"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-01-27T08:59:58+00:00"
         },
         {
             "name": "symfony/var-dumper",

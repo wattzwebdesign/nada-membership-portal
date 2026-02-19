@@ -46,4 +46,18 @@ return [
         'connect_webhook_secret' => env('STRIPE_CONNECT_WEBHOOK_SECRET'),
     ],
 
+    'apple_wallet' => [
+        'certificate_path' => env('APPLE_WALLET_CERTIFICATE_PATH', 'wallet/pass.p12'),
+        'certificate_password' => env('APPLE_WALLET_CERTIFICATE_PASSWORD'),
+        'wwdr_certificate_path' => env('APPLE_WALLET_WWDR_PATH', 'wallet/wwdr.pem'),
+        'pass_type_identifier' => env('APPLE_WALLET_PASS_TYPE_ID', 'pass.com.acudetox.membership'),
+        'team_identifier' => env('APPLE_WALLET_TEAM_ID'),
+        'web_service_url' => env('APPLE_WALLET_WEB_SERVICE_URL'),
+    ],
+
+    'google_wallet' => [
+        'service_account_path' => env('GOOGLE_WALLET_SERVICE_ACCOUNT_PATH', 'wallet/google-service-account.json'),
+        'issuer_id' => env('GOOGLE_WALLET_ISSUER_ID'),
+    ],
+
 ];

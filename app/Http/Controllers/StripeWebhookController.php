@@ -19,6 +19,7 @@ use App\Notifications\NewTrainingRegistrationNotification;
 use App\Notifications\TrainingRegisteredNotification;
 use App\Services\CertificateService;
 use App\Services\SubscriptionService;
+use App\Services\WalletPassService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -157,6 +158,8 @@ class StripeWebhookController extends Controller
             }
         }
 
+        app(WalletPassService::class)->updateAllPassesForUser($user);
+
         Log::info('Subscription updated from webhook.', [
             'user_id' => $user->id,
             'stripe_subscription_id' => $subscription->id,
@@ -189,6 +192,8 @@ class StripeWebhookController extends Controller
         $this->certificateService->expireCertificatesForUser($user);
 
         $this->safeNotify($user, new SubscriptionCanceledNotification($existingSub));
+
+        app(WalletPassService::class)->updateAllPassesForUser($user);
 
         Log::info('Subscription deleted from webhook; certificates expired.', [
             'user_id' => $user->id,

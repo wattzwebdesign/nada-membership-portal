@@ -159,6 +159,11 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return $this->belongsToMany(Resource::class, 'resource_bookmarks')->withPivot('created_at');
     }
 
+    public function walletPasses(): HasMany
+    {
+        return $this->hasMany(WalletPass::class);
+    }
+
     // Scopes & Helpers
 
     public function isTrainer(): bool

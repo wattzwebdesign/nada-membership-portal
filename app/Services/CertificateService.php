@@ -46,6 +46,8 @@ class CertificateService
 
         $this->generatePdf($certificate);
 
+        app(WalletPassService::class)->onCertificateIssued($user);
+
         return $certificate;
     }
 
