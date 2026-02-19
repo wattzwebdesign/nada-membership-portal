@@ -81,13 +81,21 @@ class AgreementSignatureResource extends Resource
                             default => '#' . $record->context_reference_id,
                         };
                     }),
+                Tables\Columns\TextColumn::make('amount_cents')
+                    ->label('Amount')
+                    ->formatStateUsing(fn (?int $state): string => $state !== null ? '$' . number_format($state / 100, 2) : '—')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('signed_at')
                     ->label('Signed At')
                     ->dateTime()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('stripe_transaction_id')
+                    ->label('Stripe Txn')
+                    ->limit(20)
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('ip_address')
                     ->label('IP')
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('user_agent')
                     ->label('User Agent')
                     ->limit(40)
@@ -193,6 +201,12 @@ class AgreementSignatureResource extends Resource
                                                 default => '#' . $record->context_reference_id,
                                             };
                                         }),
+                                    Infolists\Components\TextEntry::make('amount_cents')
+                                        ->label('Amount')
+                                        ->formatStateUsing(fn (?int $state): string => $state !== null ? '$' . number_format($state / 100, 2) : 'N/A'),
+                                    Infolists\Components\TextEntry::make('stripe_transaction_id')
+                                        ->label('Stripe Transaction ID')
+                                        ->default('Pending'),
                                 ])->columns(2),
 
                             Infolists\Components\Section::make('Terms & Conditions Snapshot')

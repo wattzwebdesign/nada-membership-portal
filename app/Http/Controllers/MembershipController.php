@@ -69,7 +69,7 @@ class MembershipController extends Controller
         }
 
         // Record T&C consent
-        $signature = $this->termsConsentService->recordConsent($request, $user, 'membership_subscription', Plan::class, $plan->id);
+        $signature = $this->termsConsentService->recordConsent($request, $user, 'membership_subscription', Plan::class, $plan->id, $plan->price_cents);
         $tcMetadata = $this->termsConsentService->stripeMetadata($signature);
 
         try {
@@ -131,7 +131,7 @@ class MembershipController extends Controller
         $newPlan = Plan::findOrFail($request->input('plan_id'));
 
         // Record T&C consent
-        $signature = $this->termsConsentService->recordConsent($request, $user, 'plan_switch', Plan::class, $newPlan->id);
+        $signature = $this->termsConsentService->recordConsent($request, $user, 'plan_switch', Plan::class, $newPlan->id, $newPlan->price_cents);
         $tcMetadata = $this->termsConsentService->stripeMetadata($signature);
 
         $this->stripeService->switchPlan($subscription->stripe_subscription_id, $newPlan, $tcMetadata);

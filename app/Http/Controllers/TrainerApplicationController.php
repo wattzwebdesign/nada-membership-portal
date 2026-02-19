@@ -88,7 +88,7 @@ class TrainerApplicationController extends Controller
         ]);
 
         // Record T&C consent
-        $signature = $this->termsConsentService->recordConsent($request, $user, 'trainer_application');
+        $signature = $this->termsConsentService->recordConsent($request, $user, 'trainer_application', null, null, 7500);
         $tcMetadata = $this->termsConsentService->stripeMetadata($signature);
 
         // Create Stripe Checkout session for $75 application fee
@@ -225,6 +225,12 @@ class TrainerApplicationController extends Controller
 
             // Clear session data
             $request->session()->forget('trainer_application');
+
+            // Attach Stripe transaction ID to consent signature
+            $tcSignatureId = $session->metadata->tc_signature_id ?? null;
+            if ($tcSignatureId && $session->payment_intent) {
+                TermsConsentService::attachTransaction((int) $tcSignatureId, $session->payment_intent);
+            }
 
             // Notify admin
             $this->safeNotifyRoute(SiteSetting::adminEmail(), new TrainerApplicationSubmittedNotification($application));

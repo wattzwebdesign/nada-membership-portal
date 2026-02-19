@@ -20,6 +20,7 @@ class TermsConsentService
         string $context,
         ?string $referenceType = null,
         ?int $referenceId = null,
+        ?int $amountCents = null,
     ): AgreementSignature {
         $terms = $this->getActiveTerms();
 
@@ -37,7 +38,15 @@ class TermsConsentService
             'context_reference_type' => $referenceType,
             'context_reference_id' => $referenceId,
             'consent_snapshot' => $terms->content,
+            'amount_cents' => $amountCents,
         ]);
+    }
+
+    public static function attachTransaction(int $signatureId, string $transactionId): void
+    {
+        AgreementSignature::where('id', $signatureId)
+            ->whereNull('stripe_transaction_id')
+            ->update(['stripe_transaction_id' => $transactionId]);
     }
 
     public function stripeMetadata(AgreementSignature $signature): array

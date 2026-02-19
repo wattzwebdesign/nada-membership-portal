@@ -15,6 +15,7 @@ use App\Notifications\TrainingRegisteredNotification;
 use App\Services\StripeService;
 use App\Services\TermsConsentService;
 use App\Services\WalletPassService;
+use App\Models\AgreementSignature;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -82,7 +83,7 @@ class TrainingRegistrationController extends Controller
         }
 
         // Record T&C consent
-        $signature = $this->termsConsentService->recordConsent($request, $user, 'training_registration', Training::class, $training->id);
+        $signature = $this->termsConsentService->recordConsent($request, $user, 'training_registration', Training::class, $training->id, $training->is_paid ? $training->price_cents : 0);
         $tcMetadata = $this->termsConsentService->stripeMetadata($signature);
 
         // Paid training: redirect to Stripe Checkout
@@ -169,6 +170,12 @@ class TrainingRegistrationController extends Controller
 
             $this->safeNotify($user, new TrainingRegisteredNotification($registration));
             $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($registration));
+
+            // Attach Stripe transaction ID to consent signature
+            $tcSignatureId = $session->metadata->tc_signature_id ?? null;
+            if ($tcSignatureId && $session->payment_intent) {
+                TermsConsentService::attachTransaction((int) $tcSignatureId, $session->payment_intent);
+            }
 
             return redirect()->route('trainings.my-registrations')
                 ->with('success', 'Payment confirmed! You are registered for "' . $training->title . '".');

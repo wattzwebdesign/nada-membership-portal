@@ -18,6 +18,8 @@ class AgreementSignature extends Model
         'context_reference_type',
         'context_reference_id',
         'consent_snapshot',
+        'amount_cents',
+        'stripe_transaction_id',
     ];
 
     protected function casts(): array

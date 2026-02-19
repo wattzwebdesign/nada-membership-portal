@@ -115,6 +115,8 @@ class DisputeEvidenceService
                 <div class="field"><span class="label">User Agent:</span> <span class="value">{$this->e($signature->user_agent ?? 'N/A')}</span></div>
                 <div class="field"><span class="label">Consent Context:</span> <span class="value">{$this->e($contextLabel)}</span></div>
                 <div class="field"><span class="label">Context Reference:</span> <span class="value">{$this->e($contextReference ?? 'N/A')}</span></div>
+                <div class="field"><span class="label">Amount:</span> <span class="value">{$this->formatAmount($signature->amount_cents)}</span></div>
+                <div class="field"><span class="label">Stripe Transaction:</span> <span class="value">{$this->e($signature->stripe_transaction_id ?? 'N/A')}</span></div>
             </div>
 
             <div class="section">
@@ -135,5 +137,14 @@ class DisputeEvidenceService
     protected function e(?string $value): string
     {
         return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
+    }
+
+    protected function formatAmount(?int $cents): string
+    {
+        if ($cents === null) {
+            return 'N/A';
+        }
+
+        return '$' . number_format($cents / 100, 2);
     }
 }

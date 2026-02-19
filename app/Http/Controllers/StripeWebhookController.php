@@ -19,6 +19,7 @@ use App\Notifications\NewTrainingRegistrationNotification;
 use App\Notifications\TrainingRegisteredNotification;
 use App\Services\CertificateService;
 use App\Services\SubscriptionService;
+use App\Services\TermsConsentService;
 use App\Services\WalletPassService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -423,6 +424,13 @@ class StripeWebhookController extends Controller
                 ]);
             }
 
+        }
+
+        // Attach Stripe transaction ID to consent signature if present
+        $tcSignatureId = $session->metadata->tc_signature_id ?? null;
+        $paymentIntent = $session->payment_intent ?? $session->subscription ?? null;
+        if ($tcSignatureId && $paymentIntent) {
+            TermsConsentService::attachTransaction((int) $tcSignatureId, $paymentIntent);
         }
 
         Log::info('Checkout session completed.', [
