@@ -192,7 +192,7 @@
                             @elseif ($clinical->status === 'approved' && !$hasCertificate)
                                 {{-- Ready to issue --}}
                                 <div class="text-center">
-                                    <div class="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-3 bg-brand-secondary/10"
+                                    <div class="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-3 bg-brand-secondary/10">
                                         <svg class="w-8 h-8 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625l-2.625 2.625L9.75 15"/></svg>
                                     </div>
                                     <p class="text-sm font-medium text-gray-900">Ready to Issue</p>
