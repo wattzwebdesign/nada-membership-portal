@@ -17,15 +17,27 @@
         @endif
         <div class="min-w-0">
             <p class="text-sm font-medium truncate text-brand-text">Welcome back, {{ Auth::user()->first_name }}!</p>
-            <span class="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium
-                {{ Auth::user()->hasRole('admin')
-                    ? 'bg-red-100 text-red-700'
-                    : (Auth::user()->hasRole('registered_trainer')
-                        ? 'bg-amber-100 text-amber-700'
-                        : (Auth::user()->isCustomerOnly()
-                            ? 'bg-emerald-100 text-emerald-700'
-                            : 'bg-blue-100 text-blue-700')) }}">
-                {{ Auth::user()->hasRole('admin') ? 'Admin' : (Auth::user()->hasRole('vendor') ? 'Vendor' : (Auth::user()->hasRole('registered_trainer') ? 'Trainer' : (Auth::user()->isCustomerOnly() ? 'Customer' : 'Member'))) }}
+            @php
+                $badgeUser = Auth::user();
+                if ($badgeUser->hasRole('admin')) {
+                    $badgeColor = 'bg-red-100 text-red-700';
+                    $badgeLabel = 'Admin';
+                } elseif ($badgeUser->hasRole('registered_trainer')) {
+                    $badgeColor = 'bg-amber-100 text-amber-700';
+                    $badgeLabel = 'Trainer';
+                } elseif ($badgeUser->hasRole('vendor')) {
+                    $badgeColor = 'bg-purple-100 text-purple-700';
+                    $badgeLabel = 'Vendor';
+                } elseif ($badgeUser->hasRole('member')) {
+                    $badgeColor = 'bg-blue-100 text-blue-700';
+                    $badgeLabel = 'Member';
+                } else {
+                    $badgeColor = 'bg-emerald-100 text-emerald-700';
+                    $badgeLabel = 'Customer';
+                }
+            @endphp
+            <span class="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium {{ $badgeColor }}">
+                {{ $badgeLabel }}
             </span>
         </div>
     </div>
@@ -42,8 +54,8 @@
     }
 }" x-init="$nextTick(() => check())" @resize.window="check()">
     <nav x-ref="navScroll" @scroll="check()" class="h-full overflow-y-auto px-3 space-y-6 pb-2">
-    @if(auth()->user()->isCustomerOnly())
-    {{-- CUSTOMER section (minimal) --}}
+    @if(!auth()->user()->hasRole('member'))
+    {{-- NON-MEMBER section (customers, vendors without membership) --}}
     <div>
         <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-brand-accent">Shop</p>
         <div class="space-y-1">
@@ -282,14 +294,14 @@
         Profile
     </x-sidebar-link>
 
-    @unless(auth()->user()->isCustomerOnly())
+    @role('member')
     <x-sidebar-link :href="route('discount.request.status')" :active="request()->routeIs('discount.*')" data-guide="nav-discount-request">
         <x-slot name="icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>
         </x-slot>
         Discount Request
     </x-sidebar-link>
-    @endunless
+    @endrole
 
     <form method="POST" action="{{ route('logout') }}">
         @csrf
