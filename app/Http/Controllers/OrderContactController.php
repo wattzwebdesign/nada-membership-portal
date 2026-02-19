@@ -12,19 +12,40 @@ class OrderContactController extends Controller
     {
         abort_unless($order->user_id === $request->user()->id, 403);
 
-        $validated = $request->validate([
-            'subject' => ['required', 'in:Shipping question,Item issue,Return / exchange,Other'],
-            'message' => ['required', 'string', 'max:2000'],
-        ]);
-
         $order->load('vendorOrderSplits.vendorProfile.user');
 
-        $vendors = $order->vendorOrderSplits
-            ->pluck('vendorProfile.user')
+        $vendorProfileIds = $order->vendorOrderSplits
+            ->pluck('vendor_profile_id')
             ->filter()
-            ->unique('id');
+            ->unique()
+            ->values()
+            ->all();
 
-        foreach ($vendors as $vendor) {
+        $rules = [
+            'subject' => ['required', 'in:Shipping question,Item issue,Return / exchange,Other'],
+            'message' => ['required', 'string', 'max:2000'],
+        ];
+
+        // Require vendor selection when order has multiple vendors
+        if (count($vendorProfileIds) > 1) {
+            $rules['vendor_profile_id'] = ['required', 'in:' . implode(',', $vendorProfileIds)];
+        }
+
+        $validated = $request->validate($rules);
+
+        // Determine which vendor(s) to notify
+        if (count($vendorProfileIds) === 1) {
+            // Single vendor — send to them directly
+            $splits = $order->vendorOrderSplits;
+        } else {
+            // Multi-vendor — send only to the selected vendor
+            $splits = $order->vendorOrderSplits
+                ->where('vendor_profile_id', (int) $validated['vendor_profile_id']);
+        }
+
+        $vendor = $splits->first()?->vendorProfile?->user;
+
+        if ($vendor) {
             $vendor->notify(new OrderContactNotification(
                 $order,
                 $request->user(),
@@ -33,6 +54,6 @@ class OrderContactController extends Controller
             ));
         }
 
-        return redirect()->back()->with('success', 'Your message has been sent to the vendor(s).');
+        return redirect()->back()->with('success', 'Your message has been sent to the vendor.');
     }
 }

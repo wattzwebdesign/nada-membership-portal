@@ -23,7 +23,7 @@ class OrderHistoryController extends Controller
     {
         abort_unless($order->user_id === $request->user()->id, 403);
 
-        $order->load(['items', 'vendorOrderSplits']);
+        $order->load(['items', 'vendorOrderSplits.vendorProfile']);
 
         return view('orders.show', compact('order'));
     }

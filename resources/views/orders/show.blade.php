@@ -209,22 +209,25 @@
 
                     {{-- Contact Vendor --}}
                     @if (in_array($order->status, [\App\Enums\OrderStatus::Paid, \App\Enums\OrderStatus::Processing, \App\Enums\OrderStatus::Shipped, \App\Enums\OrderStatus::Delivered]))
+                        @php
+                            $vendors = $order->vendorOrderSplits
+                                ->pluck('vendorProfile')
+                                ->filter()
+                                ->unique('id')
+                                ->values();
+                        @endphp
+
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
                                 <h4 class="text-lg font-semibold text-brand-primary mb-2">Need Help?</h4>
 
-                                @php
-                                    $vendorNames = $order->vendorOrderSplits
-                                        ->pluck('vendorProfile')
-                                        ->filter()
-                                        ->pluck('business_name')
-                                        ->unique()
-                                        ->values();
-                                @endphp
-
-                                @if ($vendorNames->isNotEmpty())
+                                @if ($vendors->count() === 1)
                                     <p class="text-sm text-gray-500 mb-4">
-                                        Contact {{ $vendorNames->join(', ', ' & ') }} about this order.
+                                        Contact {{ $vendors->first()->business_name }} about this order.
+                                    </p>
+                                @elseif ($vendors->count() > 1)
+                                    <p class="text-sm text-gray-500 mb-4">
+                                        Select a vendor below to send them a message about this order.
                                     </p>
                                 @endif
 
@@ -236,6 +239,21 @@
 
                                 <form action="{{ route('orders.contact', $order) }}" method="POST">
                                     @csrf
+
+                                    @if ($vendors->count() > 1)
+                                        <div class="mb-3">
+                                            <label for="contact-vendor" class="block text-sm font-medium text-gray-700 mb-1">Vendor</label>
+                                            <select id="contact-vendor" name="vendor_profile_id" class="w-full rounded-md border-gray-300 shadow-sm text-sm focus:border-brand-accent focus:ring-brand-accent" required>
+                                                <option value="">Select a vendor...</option>
+                                                @foreach ($vendors as $vendor)
+                                                    <option value="{{ $vendor->id }}" @selected(old('vendor_profile_id') == $vendor->id)>{{ $vendor->business_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('vendor_profile_id')
+                                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    @endif
 
                                     <div class="mb-3">
                                         <label for="contact-subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
