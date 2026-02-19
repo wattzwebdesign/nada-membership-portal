@@ -17,10 +17,11 @@ class AppleWalletService
         $passData = app(WalletPassService::class)->buildPassData($user);
         $walletPass = $this->getOrCreateWalletPass($user);
 
-        $pass = new PKPass(
-            storage_path('app/' . config('services.apple_wallet.certificate_path')),
-            config('services.apple_wallet.certificate_password')
-        );
+        $certPath = storage_path('app/' . config('services.apple_wallet.certificate_path'));
+        $certPassword = config('services.apple_wallet.certificate_password');
+        $compatibleP12 = $this->ensureCompatibleP12($certPath, $certPassword);
+
+        $pass = new PKPass($compatibleP12, $certPassword);
 
         $pass->setWwdrCertificatePath(
             storage_path('app/' . config('services.apple_wallet.wwdr_certificate_path'))
@@ -113,6 +114,76 @@ class AppleWalletService
         ]);
 
         return $pkpass;
+    }
+
+    /**
+     * Convert a .p12 to a legacy-compatible format if PHP's openssl_pkcs12_read can't handle it.
+     * This works around OpenSSL 3.x / PHP 8.4 incompatibilities with newer PKCS12 MAC algorithms.
+     */
+    protected function ensureCompatibleP12(string $certPath, string $password): string
+    {
+        // First, test if PHP can read the p12 natively
+        $pkcs12 = file_get_contents($certPath);
+        $certs = [];
+        if ($pkcs12 && openssl_pkcs12_read($pkcs12, $certs, $password)) {
+            return $certPath; // Works fine, no conversion needed
+        }
+
+        // PHP can't read it — convert using the server's openssl CLI with legacy algorithms
+        $compatiblePath = storage_path('app/wallet/pass-compatible.p12');
+
+        // Check if we already have a compatible version that's newer than the source
+        if (file_exists($compatiblePath) && filemtime($compatiblePath) >= filemtime($certPath)) {
+            return $compatiblePath;
+        }
+
+        $tempPem = tempnam(sys_get_temp_dir(), 'pkpass_');
+        $escapedPass = escapeshellarg('pass:' . $password);
+
+        // Extract to PEM
+        $cmd = sprintf(
+            'openssl pkcs12 -in %s -out %s -nodes -passin %s -legacy 2>&1',
+            escapeshellarg($certPath),
+            escapeshellarg($tempPem),
+            $escapedPass
+        );
+        $output = shell_exec($cmd);
+
+        if (! file_exists($tempPem) || filesize($tempPem) === 0) {
+            @unlink($tempPem);
+            // Try without -legacy flag (some servers don't have it)
+            $cmd = sprintf(
+                'openssl pkcs12 -in %s -out %s -nodes -passin %s 2>&1',
+                escapeshellarg($certPath),
+                escapeshellarg($tempPem),
+                $escapedPass
+            );
+            shell_exec($cmd);
+        }
+
+        if (! file_exists($tempPem) || filesize($tempPem) === 0) {
+            @unlink($tempPem);
+            throw new \RuntimeException('Failed to extract PEM from P12 certificate. OpenSSL output: ' . ($output ?? 'none'));
+        }
+
+        // Re-package as legacy P12 with SHA1 MAC (compatible with all PHP/OpenSSL versions)
+        $cmd = sprintf(
+            'openssl pkcs12 -export -in %s -out %s -passout %s -certpbe PBE-SHA1-3DES -keypbe PBE-SHA1-3DES -macalg SHA1 2>&1',
+            escapeshellarg($tempPem),
+            escapeshellarg($compatiblePath),
+            $escapedPass
+        );
+        shell_exec($cmd);
+
+        @unlink($tempPem);
+
+        if (! file_exists($compatiblePath) || filesize($compatiblePath) === 0) {
+            throw new \RuntimeException('Failed to create compatible P12 certificate.');
+        }
+
+        Log::info('Converted P12 certificate to legacy-compatible format.');
+
+        return $compatiblePath;
     }
 
     public function getOrCreateWalletPass(User $user): WalletPass
