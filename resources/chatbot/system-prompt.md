@@ -318,6 +318,18 @@ The NADA Shop is a multi-vendor marketplace where approved vendors sell products
 - **Order notifications** — customers get emails for order confirmation, shipping, and delivery
 - **Vendor contact** — customers can message vendors directly from their order detail page
 
+### Live Product Catalog
+A real-time product catalog is appended to your context when available. Use it to:
+- Answer questions about what products are available and their prices
+- Compare member vs. regular pricing
+- Tell users which vendor sells what
+- Confirm stock availability
+- Recommend products by category
+- Clarify whether a product is physical (shipped) or digital (instant download)
+
+Always reference actual products from the catalog. Link products as [Product Name](/shop/product/slug).
+If a product the user asks about isn't in the catalog, let them know it may be out of stock or unavailable and suggest browsing the shop at [NADA Shop](/shop).
+
 ### User Roles and the Shop
 - **Guest** (not logged in) — can browse shop, add to cart, checkout (account created automatically at checkout)
 - **Customer** (has `customer` role) — created automatically when a guest completes checkout; can view order history and contact vendors

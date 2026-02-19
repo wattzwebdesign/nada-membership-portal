@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\User;
 use App\Services\ChatbotService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class ChatController extends Controller
 {
@@ -31,15 +33,18 @@ class ChatController extends Controller
 
         $chatbot->hitRateLimit($ip);
 
+        $catalogContext = $this->buildCatalogContext();
         $userContext = $this->buildUserContext();
+
+        $context = collect([$catalogContext, $userContext])->filter()->implode("\n\n");
 
         $currentPath = $request->input('current_path');
         if ($currentPath) {
-            $userContext .= "\n\n## Current Page\nThe user is currently viewing: `{$currentPath}`";
+            $context .= "\n\n## Current Page\nThe user is currently viewing: `{$currentPath}`";
         }
 
         try {
-            $response = $chatbot->sendMessage($request->input('messages'), $userContext);
+            $response = $chatbot->sendMessage($request->input('messages'), $context ?: null);
 
             return response()->json(['content' => $response]);
         } catch (\Throwable $e) {
@@ -47,6 +52,64 @@ class ChatController extends Controller
 
             return response()->json(['error' => 'Something went wrong. Please try again.'], 500);
         }
+    }
+
+    private function buildCatalogContext(): ?string
+    {
+        return Cache::remember('chatbot:catalog-context', 300, function () {
+            $products = Product::active()
+                ->with(['vendorProfile', 'category'])
+                ->orderBy('product_category_id')
+                ->orderBy('title')
+                ->get();
+
+            if ($products->isEmpty()) {
+                return null;
+            }
+
+            $vendorCount = $products->pluck('vendor_profile_id')->unique()->count();
+            $categories = $products->groupBy(fn ($p) => $p->category?->name ?? 'Uncategorized');
+
+            $lines = [];
+            $lines[] = '## Product Catalog (Live)';
+            $lines[] = "The NADA Shop currently has {$products->count()} products from {$vendorCount} vendors across {$categories->count()} categories.";
+            $lines[] = '';
+            $lines[] = '### Categories';
+            foreach ($categories as $name => $items) {
+                $lines[] = "- {$name} ({$items->count()} " . ($items->count() === 1 ? 'product' : 'products') . ')';
+            }
+
+            $lines[] = '';
+            $lines[] = '### Products';
+            $lines[] = '| Product | Price | Member Price | Vendor | Category | Stock | Type |';
+            $lines[] = '|---|---|---|---|---|---|---|';
+
+            foreach ($products as $product) {
+                $title = "[{$product->title}](/shop/product/{$product->slug})";
+                $price = $product->price_formatted;
+                $memberPrice = $product->member_price_formatted ?? '—';
+                $vendor = $product->vendorProfile?->business_name ?? 'Unknown';
+                $category = $product->category?->name ?? 'Uncategorized';
+
+                if ($product->is_digital) {
+                    $stock = '—';
+                } elseif (! $product->track_stock) {
+                    $stock = 'In Stock';
+                } elseif ($product->stock_quantity <= 0) {
+                    $stock = 'Out of Stock';
+                } elseif ($product->stock_quantity <= 10) {
+                    $stock = "{$product->stock_quantity} left";
+                } else {
+                    $stock = 'In Stock';
+                }
+
+                $type = $product->is_digital ? 'Digital' : 'Physical';
+
+                $lines[] = "| {$title} | {$price} | {$memberPrice} | {$vendor} | {$category} | {$stock} | {$type} |";
+            }
+
+            return implode("\n", $lines);
+        });
     }
 
     private function buildUserContext(): ?string
