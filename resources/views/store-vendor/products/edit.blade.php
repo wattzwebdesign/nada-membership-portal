@@ -79,7 +79,7 @@
                                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                 <span class="text-gray-500 sm:text-sm">$</span>
                                             </div>
-                                            <input type="number" name="price" id="price" value="{{ old('price', $product->price ? number_format($product->price / 100, 2, '.', '') : '') }}" step="0.01" min="0" required class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                            <input type="number" name="price" id="price" value="{{ old('price', $product->price_cents ? number_format($product->price_cents / 100, 2, '.', '') : '') }}" step="0.01" min="0" required class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
                                         </div>
                                         @error('price')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -91,7 +91,7 @@
                                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                 <span class="text-gray-500 sm:text-sm">$</span>
                                             </div>
-                                            <input type="number" name="member_price" id="member_price" value="{{ old('member_price', $product->member_price ? number_format($product->member_price / 100, 2, '.', '') : '') }}" step="0.01" min="0" class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                            <input type="number" name="member_price" id="member_price" value="{{ old('member_price', $product->member_price_cents ? number_format($product->member_price_cents / 100, 2, '.', '') : '') }}" step="0.01" min="0" class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
                                         </div>
                                         <p class="mt-1 text-xs text-gray-400">Optional. Discounted price for NADA members.</p>
                                         @error('member_price')
@@ -107,7 +107,7 @@
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <span class="text-gray-500 sm:text-sm">$</span>
                                         </div>
-                                        <input type="number" name="shipping_fee" id="shipping_fee" value="{{ old('shipping_fee', $product->shipping_fee ? number_format($product->shipping_fee / 100, 2, '.', '') : '') }}" step="0.01" min="0" class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                        <input type="number" name="shipping_fee" id="shipping_fee" value="{{ old('shipping_fee', $product->shipping_fee_cents ? number_format($product->shipping_fee_cents / 100, 2, '.', '') : '') }}" step="0.01" min="0" class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
                                     </div>
                                     <p class="mt-1 text-xs text-gray-400">Leave blank to use your default shipping fee.</p>
                                     @error('shipping_fee')
@@ -123,11 +123,11 @@
 
                             <div class="space-y-5">
                                 {{-- Existing Images --}}
-                                @if ($product->images && count($product->images) > 0)
+                                @if ($product->getMedia('images') && count($product->getMedia('images')) > 0)
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Current Images</label>
                                         <div class="flex flex-wrap gap-3">
-                                            @foreach ($product->images as $image)
+                                            @foreach ($product->getMedia('images') as $image)
                                                 <div class="relative group">
                                                     <img src="{{ $image->url }}" alt="{{ $product->title }}" class="h-24 w-24 rounded-lg object-cover border border-gray-200">
                                                     <label class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition rounded-lg cursor-pointer">
@@ -156,7 +156,7 @@
                                 {{-- Digital File Upload --}}
                                 <div x-show="isDigital" x-cloak>
                                     <label for="digital_file" class="block text-sm font-medium text-gray-700">Digital File</label>
-                                    @if ($product->digital_file_path)
+                                    @if ($product->getFirstMedia('digital_file'))
                                         <p class="mt-1 text-xs text-green-600 flex items-center gap-1">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                             A digital file is already attached. Upload a new one to replace it.

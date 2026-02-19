@@ -35,11 +35,11 @@
                 <div class="lg:col-span-2 space-y-6">
 
                     {{-- Product Images --}}
-                    @if ($product->images && count($product->images) > 0)
+                    @if ($product->getMedia('images') && count($product->getMedia('images')) > 0)
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
                                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                    @foreach ($product->images as $image)
+                                    @foreach ($product->getMedia('images') as $image)
                                         <img src="{{ $image->url }}" alt="{{ $product->title }}" class="w-full h-48 rounded-lg object-cover border border-gray-200">
                                     @endforeach
                                 </div>
@@ -82,9 +82,9 @@
                                     <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     <div>
                                         <p class="text-sm font-medium text-gray-900">Price</p>
-                                        <p class="text-sm text-gray-500">${{ number_format($product->price / 100, 2) }}</p>
-                                        @if ($product->member_price)
-                                            <p class="text-sm text-brand-secondary">Member Price: ${{ number_format($product->member_price / 100, 2) }}</p>
+                                        <p class="text-sm text-gray-500">${{ number_format($product->price_cents / 100, 2) }}</p>
+                                        @if ($product->member_price_cents)
+                                            <p class="text-sm text-brand-secondary">Member Price: ${{ number_format($product->member_price_cents / 100, 2) }}</p>
                                         @endif
                                     </div>
                                 </div>
@@ -119,8 +119,8 @@
                                         <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                                         <div>
                                             <p class="text-sm font-medium text-gray-900">Shipping Fee</p>
-                                            @if ($product->shipping_fee)
-                                                <p class="text-sm text-gray-500">${{ number_format($product->shipping_fee / 100, 2) }}</p>
+                                            @if ($product->shipping_fee_cents)
+                                                <p class="text-sm text-gray-500">${{ number_format($product->shipping_fee_cents / 100, 2) }}</p>
                                             @else
                                                 <p class="text-sm text-gray-400">Using default</p>
                                             @endif

@@ -71,7 +71,16 @@
                                 @foreach ($products as $product)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-4">
-                                            <a href="{{ route('vendor.products.show', $product) }}" class="text-sm font-medium hover:underline text-brand-primary">{{ $product->title }}</a>
+                                            <div class="flex items-center gap-3">
+                                                @if ($product->featured_image_url)
+                                                    <img src="{{ $product->featured_image_url }}" alt="{{ $product->title }}" class="h-10 w-10 rounded-md object-cover flex-shrink-0">
+                                                @else
+                                                    <div class="h-10 w-10 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                    </div>
+                                                @endif
+                                                <a href="{{ route('vendor.products.show', $product) }}" class="text-sm font-medium hover:underline text-brand-primary">{{ $product->title }}</a>
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @php
@@ -88,7 +97,7 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            ${{ number_format($product->price / 100, 2) }}
+                                            ${{ number_format($product->price_cents / 100, 2) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             @if ($product->track_stock)
@@ -131,12 +140,17 @@
                             @endphp
                             <div class="p-4">
                                 <div class="flex items-center justify-between mb-2">
-                                    <a href="{{ route('vendor.products.show', $product) }}" class="text-sm font-medium hover:underline truncate text-brand-primary">{{ $product->title }}</a>
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        @if ($product->featured_image_url)
+                                            <img src="{{ $product->featured_image_url }}" alt="{{ $product->title }}" class="h-10 w-10 rounded-md object-cover flex-shrink-0">
+                                        @endif
+                                        <a href="{{ route('vendor.products.show', $product) }}" class="text-sm font-medium hover:underline truncate text-brand-primary">{{ $product->title }}</a>
+                                    </div>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $productStatusColor }} flex-shrink-0 ml-2">
                                         {{ ucfirst($productStatus) }}
                                     </span>
                                 </div>
-                                <p class="text-xs text-gray-500">${{ number_format($product->price / 100, 2) }} | {{ $product->is_digital ? 'Digital' : 'Physical' }} | {{ $product->created_at->format('M j, Y') }}</p>
+                                <p class="text-xs text-gray-500">${{ number_format($product->price_cents / 100, 2) }} | {{ $product->is_digital ? 'Digital' : 'Physical' }} | {{ $product->created_at->format('M j, Y') }}</p>
                                 <div class="mt-2 flex space-x-3">
                                     <a href="{{ route('vendor.products.show', $product) }}" class="text-xs font-medium text-brand-primary">View</a>
                                     <a href="{{ route('vendor.products.edit', $product) }}" class="text-xs font-medium text-gray-600">Edit</a>
