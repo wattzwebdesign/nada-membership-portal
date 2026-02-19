@@ -140,30 +140,68 @@
                         </div>
                     </div>
 
-                    {{-- Tracking Info --}}
-                    @if ($order->vendorOrderSplits->contains(fn ($s) => $s->shipped_at || $s->tracking_number))
+                    {{-- Shipping & Tracking per Vendor --}}
+                    @if ($order->vendorOrderSplits->isNotEmpty())
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
                                 <h3 class="text-lg font-semibold mb-4 text-brand-primary">Shipping & Tracking</h3>
-                                <div class="space-y-3">
+                                <div class="space-y-4">
                                     @foreach ($order->vendorOrderSplits as $split)
-                                        @if ($split->shipped_at)
-                                            <div class="border border-gray-100 rounded-lg p-3">
-                                                <p class="text-sm text-gray-500">
-                                                    Shipped: <span class="font-medium text-gray-700">{{ $split->shipped_at->format('M j, Y') }}</span>
-                                                </p>
-                                                @if ($split->tracking_number)
-                                                    <p class="text-sm text-gray-500 mt-1">
-                                                        Tracking: <span class="font-medium font-mono text-gray-700">{{ $split->tracking_number }}</span>
-                                                    </p>
-                                                @endif
+                                        @if ($split->canceled_at)
+                                            @continue
+                                        @endif
+
+                                        @php
+                                            $vendorName = $split->vendorProfile?->business_name ?? 'Unknown Vendor';
+                                            $vendorItems = $order->items->where('vendor_profile_id', $split->vendor_profile_id);
+                                        @endphp
+
+                                        <div class="border border-gray-200 rounded-lg p-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <h4 class="text-sm font-semibold text-gray-900">{{ $vendorName }}</h4>
                                                 @if ($split->delivered_at)
-                                                    <p class="text-sm text-gray-500 mt-1">
-                                                        Delivered: <span class="font-medium text-gray-700">{{ $split->delivered_at->format('M j, Y') }}</span>
-                                                    </p>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Delivered</span>
+                                                @elseif ($split->shipped_at)
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">Shipped</span>
+                                                @else
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">Awaiting Shipment</span>
                                                 @endif
                                             </div>
-                                        @endif
+
+                                            {{-- Items from this vendor --}}
+                                            <div class="mb-3">
+                                                <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Items</p>
+                                                <ul class="text-sm text-gray-600 space-y-0.5">
+                                                    @foreach ($vendorItems as $item)
+                                                        <li class="flex items-center">
+                                                            <svg class="w-3 h-3 mr-1.5 text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                                                            {{ $item->product_title }} <span class="text-gray-400 ml-1">&times;{{ $item->quantity }}</span>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+
+                                            {{-- Shipping details --}}
+                                            @if ($split->shipped_at)
+                                                <div class="text-sm space-y-1 border-t border-gray-100 pt-2">
+                                                    <p class="text-gray-500">
+                                                        Shipped: <span class="font-medium text-gray-700">{{ $split->shipped_at->format('M j, Y') }}</span>
+                                                    </p>
+                                                    @if ($split->tracking_number)
+                                                        <p class="text-gray-500">
+                                                            Tracking: <span class="font-medium font-mono text-gray-700">{{ $split->tracking_number }}</span>
+                                                        </p>
+                                                    @endif
+                                                    @if ($split->delivered_at)
+                                                        <p class="text-gray-500">
+                                                            Delivered: <span class="font-medium text-gray-700">{{ $split->delivered_at->format('M j, Y') }}</span>
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <p class="text-sm text-gray-400 italic border-t border-gray-100 pt-2">Not yet shipped</p>
+                                            @endif
+                                        </div>
                                     @endforeach
                                 </div>
                             </div>
