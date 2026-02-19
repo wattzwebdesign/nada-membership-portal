@@ -89,7 +89,7 @@ class AppleWalletService
                     'format' => 'PKBarcodeFormatQR',
                     'message' => $passData['verify_url'],
                     'messageEncoding' => 'iso-8859-1',
-                    'altText' => 'Scan the QR Code with your phone to verify membership',
+                    'altText' => 'Scan QR to Verify',
                 ],
             ];
         }
