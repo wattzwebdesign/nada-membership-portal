@@ -19,7 +19,7 @@ class ShopCartController extends Controller
         return view('public.shop.cart');
     }
 
-    public function add(Request $request): RedirectResponse
+    public function add(Request $request): RedirectResponse|\Illuminate\Http\JsonResponse
     {
         $validated = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
@@ -29,10 +29,20 @@ class ShopCartController extends Controller
         $product = Product::active()->findOrFail($validated['product_id']);
 
         if ($product->track_stock && $product->stock_quantity < ($validated['quantity'] ?? 1)) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Not enough stock available.'], 422);
+            }
             return back()->with('error', 'Not enough stock available.');
         }
 
         $this->cartService->addItem($product, $validated['quantity'] ?? 1);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => "{$product->title} added to cart.",
+                'cart_count' => $this->cartService->getItemCount(),
+            ]);
+        }
 
         return back()->with('success', "{$product->title} added to cart.");
     }

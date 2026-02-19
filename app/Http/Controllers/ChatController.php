@@ -137,6 +137,46 @@ class ChatController extends Controller
             $lines[] = '- **Approved:** ' . ($user->discount_approved ? 'Yes' : 'Pending');
         }
 
+        // Vendor profile
+        if ($user->isVendor()) {
+            $vendor = $user->vendorProfile;
+            $lines[] = '';
+            $lines[] = '### Vendor Profile';
+            if ($vendor) {
+                $lines[] = "- **Store Name:** {$vendor->business_name}";
+                $lines[] = '- **Store URL:** /shop/vendor/' . $vendor->slug;
+                $lines[] = '- **Active Products:** ' . $vendor->products()->where('status', 'active')->count();
+                $pendingShipments = $vendor->vendorOrderSplits()
+                    ->whereNull('shipped_at')
+                    ->whereNull('canceled_at')
+                    ->whereHas('order', fn ($q) => $q->where('status', '!=', 'pending')->where('status', '!=', 'canceled'))
+                    ->count();
+                $lines[] = "- **Pending Shipments:** {$pendingShipments}";
+
+                $payoutSetting = \App\Models\PayoutSetting::where('user_id', $user->id)->where('type', 'vendor')->first();
+                $stripeStatus = $payoutSetting?->stripe_account_id ? 'Connected' : 'Not connected';
+                $lines[] = "- **Stripe Connect:** {$stripeStatus}";
+            } else {
+                $lines[] = '- Store profile not yet created. Set it up at [Store Profile](/vendor/profile).';
+            }
+        }
+
+        // Recent shop orders
+        $recentOrders = $user->shopOrders()
+            ->where('status', '!=', 'pending')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        if ($recentOrders->isNotEmpty()) {
+            $lines[] = '';
+            $lines[] = '### Recent Orders';
+            foreach ($recentOrders as $order) {
+                $status = $order->status->value ?? $order->status;
+                $lines[] = "- **{$order->order_number}** — {$order->total_formatted}, Status: " . ucfirst($status) . ', Date: ' . $order->created_at->format('F j, Y');
+            }
+        }
+
         return implode("\n", $lines);
     }
 }

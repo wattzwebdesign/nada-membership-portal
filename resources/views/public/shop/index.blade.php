@@ -132,7 +132,7 @@
                         {{-- Add to Cart --}}
                         <div class="mt-auto pt-3">
                             @if (!$product->track_stock || $product->stock_quantity > 0)
-                                <form action="{{ route('shop.cart.add') }}" method="POST">
+                                <form action="{{ route('shop.cart.add') }}" method="POST" class="js-add-to-cart">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                                     <input type="hidden" name="quantity" value="1">
@@ -167,4 +167,62 @@
             </div>
         @endif
     </div>
+    @push('scripts')
+    <script>
+        document.querySelectorAll('.js-add-to-cart').forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var btn = form.querySelector('button');
+                var originalHtml = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>';
+
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product_id: form.querySelector('[name="product_id"]').value,
+                        quantity: form.querySelector('[name="quantity"]').value,
+                    }),
+                })
+                .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+                .then(function (result) {
+                    if (result.ok) {
+                        btn.innerHTML = '<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Added!';
+                        btn.classList.remove('bg-brand-secondary');
+                        btn.classList.add('bg-green-600');
+                        // Update cart icon count if Livewire cart-icon exists
+                        if (window.Livewire) {
+                            window.Livewire.dispatch('cart-updated');
+                        }
+                        setTimeout(function () {
+                            btn.innerHTML = originalHtml;
+                            btn.classList.remove('bg-green-600');
+                            btn.classList.add('bg-brand-secondary');
+                            btn.disabled = false;
+                        }, 2000);
+                    } else {
+                        btn.innerHTML = result.data.error || 'Error';
+                        btn.classList.remove('bg-brand-secondary');
+                        btn.classList.add('bg-red-600');
+                        setTimeout(function () {
+                            btn.innerHTML = originalHtml;
+                            btn.classList.remove('bg-red-600');
+                            btn.classList.add('bg-brand-secondary');
+                            btn.disabled = false;
+                        }, 2000);
+                    }
+                })
+                .catch(function () {
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                });
+            });
+        });
+    </script>
+    @endpush
 </x-public-layout>
