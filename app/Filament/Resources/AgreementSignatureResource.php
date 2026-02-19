@@ -84,7 +84,8 @@ class AgreementSignatureResource extends Resource
                 Tables\Columns\TextColumn::make('amount_cents')
                     ->label('Amount')
                     ->formatStateUsing(fn (?int $state): string => $state !== null ? '$' . number_format($state / 100, 2) : '—')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('signed_at')
                     ->label('Signed At')
                     ->dateTime()
@@ -92,6 +93,7 @@ class AgreementSignatureResource extends Resource
                 Tables\Columns\TextColumn::make('stripe_transaction_id')
                     ->label('Stripe Txn')
                     ->limit(20)
+                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('ip_address')
                     ->label('IP')
@@ -229,9 +231,12 @@ class AgreementSignatureResource extends Resource
                             $service = app(DisputeEvidenceService::class);
                             $pdf = $service->generate($record);
 
+                            $userName = str($record->user?->full_name ?? 'unknown')->slug();
+                            $context = str($record->agreement?->title ?? 'consent')->slug();
+
                             return response()->streamDownload(
                                 fn () => print($pdf->output()),
-                                'consent-evidence-' . $record->id . '.pdf',
+                                "{$userName}-{$context}-evidence.pdf",
                                 ['Content-Type' => 'application/pdf']
                             );
                         }),
