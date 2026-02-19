@@ -43,6 +43,8 @@ NADA (National Acupuncture Detoxification Association) promotes and standardizes
 | Trainings | `/trainings` | Browse upcoming NADA trainings |
 | My Registrations | `/trainings/my-registrations` | View trainings you've registered for |
 | Training Details | `/trainings/{id}` | View details and register for a specific training |
+| Membership Wallet (Apple) | `/membership/wallet/apple` | Download Apple Wallet membership card |
+| Membership Wallet (Google) | `/membership/wallet/google` | Add membership card to Google Wallet |
 | Certificates | `/certificates` | View and download your certificates |
 | Submit Clinicals | `/clinicals/submit` | Submit clinical hours for review |
 | Clinical History | `/clinicals/history` | View your submitted clinicals and their status |
@@ -163,6 +165,33 @@ NADA (National Acupuncture Detoxification Association) promotes and standardizes
 1. Go to `/group-training`
 2. Fill in details about your organization and training needs
 3. Submit the request — NADA will follow up
+
+### How to Add Your Membership Card to Apple or Google Wallet
+1. Go to [Membership](/membership)
+2. You'll see "Add to Apple Wallet" and "Add to Google Wallet" buttons
+3. **Apple:** Tap the button to download the pass — your iPhone will prompt you to add it to Wallet
+4. **Google:** Tap the button to be redirected to Google Wallet where you can save the pass
+5. Your membership card shows your name, plan, and expiration date
+6. If you have a certificate, the pass includes a QR code others can scan to verify it
+7. The pass updates automatically when your membership or certificate details change
+
+### How to Add a Training Pass to Apple or Google Wallet
+1. Register for an upcoming training
+2. On the [training detail page](/trainings) or your [My Registrations](/trainings/my-registrations) page, you'll see wallet buttons
+3. **Apple:** Tap "Add to Apple Wallet" to download the training pass
+4. **Google:** Tap "Add to Google Wallet" to save the training pass
+5. The pass shows the training title, date, time, location, and trainer name
+6. **Time reminders:** The pass appears on your lock screen approximately 15 minutes before the training starts
+7. **Location alerts (in-person/hybrid only):** You'll get a notification when you arrive near the training venue
+8. **Virtual trainings:** No location alert, but the virtual meeting link is included on the back of the pass
+9. If training details change (time, location), your pass updates automatically
+10. If you cancel your registration, the pass is automatically voided
+11. If you already added the pass, tapping the wallet button again will update your existing pass (it won't create a duplicate)
+
+### How to Remove a Wallet Pass from Your Phone
+- **Apple Wallet:** Open the Wallet app on your iPhone, tap the pass you want to remove, tap the `...` (three dots) button in the top-right corner, scroll down and tap "Remove Pass"
+- **Google Wallet:** Open the Google Wallet app, tap the pass, tap the `...` (three dots) menu, then tap "Remove"
+- Wallet passes are also automatically removed when you cancel a training registration
 
 ---
 
@@ -296,6 +325,18 @@ A: Go to `/trainer/trainings/{id}/attendees`, select the attendees, and click "M
 
 **Q: What's the difference between canceling and removing my card?**
 A: **Canceling** ([Membership](/membership)) ends your membership at the end of the billing period — you won't be able to renew without re-subscribing. **Removing your card** ([Billing](/membership/billing)) stops automatic payments but keeps your membership. You'll receive reminders and an invoice you can pay at any time to continue.
+
+**Q: How do I add my membership card or training to my phone's wallet?**
+A: For your membership card, go to [Membership](/membership) and tap "Add to Apple Wallet" or "Add to Google Wallet." For a training pass, go to the [training detail page](/trainings) or [My Registrations](/trainings/my-registrations) and tap the wallet button for the training you're registered for. Training passes give you time-based reminders and location alerts.
+
+**Q: I have duplicate wallet passes on my phone.**
+A: Tapping "Add to Wallet" again for the same membership or training will update your existing pass, not create a duplicate. If you already have duplicates from an earlier issue, you can remove the extra one manually — in Apple Wallet, tap the pass, tap `...`, then "Remove Pass." In Google Wallet, tap the pass, tap `...`, then "Remove."
+
+**Q: How do I remove a wallet pass from my phone?**
+A: In **Apple Wallet**, open the Wallet app, tap the pass, tap the `...` button in the top-right, and tap "Remove Pass." In **Google Wallet**, open the app, tap the pass, tap `...`, and tap "Remove." Training passes are also automatically voided when you cancel your registration.
+
+**Q: Will my wallet pass update if my membership or training details change?**
+A: Yes. Membership passes update automatically when your plan, expiration date, or certificate changes. Training passes update when the trainer changes the date, time, or location. Canceled registrations automatically void the pass.
 
 **Q: How do I contact NADA support?**
 A: For technical or account issues, email **Helpdesk@acudetox.com**. For billing, payments, or invoice questions, email **financial@acudetox.com**.
