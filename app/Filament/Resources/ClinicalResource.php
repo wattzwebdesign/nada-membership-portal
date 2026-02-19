@@ -42,7 +42,7 @@ class ClinicalResource extends Resource
     {
         return [
             'Email' => $record->email,
-            'Status' => $record->status?->label(),
+            'Status' => $record->status ? ucfirst($record->status) : null,
         ];
     }
 

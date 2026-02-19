@@ -31,7 +31,7 @@ class PlanResource extends Resource
     public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
     {
         return [
-            'Type' => $record->type?->label(),
+            'Type' => $record->plan_type?->label(),
         ];
     }
 

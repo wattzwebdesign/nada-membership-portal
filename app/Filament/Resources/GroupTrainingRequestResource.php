@@ -33,7 +33,7 @@ class GroupTrainingRequestResource extends Resource
     {
         return [
             'Contact' => $record->company_email,
-            'Status' => $record->status,
+            'Status' => $record->status ? ucfirst($record->status) : null,
         ];
     }
 

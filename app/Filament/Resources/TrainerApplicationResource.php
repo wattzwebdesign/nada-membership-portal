@@ -48,7 +48,7 @@ class TrainerApplicationResource extends Resource
     {
         return [
             'User' => $record->user?->email,
-            'Status' => $record->status,
+            'Status' => $record->status ? ucfirst($record->status) : null,
         ];
     }
 

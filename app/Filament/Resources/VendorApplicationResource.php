@@ -35,7 +35,7 @@ class VendorApplicationResource extends Resource
     {
         return [
             'Email' => $record->email,
-            'Status' => $record->status,
+            'Status' => $record->status ? ucfirst($record->status) : null,
         ];
     }
 
