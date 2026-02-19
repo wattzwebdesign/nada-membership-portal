@@ -39,7 +39,7 @@
                                         </label>
                                         <input type="{{ str_contains($field->field_name, 'email') ? 'email' : 'text' }}"
                                                name="{{ $field->field_name }}" id="{{ $field->field_name }}"
-                                               value="{{ old($field->field_name, auth()->user()->{$field->field_name} ?? '') }}"
+                                               value="{{ old($field->field_name, $autofill[$field->field_name] ?? '') }}"
                                                {{ $field->is_required ? 'required' : '' }}
                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm">
                                         @error($field->field_name) <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
@@ -64,7 +64,7 @@
                                             @endif
                                         </label>
                                         <input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}"
-                                               value="{{ old($field->field_name) }}"
+                                               value="{{ old($field->field_name, $autofill[$field->field_name] ?? '') }}"
                                                {{ $field->is_required ? 'required' : '' }}
                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm">
                                         @error($field->field_name) <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
@@ -102,7 +102,7 @@
                                                 @endif
                                             </label>
                                             <input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}"
-                                                   value="{{ old($field->field_name) }}"
+                                                   value="{{ old($field->field_name, $autofill[$field->field_name] ?? '') }}"
                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm">
                                             @error($field->field_name) <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                                         </div>

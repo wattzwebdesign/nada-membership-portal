@@ -47,6 +47,29 @@ class ShopCheckoutController extends Controller
 
         $allDigital = $this->cartService->hasOnlyDigitalItems();
 
+        // Map checkout field names to user model attributes for autofill
+        $autofill = [];
+        if ($user) {
+            $autofill = [
+                'customer_first_name' => $user->first_name,
+                'customer_last_name' => $user->last_name,
+                'customer_email' => $user->email,
+                'customer_phone' => $user->phone,
+                'billing_address_line_1' => $user->address_line_1,
+                'billing_address_line_2' => $user->address_line_2,
+                'billing_city' => $user->city,
+                'billing_state' => $user->state,
+                'billing_zip' => $user->zip,
+                'billing_country' => $user->country,
+                'shipping_address_line_1' => $user->address_line_1,
+                'shipping_address_line_2' => $user->address_line_2,
+                'shipping_city' => $user->city,
+                'shipping_state' => $user->state,
+                'shipping_zip' => $user->zip,
+                'shipping_country' => $user->country,
+            ];
+        }
+
         return view('public.shop.checkout', [
             'cart' => $items,
             'subtotal' => $subtotal,
@@ -55,6 +78,7 @@ class ShopCheckoutController extends Controller
             'checkoutFields' => $checkoutFields,
             'allDigital' => $allDigital,
             'user' => $user,
+            'autofill' => $autofill,
         ]);
     }
 
