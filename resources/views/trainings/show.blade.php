@@ -165,7 +165,7 @@
                                     <div class="mb-4 border-t border-gray-200 pt-4">
                                         <p class="text-sm font-semibold mb-2">Wallet Pass</p>
                                         <p class="text-xs text-gray-500 mb-3">Get a reminder before your training.</p>
-                                        <div class="flex flex-wrap items-center gap-3">
+                                        <div data-guide="training-wallet-pass" class="flex flex-wrap items-center gap-3">
                                             <a href="{{ route('trainings.wallet.apple', $training) }}">
                                                 <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-11">
                                             </a>
@@ -204,7 +204,7 @@
                                 <form method="POST" action="{{ route('trainings.register', $training) }}">
                                     @csrf
                                     <x-terms-checkbox :terms="$activeTerms" />
-                                    <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition bg-brand-secondary hover:opacity-90">
+                                    <button data-guide="training-register" type="submit" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition bg-brand-secondary hover:opacity-90">
                                         {{ $training->is_paid ? 'Register & Pay' : 'Register Now' }}
                                     </button>
                                 </form>

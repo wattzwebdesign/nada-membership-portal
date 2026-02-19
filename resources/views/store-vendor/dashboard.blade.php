@@ -58,7 +58,7 @@
             @endif
 
             {{-- Stats Row --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div data-guide="vendor-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
@@ -117,7 +117,7 @@
             </div>
 
             {{-- Quick Actions --}}
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div data-guide="vendor-quick-actions" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <a href="{{ route('vendor.profile.edit') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
                     <div class="p-2 rounded-lg bg-brand-secondary/10">
                         <svg class="w-5 h-5 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>

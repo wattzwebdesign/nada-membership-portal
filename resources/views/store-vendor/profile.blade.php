@@ -55,7 +55,7 @@
                     <h3 class="text-lg font-semibold mb-2 text-brand-primary">{{ $vendorProfile ? 'Edit Vendor Profile' : 'Create Vendor Profile' }}</h3>
                     <p class="text-sm text-gray-500 mb-6">This information will be displayed to customers on your store page.</p>
 
-                    <form method="POST" action="{{ route('vendor.profile.update') }}" enctype="multipart/form-data">
+                    <form data-guide="vendor-profile-form" method="POST" action="{{ route('vendor.profile.update') }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -159,7 +159,7 @@
                         </div>
 
                         <div class="mt-6 flex items-center gap-3">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
+                            <button data-guide="vendor-profile-save" type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 {{ $vendorProfile ? 'Save Profile' : 'Create Profile' }}
                             </button>
                             <a href="{{ route('vendor.dashboard') }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>

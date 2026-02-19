@@ -30,7 +30,7 @@
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-semibold text-brand-primary">Order Details</h3>
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $statusColor }}">
+                                <span data-guide="order-status" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $statusColor }}">
                                     {{ ucfirst($statusValue) }}
                                 </span>
                             </div>
@@ -144,7 +144,7 @@
                     @if ($order->vendorOrderSplits->isNotEmpty())
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold mb-4 text-brand-primary">Shipping & Tracking</h3>
+                                <h3 data-guide="order-tracking" class="text-lg font-semibold mb-4 text-brand-primary">Shipping & Tracking</h3>
                                 <div class="space-y-4">
                                     @foreach ($order->vendorOrderSplits as $split)
                                         @if ($split->canceled_at)
@@ -212,7 +212,7 @@
                     @if ($order->items->where('is_digital', true)->count() > 0)
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold mb-4 text-brand-primary">Digital Downloads</h3>
+                                <h3 data-guide="order-downloads" class="text-lg font-semibold mb-4 text-brand-primary">Digital Downloads</h3>
                                 <div class="space-y-3">
                                     @foreach ($order->items->where('is_digital', true) as $item)
                                         <div class="flex items-center justify-between border border-gray-100 rounded-lg p-3">
@@ -230,11 +230,11 @@
                 </div>
 
                 {{-- Sidebar --}}
-                <div class="lg:col-span-1 space-y-6">
+                <div class="lg:col-span-1 space-y-6 lg:sticky lg:top-6 lg:self-start">
                     {{-- Order Summary --}}
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg sticky top-6">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 space-y-4">
-                            <h4 class="text-lg font-semibold text-brand-primary">Order Summary</h4>
+                            <h4 data-guide="order-summary" class="text-lg font-semibold text-brand-primary">Order Summary</h4>
 
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between py-2 border-b border-gray-100">
@@ -278,7 +278,7 @@
 
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
-                                <h4 class="text-lg font-semibold text-brand-primary mb-2">Need Help?</h4>
+                                <h4 data-guide="order-contact-vendor" class="text-lg font-semibold text-brand-primary mb-2">Need Help?</h4>
 
                                 @if ($vendors->count() === 1)
                                     <p class="text-sm text-gray-500 mb-4">

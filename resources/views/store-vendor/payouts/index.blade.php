@@ -110,11 +110,11 @@
                         </div>
 
                         <div class="mt-4 flex items-center gap-4">
-                            <a href="https://dashboard.stripe.com/" target="_blank" class="inline-flex items-center text-sm font-medium hover:underline text-brand-primary">
+                            <a data-guide="vendor-stripe-dashboard" href="https://dashboard.stripe.com/" target="_blank" class="inline-flex items-center text-sm font-medium hover:underline text-brand-primary">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                 Stripe Dashboard
                             </a>
-                            <a href="{{ route('vendor.payouts.reports') }}" class="inline-flex items-center text-sm font-medium hover:underline text-brand-secondary">
+                            <a data-guide="vendor-view-reports" href="{{ route('vendor.payouts.reports') }}" class="inline-flex items-center text-sm font-medium hover:underline text-brand-secondary">
                                 View Detailed Reports
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </a>
@@ -131,7 +131,7 @@
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Connect Your Stripe Account</h3>
                         <p class="text-gray-600 mb-6 max-w-md mx-auto">Connect your Stripe account to receive payouts for product sales. NADA handles payment processing and sends your earnings directly to your connected account.</p>
-                        <a href="{{ route('vendor.payouts.connect') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-brand-primary">
+                        <a data-guide="vendor-connect-stripe" href="{{ route('vendor.payouts.connect') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-brand-primary">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                             Connect Stripe Account
                         </a>

@@ -169,7 +169,7 @@
                                 <form method="POST" action="{{ route('vendor.orders.ship', $split->order) }}" x-data="{ showTracking: false }">
                                     @csrf
                                     <div class="space-y-3">
-                                        <button type="button" @click="showTracking = !showTracking" class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md text-white transition bg-brand-primary">
+                                        <button data-guide="vendor-mark-shipped" type="button" @click="showTracking = !showTracking" class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md text-white transition bg-brand-primary">
                                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                                             Mark as Shipped
                                         </button>
@@ -193,7 +193,7 @@
                             @if ($splitStatus === 'shipped')
                                 <form method="POST" action="{{ route('vendor.orders.deliver', $split->order) }}" onsubmit="return confirm('Mark this order as delivered?');">
                                     @csrf
-                                    <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-green-300 text-sm font-medium rounded-md text-green-700 hover:bg-green-50 transition">
+                                    <button data-guide="vendor-mark-delivered" type="submit" class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-green-300 text-sm font-medium rounded-md text-green-700 hover:bg-green-50 transition">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         Mark as Delivered
                                     </button>

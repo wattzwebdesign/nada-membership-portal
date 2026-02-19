@@ -5,7 +5,7 @@
                 {{ __('My Products') }}
             </h2>
             @if (!$needsProfile)
-                <a href="{{ route('vendor.products.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
+                <a data-guide="vendor-create-product" href="{{ route('vendor.products.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     Create Product
                 </a>

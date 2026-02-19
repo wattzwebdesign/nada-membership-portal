@@ -8,7 +8,7 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div data-guide="orders-list" class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 @if ($orders->count() > 0)
                     {{-- Desktop Table --}}
                     <div class="hidden md:block overflow-x-auto">

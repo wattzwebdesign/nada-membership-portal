@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Available Trainings') }}
             </h2>
-            <a href="{{ route('trainings.my-registrations') }}" class="inline-flex items-center text-sm font-medium text-brand-secondary hover:underline">
+            <a data-guide="trainings-my-registrations" href="{{ route('trainings.my-registrations') }}" class="inline-flex items-center text-sm font-medium text-brand-secondary hover:underline">
                 My Registrations
                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </a>

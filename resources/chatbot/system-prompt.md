@@ -382,6 +382,21 @@ When a user asks "where is X?" or "how do I find X?" and the relevant element is
 | `nav-profile` | Profile link |
 | `nav-discount-request` | Discount Request link |
 | `nav-logout` | Log Out button |
+| `nav-orders` | My Orders link |
+| `nav-shop` | Shop link |
+| `nav-vendor-dashboard` | Vendor Dashboard link |
+| `nav-vendor-products` | Vendor Products link |
+| `nav-vendor-orders` | Vendor Orders link |
+| `nav-vendor-payouts` | Vendor Payouts link |
+| `nav-vendor-reports` | Vendor Reports link |
+| `nav-vendor-profile` | Vendor Store Profile link |
+| `nav-trainer-dashboard` | Trainer Dashboard link |
+| `nav-trainer-trainings` | Trainer Trainings link |
+| `nav-trainer-registrations` | Trainer Registrations link |
+| `nav-trainer-clinicals` | Trainer Clinicals link |
+| `nav-trainer-payouts` | Trainer Payouts link |
+| `nav-trainer-broadcasts` | Trainer Broadcasts link |
+| `nav-trainer-profile` | Trainer Public Profile link |
 
 **Dashboard** (`/dashboard`):
 | Identifier | Element |
@@ -424,6 +439,71 @@ When a user asks "where is X?" or "how do I find X?" and the relevant element is
 | Identifier | Element |
 |-----------|---------|
 | `account-save` | Save Changes button |
+
+**Orders** (`/orders`):
+| Identifier | Element |
+|-----------|---------|
+| `orders-list` | Orders table / list |
+
+**Order Detail** (`/orders/{id}`):
+| Identifier | Element |
+|-----------|---------|
+| `order-status` | Order Status badge |
+| `order-tracking` | Shipping & Tracking section |
+| `order-downloads` | Digital Downloads section |
+| `order-contact-vendor` | Need Help? / Contact Vendor form |
+| `order-summary` | Order Summary sidebar |
+
+**Trainings** (`/trainings`):
+| Identifier | Element |
+|-----------|---------|
+| `trainings-my-registrations` | My Registrations link |
+
+**Training Detail** (`/trainings/{id}`):
+| Identifier | Element |
+|-----------|---------|
+| `training-register` | Register / Register & Pay button |
+| `training-wallet-pass` | Wallet Pass section (Apple/Google) |
+
+**Clinicals** (`/clinicals`):
+| Identifier | Element |
+|-----------|---------|
+| `clinicals-new-submission` | New Submission button |
+
+**Clinical Submit** (`/clinicals/submit`):
+| Identifier | Element |
+|-----------|---------|
+| `clinicals-submit` | Submit Clinicals button |
+
+**Vendor Dashboard** (`/vendor/dashboard`):
+| Identifier | Element |
+|-----------|---------|
+| `vendor-stats` | Stats overview (orders, revenue, products, shipments) |
+| `vendor-quick-actions` | Quick Actions section |
+
+**Vendor Store Profile** (`/vendor/profile`):
+| Identifier | Element |
+|-----------|---------|
+| `vendor-profile-form` | Store profile form |
+| `vendor-profile-save` | Save Profile button |
+
+**Vendor Products** (`/vendor/products`):
+| Identifier | Element |
+|-----------|---------|
+| `vendor-create-product` | Create Product button |
+
+**Vendor Order Detail** (`/vendor/orders/{id}`):
+| Identifier | Element |
+|-----------|---------|
+| `vendor-mark-shipped` | Mark as Shipped button |
+| `vendor-mark-delivered` | Mark as Delivered button |
+
+**Vendor Payouts** (`/vendor/payouts`):
+| Identifier | Element |
+|-----------|---------|
+| `vendor-connect-stripe` | Connect Stripe Account button |
+| `vendor-stripe-dashboard` | Stripe Dashboard link |
+| `vendor-view-reports` | View Detailed Reports link |
 
 ### Rules
 1. **Only emit the directive when the user's current page matches** the element's page, OR the element is in the sidebar (sidebar elements are visible on all authenticated pages).

@@ -193,7 +193,7 @@
                         {{-- Submit --}}
                         <div class="mt-6 flex items-center justify-between">
                             <a href="{{ route('clinicals.index') }}" class="text-sm text-gray-500 hover:text-gray-700">View Submission History</a>
-                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
+                            <button data-guide="clinicals-submit" type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                                 Submit Clinicals
                             </button>

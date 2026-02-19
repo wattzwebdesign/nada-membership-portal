@@ -143,35 +143,35 @@
         <div>
             <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-brand-accent">Trainer</p>
             <div class="space-y-1">
-                <x-sidebar-link :href="route('trainer.dashboard')" :active="request()->routeIs('trainer.dashboard')">
+                <x-sidebar-link :href="route('trainer.dashboard')" :active="request()->routeIs('trainer.dashboard')" data-guide="nav-trainer-dashboard">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" /></svg>
                     </x-slot>
                     Dashboard
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('trainer.trainings.index')" :active="request()->routeIs('trainer.trainings.*')">
+                <x-sidebar-link :href="route('trainer.trainings.index')" :active="request()->routeIs('trainer.trainings.*')" data-guide="nav-trainer-trainings">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
                     </x-slot>
                     Trainings
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('trainer.registrations.index')" :active="request()->routeIs('trainer.registrations.*') || request()->routeIs('trainer.attendees.*')">
+                <x-sidebar-link :href="route('trainer.registrations.index')" :active="request()->routeIs('trainer.registrations.*') || request()->routeIs('trainer.attendees.*')" data-guide="nav-trainer-registrations">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" /></svg>
                     </x-slot>
                     Registrations
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('trainer.clinicals.index')" :active="request()->routeIs('trainer.clinicals.*')">
+                <x-sidebar-link :href="route('trainer.clinicals.index')" :active="request()->routeIs('trainer.clinicals.*')" data-guide="nav-trainer-clinicals">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" /></svg>
                     </x-slot>
                     Clinicals
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('trainer.payouts.index')" :active="request()->routeIs('trainer.payouts.index') || request()->routeIs('trainer.payouts.connect*')">
+                <x-sidebar-link :href="route('trainer.payouts.index')" :active="request()->routeIs('trainer.payouts.index') || request()->routeIs('trainer.payouts.connect*')" data-guide="nav-trainer-payouts">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" /></svg>
                     </x-slot>
@@ -185,14 +185,14 @@
                     Reports
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('trainer.broadcasts.index')" :active="request()->routeIs('trainer.broadcasts.*')">
+                <x-sidebar-link :href="route('trainer.broadcasts.index')" :active="request()->routeIs('trainer.broadcasts.*')" data-guide="nav-trainer-broadcasts">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" /></svg>
                     </x-slot>
                     Broadcasts
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('trainer.profile.edit')" :active="request()->routeIs('trainer.profile.*')">
+                <x-sidebar-link :href="route('trainer.profile.edit')" :active="request()->routeIs('trainer.profile.*')" data-guide="nav-trainer-profile">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" /></svg>
                     </x-slot>
@@ -207,42 +207,42 @@
         <div>
             <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-brand-accent">Vendor</p>
             <div class="space-y-1">
-                <x-sidebar-link :href="route('vendor.dashboard')" :active="request()->routeIs('vendor.dashboard')">
+                <x-sidebar-link :href="route('vendor.dashboard')" :active="request()->routeIs('vendor.dashboard')" data-guide="nav-vendor-dashboard">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l4.071-4.071A1.5 1.5 0 0 1 9.06 0h5.878a1.5 1.5 0 0 1 1.06.44l4.072 4.071a3 3 0 0 1-.621 4.72" /></svg>
                     </x-slot>
                     Dashboard
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('vendor.products.index')" :active="request()->routeIs('vendor.products.*')">
+                <x-sidebar-link :href="route('vendor.products.index')" :active="request()->routeIs('vendor.products.*')" data-guide="nav-vendor-products">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" /></svg>
                     </x-slot>
                     Products
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('vendor.orders.index')" :active="request()->routeIs('vendor.orders.*')">
+                <x-sidebar-link :href="route('vendor.orders.index')" :active="request()->routeIs('vendor.orders.*')" data-guide="nav-vendor-orders">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
                     </x-slot>
                     Orders
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('vendor.payouts.index')" :active="request()->routeIs('vendor.payouts.index') || request()->routeIs('vendor.payouts.connect*')">
+                <x-sidebar-link :href="route('vendor.payouts.index')" :active="request()->routeIs('vendor.payouts.index') || request()->routeIs('vendor.payouts.connect*')" data-guide="nav-vendor-payouts">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" /></svg>
                     </x-slot>
                     Payouts
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('vendor.payouts.reports')" :active="request()->routeIs('vendor.payouts.reports')">
+                <x-sidebar-link :href="route('vendor.payouts.reports')" :active="request()->routeIs('vendor.payouts.reports')" data-guide="nav-vendor-reports">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>
                     </x-slot>
                     Reports
                 </x-sidebar-link>
 
-                <x-sidebar-link :href="route('vendor.profile.edit')" :active="request()->routeIs('vendor.profile.*')">
+                <x-sidebar-link :href="route('vendor.profile.edit')" :active="request()->routeIs('vendor.profile.*')" data-guide="nav-vendor-profile">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" /></svg>
                     </x-slot>
