@@ -145,6 +145,7 @@
                                                 <a href="{{ route('trainings.wallet.google', $registration->training) }}" title="Add to Google Wallet">
                                                     <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-7">
                                                 </a>
+                                            @endif
                                             <form method="POST" action="{{ route('trainings.cancel-registration', $registration->training) }}" onsubmit="return confirm('Cancel your registration?');" class="inline">
                                                 @csrf
                                                 @method('DELETE')
