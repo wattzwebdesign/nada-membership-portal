@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Enums\RegistrationStatus;
+use App\Models\Training;
+use App\Models\TrainingRegistration;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
@@ -24,7 +27,7 @@ class WalletPassService
 
     public function updateAllPassesForUser(User $user): void
     {
-        $passes = $user->walletPasses;
+        $passes = $user->walletPasses()->membership()->get();
 
         foreach ($passes as $pass) {
             try {
@@ -41,6 +44,78 @@ class WalletPassService
                     'error' => $e->getMessage(),
                 ]);
             }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Training Wallet Pass Methods
+    // ------------------------------------------------------------------
+
+    public function generateAppleTrainingPass(TrainingRegistration $registration): string
+    {
+        return $this->appleWalletService->createTrainingPass($registration);
+    }
+
+    public function generateGoogleTrainingPassUrl(TrainingRegistration $registration): string
+    {
+        return $this->googleWalletService->createTrainingPassAndGetSaveUrl($registration);
+    }
+
+    public function updateTrainingPasses(TrainingRegistration $registration): void
+    {
+        $passes = $registration->walletPasses;
+
+        foreach ($passes as $pass) {
+            try {
+                if ($pass->platform === 'apple') {
+                    $this->appleWalletService->pushUpdateToDevices($pass);
+                } elseif ($pass->platform === 'google') {
+                    $this->googleWalletService->updateTrainingPassObject($pass);
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to update training wallet pass.', [
+                    'wallet_pass_id' => $pass->id,
+                    'platform' => $pass->platform,
+                    'registration_id' => $registration->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    public function voidTrainingPasses(TrainingRegistration $registration): void
+    {
+        $passes = $registration->walletPasses;
+
+        foreach ($passes as $pass) {
+            try {
+                if ($pass->platform === 'google') {
+                    $this->googleWalletService->voidTrainingPassObject($pass);
+                }
+                // Apple passes: update the pass to show expired state on next pull
+                if ($pass->platform === 'apple') {
+                    $this->appleWalletService->pushUpdateToDevices($pass);
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to void training wallet pass.', [
+                    'wallet_pass_id' => $pass->id,
+                    'platform' => $pass->platform,
+                    'registration_id' => $registration->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    public function updateAllPassesForTraining(Training $training): void
+    {
+        $registrations = $training->registrations()
+            ->where('status', '!=', RegistrationStatus::Canceled->value)
+            ->with('walletPasses')
+            ->get();
+
+        foreach ($registrations as $registration) {
+            $this->updateTrainingPasses($registration);
         }
     }
 

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RegistrationStatus;
+use App\Models\Training;
+use App\Models\TrainingRegistration;
 use App\Services\AppleWalletService;
 use App\Services\WalletPassService;
 use Illuminate\Http\Request;
@@ -60,6 +63,77 @@ class WalletPassController extends Controller
     {
         $user = $request->user();
         $url = $this->walletPassService->generateGooglePassUrl($user);
+
+        return redirect()->away($url);
+    }
+
+    /**
+     * Download Apple Wallet .pkpass file for a training registration.
+     */
+    public function downloadAppleTrainingPass(Request $request, Training $training)
+    {
+        $user = $request->user();
+
+        $registration = TrainingRegistration::where('training_id', $training->id)
+            ->where('user_id', $user->id)
+            ->where('status', RegistrationStatus::Registered->value)
+            ->first();
+
+        if (! $registration) {
+            return back()->with('error', 'You are not registered for this training.');
+        }
+
+        try {
+            $pkpass = $this->walletPassService->generateAppleTrainingPass($registration);
+        } catch (\Exception $e) {
+            Log::error('Apple training pass generation failed.', [
+                'user_id' => $user->id,
+                'training_id' => $training->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Unable to generate your training pass: ' . $e->getMessage());
+        }
+
+        if (empty($pkpass)) {
+            return back()->with('error', 'Training pass generated empty content. Check server logs.');
+        }
+
+        return response($pkpass, 200, [
+            'Content-Type' => 'application/vnd.apple.pkpass',
+            'Content-Disposition' => 'inline; filename="nada-training.pkpass"',
+            'Content-Length' => strlen($pkpass),
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+        ]);
+    }
+
+    /**
+     * Redirect to Google Wallet save URL for a training registration.
+     */
+    public function getGoogleTrainingPassUrl(Request $request, Training $training)
+    {
+        $user = $request->user();
+
+        $registration = TrainingRegistration::where('training_id', $training->id)
+            ->where('user_id', $user->id)
+            ->where('status', RegistrationStatus::Registered->value)
+            ->first();
+
+        if (! $registration) {
+            return back()->with('error', 'You are not registered for this training.');
+        }
+
+        try {
+            $url = $this->walletPassService->generateGoogleTrainingPassUrl($registration);
+        } catch (\Exception $e) {
+            Log::error('Google training pass generation failed.', [
+                'user_id' => $user->id,
+                'training_id' => $training->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Unable to generate your training pass: ' . $e->getMessage());
+        }
 
         return redirect()->away($url);
     }

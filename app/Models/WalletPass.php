@@ -11,6 +11,8 @@ class WalletPass extends Model
     protected $fillable = [
         'user_id',
         'platform',
+        'pass_category',
+        'training_registration_id',
         'serial_number',
         'pass_type_identifier',
         'google_object_id',
@@ -32,6 +34,11 @@ class WalletPass extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function trainingRegistration(): BelongsTo
+    {
+        return $this->belongsTo(TrainingRegistration::class);
+    }
+
     public function deviceRegistrations(): HasMany
     {
         return $this->hasMany(WalletDeviceRegistration::class);
@@ -45,5 +52,15 @@ class WalletPass extends Model
     public function scopeGoogle($query)
     {
         return $query->where('platform', 'google');
+    }
+
+    public function scopeMembership($query)
+    {
+        return $query->where('pass_category', 'membership');
+    }
+
+    public function scopeTraining($query)
+    {
+        return $query->where('pass_category', 'training');
     }
 }

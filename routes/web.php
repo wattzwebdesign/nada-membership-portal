@@ -93,6 +93,8 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::post('/trainings/{training}/register', [TrainingRegistrationController::class, 'store'])->name('trainings.register');
     Route::get('/trainings/{training}/payment/success', [TrainingRegistrationController::class, 'paymentSuccess'])->name('trainings.payment.success');
     Route::delete('/trainings/{training}/cancel-registration', [TrainingRegistrationController::class, 'destroy'])->name('trainings.cancel-registration');
+    Route::get('/trainings/{training}/wallet/apple', [WalletPassController::class, 'downloadAppleTrainingPass'])->name('trainings.wallet.apple');
+    Route::get('/trainings/{training}/wallet/google', [WalletPassController::class, 'getGoogleTrainingPassUrl'])->name('trainings.wallet.google');
 
     // Clinicals
     Route::get('/clinicals', fn () => redirect()->route('clinicals.index'));

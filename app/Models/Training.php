@@ -20,6 +20,8 @@ class Training extends Model
         'type',
         'location_name',
         'location_address',
+        'latitude',
+        'longitude',
         'virtual_link',
         'start_date',
         'end_date',
@@ -45,6 +47,8 @@ class Training extends Model
             'is_paid' => 'boolean',
             'is_group' => 'boolean',
             'price_cents' => 'integer',
+            'latitude' => 'float',
+            'longitude' => 'float',
         ];
     }
 
@@ -110,5 +114,15 @@ class Training extends Model
     public function scopeUpcoming($query)
     {
         return $query->where('start_date', '>', now());
+    }
+
+    public function hasPhysicalLocation(): bool
+    {
+        return in_array($this->type, [TrainingType::InPerson, TrainingType::Hybrid]);
+    }
+
+    public function hasCoordinates(): bool
+    {
+        return $this->latitude !== null && $this->longitude !== null;
     }
 }

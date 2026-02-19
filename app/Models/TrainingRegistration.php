@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\RegistrationStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TrainingRegistration extends Model
 {
@@ -52,5 +53,10 @@ class TrainingRegistration extends Model
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
+    }
+
+    public function walletPasses(): HasMany
+    {
+        return $this->hasMany(WalletPass::class);
     }
 }

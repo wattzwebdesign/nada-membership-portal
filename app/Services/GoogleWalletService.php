@@ -2,18 +2,29 @@
 
 namespace App\Services;
 
+use App\Enums\TrainingType;
+use App\Models\Training;
+use App\Models\TrainingRegistration;
 use App\Models\User;
 use App\Models\WalletPass;
 use Chiiya\LaravelPasses\Google\GoogleClient;
 use Chiiya\Passes\Google\Components\Common\Barcode;
 use Chiiya\Passes\Google\Components\Common\Image;
+use Chiiya\Passes\Google\Components\Common\LatLongPoint;
 use Chiiya\Passes\Google\Components\Common\LocalizedString;
 use Chiiya\Passes\Google\Components\Common\TextModuleData;
+use Chiiya\Passes\Google\Components\EventTicket\EventDateTime;
+use Chiiya\Passes\Google\Components\EventTicket\EventReservationInfo;
+use Chiiya\Passes\Google\Components\EventTicket\EventVenue;
 use Chiiya\Passes\Google\Enumerators\BarcodeType;
 use Chiiya\Passes\Google\Enumerators\MultipleDevicesAndHoldersAllowedStatus;
 use Chiiya\Passes\Google\Enumerators\State;
+use Chiiya\Passes\Google\Passes\EventTicketClass;
+use Chiiya\Passes\Google\Passes\EventTicketObject;
 use Chiiya\Passes\Google\Passes\GenericClass;
 use Chiiya\Passes\Google\Passes\GenericObject;
+use Chiiya\Passes\Google\Repositories\EventTicketClassRepository;
+use Chiiya\Passes\Google\Repositories\EventTicketObjectRepository;
 use Chiiya\Passes\Google\Repositories\GenericClassRepository;
 use Chiiya\Passes\Google\Repositories\GenericObjectRepository;
 use Chiiya\Passes\Google\ServiceCredentials;
@@ -166,6 +177,7 @@ class GoogleWalletService
     {
         $existing = WalletPass::where('user_id', $user->id)
             ->where('platform', 'google')
+            ->where('pass_category', 'membership')
             ->first();
 
         if ($existing) {
@@ -175,10 +187,274 @@ class GoogleWalletService
         return WalletPass::create([
             'user_id' => $user->id,
             'platform' => 'google',
+            'pass_category' => 'membership',
             'serial_number' => 'NADA-GOOG-' . $user->id . '-' . Str::random(8),
             'google_object_id' => $this->issuerId . '.nada-member-' . $user->id,
             'authentication_token' => Str::random(64),
         ]);
+    }
+
+    // ------------------------------------------------------------------
+    // Training Event Ticket Methods
+    // ------------------------------------------------------------------
+
+    public function ensureTrainingClassExists(Training $training): string
+    {
+        $trainingClassId = $this->issuerId . '.nada-training-' . $training->id;
+
+        $client = new GoogleClient;
+        $repo = new EventTicketClassRepository($client);
+
+        $venue = null;
+        if ($training->hasPhysicalLocation()) {
+            $locationName = $training->location_name ?: 'Training Venue';
+            $locationAddress = $training->location_address ?: $locationName;
+            $venue = new EventVenue(
+                name: LocalizedString::make('en', $locationName),
+                address: LocalizedString::make('en', $locationAddress),
+            );
+        }
+
+        $dateTime = new EventDateTime(
+            start: $training->start_date->toIso8601String(),
+            end: $training->end_date->toIso8601String(),
+        );
+
+        $class = new EventTicketClass(
+            eventName: LocalizedString::make('en', $training->title),
+            id: $trainingClassId,
+            reviewStatus: 'UNDER_REVIEW',
+            issuerName: 'NADA',
+            hexBackgroundColor: '#1C3519',
+            logo: Image::make(config('app.url') . '/images/nada-mark.png'),
+            venue: $venue,
+            dateTime: $dateTime,
+            multipleDevicesAndHoldersAllowedStatus: MultipleDevicesAndHoldersAllowedStatus::MULTIPLE_HOLDERS,
+        );
+
+        try {
+            $repo->create($class);
+        } catch (\Exception $e) {
+            try {
+                $repo->update($class);
+            } catch (\Exception $e2) {
+                Log::error('Failed to create/update Google EventTicketClass.', [
+                    'error' => $e2->getMessage(),
+                    'class_id' => $trainingClassId,
+                ]);
+                throw $e2;
+            }
+        }
+
+        return $trainingClassId;
+    }
+
+    public function createTrainingPassAndGetSaveUrl(TrainingRegistration $registration): string
+    {
+        $registration->load(['training.trainer', 'user']);
+        $training = $registration->training;
+        $user = $registration->user;
+
+        $trainingClassId = $this->ensureTrainingClassExists($training);
+        $walletPass = $this->getOrCreateTrainingWalletPass($registration);
+
+        $objectId = $walletPass->google_object_id;
+
+        $textModules = [
+            new TextModuleData(header: 'Trainer', body: $training->trainer->full_name ?? 'N/A', id: 'trainer'),
+            new TextModuleData(header: 'Training Type', body: $training->type->label(), id: 'training_type'),
+        ];
+
+        if (in_array($training->type, [TrainingType::Virtual, TrainingType::Hybrid]) && $training->virtual_link) {
+            $textModules[] = new TextModuleData(header: 'Virtual Meeting Link', body: $training->virtual_link, id: 'virtual_link');
+        }
+
+        $locations = [];
+        if ($training->hasPhysicalLocation() && $training->hasCoordinates()) {
+            $locations[] = new LatLongPoint(
+                latitude: $training->latitude,
+                longitude: $training->longitude,
+            );
+        }
+
+        $object = new EventTicketObject(
+            id: $objectId,
+            classId: $trainingClassId,
+            state: State::ACTIVE,
+            hexBackgroundColor: '#1C3519',
+            ticketHolderName: $user->full_name,
+            ticketNumber: 'REG-' . $registration->id,
+            reservationInfo: new EventReservationInfo(
+                confirmationCode: 'NADA-' . $registration->id,
+            ),
+            textModulesData: $textModules,
+            locations: $locations,
+        );
+
+        $client = new GoogleClient;
+        $repo = new EventTicketObjectRepository($client);
+
+        try {
+            $repo->create($object);
+        } catch (\Exception $e) {
+            try {
+                $repo->update($object);
+            } catch (\Exception $e2) {
+                Log::error('Failed to create/update Google EventTicketObject.', [
+                    'error' => $e2->getMessage(),
+                    'object_id' => $objectId,
+                ]);
+                throw $e2;
+            }
+        }
+
+        $walletPass->update([
+            'last_updated_at' => now(),
+            'metadata' => [
+                'training_id' => $training->id,
+                'training_title' => $training->title,
+                'start_date' => $training->start_date->toIso8601String(),
+                'attendee' => $user->full_name,
+            ],
+        ]);
+
+        return $this->generateTrainingSaveUrl($objectId);
+    }
+
+    public function updateTrainingPassObject(WalletPass $walletPass): void
+    {
+        $registration = $walletPass->trainingRegistration;
+        if (! $registration) {
+            return;
+        }
+
+        $registration->load(['training.trainer', 'user']);
+        $training = $registration->training;
+        $user = $registration->user;
+
+        $trainingClassId = $this->ensureTrainingClassExists($training);
+        $objectId = $walletPass->google_object_id;
+
+        $textModules = [
+            new TextModuleData(header: 'Trainer', body: $training->trainer->full_name ?? 'N/A', id: 'trainer'),
+            new TextModuleData(header: 'Training Type', body: $training->type->label(), id: 'training_type'),
+        ];
+
+        if (in_array($training->type, [TrainingType::Virtual, TrainingType::Hybrid]) && $training->virtual_link) {
+            $textModules[] = new TextModuleData(header: 'Virtual Meeting Link', body: $training->virtual_link, id: 'virtual_link');
+        }
+
+        $locations = [];
+        if ($training->hasPhysicalLocation() && $training->hasCoordinates()) {
+            $locations[] = new LatLongPoint(
+                latitude: $training->latitude,
+                longitude: $training->longitude,
+            );
+        }
+
+        $object = new EventTicketObject(
+            id: $objectId,
+            classId: $trainingClassId,
+            state: State::ACTIVE,
+            hexBackgroundColor: '#1C3519',
+            ticketHolderName: $user->full_name,
+            ticketNumber: 'REG-' . $registration->id,
+            reservationInfo: new EventReservationInfo(
+                confirmationCode: 'NADA-' . $registration->id,
+            ),
+            textModulesData: $textModules,
+            locations: $locations,
+        );
+
+        $client = new GoogleClient;
+        $repo = new EventTicketObjectRepository($client);
+
+        try {
+            $repo->update($object);
+        } catch (\Exception $e) {
+            Log::error('Failed to update Google training pass.', [
+                'error' => $e->getMessage(),
+                'object_id' => $objectId,
+            ]);
+        }
+
+        $walletPass->update([
+            'last_updated_at' => now(),
+            'metadata' => [
+                'training_id' => $training->id,
+                'training_title' => $training->title,
+                'start_date' => $training->start_date->toIso8601String(),
+                'attendee' => $user->full_name,
+            ],
+        ]);
+    }
+
+    public function voidTrainingPassObject(WalletPass $walletPass): void
+    {
+        $objectId = $walletPass->google_object_id;
+        if (! $objectId) {
+            return;
+        }
+
+        $client = new GoogleClient;
+        $repo = new EventTicketObjectRepository($client);
+
+        try {
+            $existing = $repo->get($objectId);
+            $existing->state = State::EXPIRED;
+            $repo->update($existing);
+
+            Log::info('Google training pass voided.', ['object_id' => $objectId]);
+        } catch (\Exception $e) {
+            Log::error('Failed to void Google training pass.', [
+                'error' => $e->getMessage(),
+                'object_id' => $objectId,
+            ]);
+        }
+    }
+
+    protected function getOrCreateTrainingWalletPass(TrainingRegistration $registration): WalletPass
+    {
+        $existing = WalletPass::where('training_registration_id', $registration->id)
+            ->where('platform', 'google')
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        return WalletPass::create([
+            'user_id' => $registration->user_id,
+            'platform' => 'google',
+            'pass_category' => 'training',
+            'training_registration_id' => $registration->id,
+            'serial_number' => 'NADA-GTRN-' . $registration->id . '-' . Str::random(8),
+            'google_object_id' => $this->issuerId . '.nada-training-reg-' . $registration->id,
+            'authentication_token' => Str::random(64),
+        ]);
+    }
+
+    protected function generateTrainingSaveUrl(string $objectId): string
+    {
+        $credentialsPath = storage_path('app/' . config('services.google_wallet.service_account_path'));
+        $credentials = ServiceCredentials::parse($credentialsPath);
+
+        $claims = [
+            'iss' => $credentials->client_email,
+            'aud' => 'google',
+            'typ' => 'savetowallet',
+            'iat' => time(),
+            'origins' => [config('app.url')],
+            'payload' => [
+                'eventTicketObjects' => [
+                    ['id' => $objectId],
+                ],
+            ],
+        ];
+
+        $jwt = JWT::encode($claims, $credentials->private_key, 'RS256');
+
+        return 'https://pay.google.com/gp/v/save/' . $jwt;
     }
 
     protected function generateSaveUrl(string $objectId): string

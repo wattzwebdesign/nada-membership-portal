@@ -13,6 +13,7 @@ use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\NewTrainingRegistrationNotification;
 use App\Notifications\TrainingRegisteredNotification;
 use App\Services\StripeService;
+use App\Services\WalletPassService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -195,6 +196,8 @@ class TrainingRegistrationController extends Controller
         $registration->update([
             'status' => RegistrationStatus::Canceled->value,
         ]);
+
+        app(WalletPassService::class)->voidTrainingPasses($registration);
 
         return redirect()->route('trainings.my-registrations')
             ->with('success', 'Your registration has been canceled.');

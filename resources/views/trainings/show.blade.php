@@ -160,6 +160,22 @@
                                 <div class="bg-green-50 border border-green-200 rounded-md p-3 mb-4">
                                     <p class="text-sm text-green-700 font-medium text-center">You are registered for this training.</p>
                                 </div>
+
+                                @if ($userRegistration->status === App\Enums\RegistrationStatus::Registered && $training->start_date->isFuture())
+                                    <div class="mb-4 border-t border-gray-200 pt-4">
+                                        <p class="text-sm font-semibold mb-2">Add to Wallet</p>
+                                        <p class="text-xs text-gray-500 mb-3">Get a reminder before your training.</p>
+                                        <div class="flex flex-wrap items-center gap-3">
+                                            <a href="{{ route('trainings.wallet.apple', $training) }}">
+                                                <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-11">
+                                            </a>
+                                            <a href="{{ route('trainings.wallet.google', $training) }}">
+                                                <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-11">
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <form method="POST" action="{{ route('trainings.cancel-registration', $training) }}" onsubmit="return confirm('Are you sure you want to cancel your registration?');">
                                     @csrf
                                     @method('DELETE')

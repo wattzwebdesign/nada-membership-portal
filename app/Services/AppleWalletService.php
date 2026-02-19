@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\TrainingType;
+use App\Models\TrainingRegistration;
 use App\Models\User;
 use App\Models\WalletPass;
 use App\Models\WalletDeviceRegistration;
@@ -122,6 +124,174 @@ class AppleWalletService
         return $pkpass;
     }
 
+    public function createTrainingPass(TrainingRegistration $registration): string
+    {
+        $registration->load(['training.trainer', 'user']);
+        $training = $registration->training;
+        $user = $registration->user;
+
+        $walletPass = $this->getOrCreateTrainingWalletPass($registration);
+
+        $certPath = storage_path('app/' . config('services.apple_wallet.certificate_path'));
+        $certPassword = config('services.apple_wallet.certificate_password');
+        $compatibleP12 = $this->ensureCompatibleP12($certPath, $certPassword);
+
+        $pass = new PKPass($compatibleP12, $certPassword);
+
+        $pass->setWwdrCertificatePath(
+            storage_path('app/' . config('services.apple_wallet.wwdr_certificate_path'))
+        );
+
+        // Build time display
+        $timeDisplay = $training->start_date->format('g:i A') . ' - ' . $training->end_date->format('g:i A');
+        if ($training->timezone) {
+            $timeDisplay .= ' ' . $training->timezone;
+        }
+
+        // Build location display
+        $locationParts = array_filter([
+            $training->location_name,
+            $training->location_address,
+        ]);
+        $locationDisplay = implode(', ', $locationParts) ?: 'Virtual';
+
+        $passDefinition = [
+            'formatVersion' => 1,
+            'passTypeIdentifier' => config('services.apple_wallet.pass_type_identifier'),
+            'serialNumber' => $walletPass->serial_number,
+            'teamIdentifier' => config('services.apple_wallet.team_identifier'),
+            'organizationName' => 'NADA',
+            'description' => 'NADA Training: ' . $training->title,
+            'backgroundColor' => 'rgb(28, 53, 25)',
+            'foregroundColor' => 'rgb(255, 255, 255)',
+            'labelColor' => 'rgb(221, 173, 38)',
+            'authenticationToken' => $walletPass->authentication_token,
+            'relevantDate' => $training->start_date->toIso8601String(),
+            'eventTicket' => [
+                'primaryFields' => [
+                    [
+                        'key' => 'training',
+                        'label' => 'TRAINING',
+                        'value' => $training->title,
+                    ],
+                ],
+                'secondaryFields' => [
+                    [
+                        'key' => 'date',
+                        'label' => 'DATE',
+                        'value' => $training->start_date->format('M j, Y'),
+                    ],
+                    [
+                        'key' => 'time',
+                        'label' => 'TIME',
+                        'value' => $timeDisplay,
+                    ],
+                ],
+                'auxiliaryFields' => [
+                    [
+                        'key' => 'location',
+                        'label' => 'LOCATION',
+                        'value' => $locationDisplay,
+                    ],
+                    [
+                        'key' => 'type',
+                        'label' => 'TYPE',
+                        'value' => $training->type->label(),
+                    ],
+                ],
+                'backFields' => [
+                    [
+                        'key' => 'trainer',
+                        'label' => 'Trainer',
+                        'value' => $training->trainer->full_name ?? 'N/A',
+                    ],
+                    [
+                        'key' => 'attendee',
+                        'label' => 'Attendee',
+                        'value' => $user->full_name,
+                    ],
+                    [
+                        'key' => 'organization',
+                        'label' => 'Organization',
+                        'value' => 'National Acupuncture Detoxification Association',
+                    ],
+                ],
+            ],
+        ];
+
+        // Add virtual link to back fields for virtual/hybrid trainings
+        if (in_array($training->type, [TrainingType::Virtual, TrainingType::Hybrid]) && $training->virtual_link) {
+            $passDefinition['eventTicket']['backFields'][] = [
+                'key' => 'virtualLink',
+                'label' => 'Virtual Meeting Link',
+                'value' => $training->virtual_link,
+            ];
+        }
+
+        // Add geofencing location for in-person/hybrid trainings with coordinates
+        if ($training->hasPhysicalLocation() && $training->hasCoordinates()) {
+            $passDefinition['locations'] = [
+                [
+                    'latitude' => $training->latitude,
+                    'longitude' => $training->longitude,
+                    'relevantText' => 'Your NADA training starts soon: ' . $training->title,
+                ],
+            ];
+        }
+
+        // Web service URL for auto-updates
+        $webServiceUrl = config('services.apple_wallet.web_service_url');
+        if ($webServiceUrl) {
+            $passDefinition['webServiceURL'] = $webServiceUrl;
+        }
+
+        $pass->setData($passDefinition);
+
+        // Add pass images
+        $imageDir = storage_path('app/wallet/apple-images');
+        foreach (['icon.png', 'icon@2x.png', 'logo.png', 'logo@2x.png'] as $image) {
+            $imagePath = $imageDir . '/' . $image;
+            if (file_exists($imagePath)) {
+                $pass->addFile($imagePath);
+            }
+        }
+
+        $pkpass = $pass->create();
+
+        $walletPass->update([
+            'last_updated_at' => now(),
+            'metadata' => [
+                'training_id' => $training->id,
+                'training_title' => $training->title,
+                'start_date' => $training->start_date->toIso8601String(),
+                'attendee' => $user->full_name,
+            ],
+        ]);
+
+        return $pkpass;
+    }
+
+    protected function getOrCreateTrainingWalletPass(TrainingRegistration $registration): WalletPass
+    {
+        $existing = WalletPass::where('training_registration_id', $registration->id)
+            ->where('platform', 'apple')
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        return WalletPass::create([
+            'user_id' => $registration->user_id,
+            'platform' => 'apple',
+            'pass_category' => 'training',
+            'training_registration_id' => $registration->id,
+            'serial_number' => 'NADA-TRN-' . $registration->id . '-' . Str::random(8),
+            'pass_type_identifier' => config('services.apple_wallet.pass_type_identifier'),
+            'authentication_token' => Str::random(64),
+        ]);
+    }
+
     /**
      * Convert a .p12 to a legacy-compatible format if PHP's openssl_pkcs12_read can't handle it.
      * This works around OpenSSL 3.x / PHP 8.4 incompatibilities with newer PKCS12 MAC algorithms.
@@ -196,6 +366,7 @@ class AppleWalletService
     {
         $existing = WalletPass::where('user_id', $user->id)
             ->where('platform', 'apple')
+            ->where('pass_category', 'membership')
             ->first();
 
         if ($existing) {
@@ -205,6 +376,7 @@ class AppleWalletService
         return WalletPass::create([
             'user_id' => $user->id,
             'platform' => 'apple',
+            'pass_category' => 'membership',
             'serial_number' => 'NADA-USR-' . $user->id . '-' . Str::random(8),
             'pass_type_identifier' => config('services.apple_wallet.pass_type_identifier'),
             'authentication_token' => Str::random(64),
@@ -299,6 +471,14 @@ class AppleWalletService
 
         if (! $walletPass || $walletPass->authentication_token !== $authToken) {
             return null;
+        }
+
+        if ($walletPass->pass_category === 'training') {
+            $registration = $walletPass->trainingRegistration;
+            if (! $registration) {
+                return null;
+            }
+            return $this->createTrainingPass($registration);
         }
 
         return $this->createPass($walletPass->user);
