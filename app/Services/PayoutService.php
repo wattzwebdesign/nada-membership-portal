@@ -21,7 +21,7 @@ class PayoutService
             'platform_amount' => $platformAmount,
             'trainer_amount' => $trainerAmount,
             'platform_percentage' => $settings->platform_percentage,
-            'trainer_percentage' => $settings->trainer_percentage,
+            'trainer_percentage' => $settings->payee_percentage,
         ];
     }
 

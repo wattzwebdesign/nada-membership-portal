@@ -22,6 +22,10 @@ use App\Http\Controllers\ResourceBookmarkController;
 use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\TrainingRegistrationController;
+use App\Http\Controllers\VendorApplicationController;
+use App\Http\Controllers\PublicShopController;
+use App\Http\Controllers\ShopCartController;
+use App\Http\Controllers\ShopCheckoutController;
 use App\Http\Controllers\WalletPassController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +41,26 @@ Route::get('/trainers/{user}', [PublicTrainerController::class, 'show'])->name('
 Route::post('/trainers/{user}/contact', [PublicTrainerController::class, 'contact'])->middleware('throttle:5,1')->name('public.trainers.contact');
 Route::get('/verify/{certificate_code?}', [PublicCertificateController::class, 'verify'])->name('public.verify');
 Route::get('/terms', [TermsController::class, 'show'])->name('terms.show');
+
+// Vendor Application (public form, no auth required)
+Route::get('/sell', [VendorApplicationController::class, 'create'])->name('vendor-application.create');
+Route::post('/sell', [VendorApplicationController::class, 'store'])->name('vendor-application.store');
+Route::get('/sell/thank-you', [VendorApplicationController::class, 'success'])->name('vendor-application.success');
+
+// Public Shop (no auth required)
+Route::get('/shop', [PublicShopController::class, 'index'])->name('public.shop.index');
+Route::get('/shop/category/{category:slug}', [PublicShopController::class, 'category'])->name('public.shop.category');
+Route::get('/shop/vendor/{vendorProfile:slug}', [PublicShopController::class, 'vendor'])->name('public.shop.vendor');
+Route::get('/shop/product/{product:slug}', [PublicShopController::class, 'show'])->name('public.shop.show');
+Route::get('/shop/cart', [ShopCartController::class, 'index'])->name('shop.cart.index');
+Route::post('/shop/cart/add', [ShopCartController::class, 'add'])->name('shop.cart.add');
+Route::patch('/shop/cart/{key}', [ShopCartController::class, 'update'])->name('shop.cart.update');
+Route::delete('/shop/cart/{key}', [ShopCartController::class, 'remove'])->name('shop.cart.remove');
+Route::get('/shop/checkout', [ShopCheckoutController::class, 'index'])->name('shop.checkout.index');
+Route::post('/shop/checkout', [ShopCheckoutController::class, 'store'])->name('shop.checkout.store');
+Route::get('/shop/checkout/success', [ShopCheckoutController::class, 'success'])->name('shop.checkout.success');
+Route::get('/shop/checkout/cancel', [ShopCheckoutController::class, 'cancel'])->name('shop.checkout.cancel');
+Route::get('/shop/orders/{order}/download/{orderItem}', [ShopCheckoutController::class, 'download'])->name('shop.download');
 
 // Group Training (public form, no auth)
 Route::get('/group-training', [GroupTrainingController::class, 'create'])->name('group-training.create');
@@ -170,6 +194,36 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::get('/broadcasts', [App\Http\Controllers\Trainer\BroadcastController::class, 'index'])->name('broadcasts.index');
     Route::post('/broadcasts', [App\Http\Controllers\Trainer\BroadcastController::class, 'store'])->name('broadcasts.store');
     Route::post('/broadcasts/recipient-count', [App\Http\Controllers\Trainer\BroadcastController::class, 'recipientCount'])->name('broadcasts.recipient-count');
+});
+
+// Vendor Portal Routes
+Route::middleware(['auth', 'verified', 'nda', 'vendor'])->prefix('vendor')->name('vendor.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Vendor\DashboardController::class, 'index'])->name('dashboard');
+
+    // Vendor Profile
+    Route::get('/profile', [App\Http\Controllers\Vendor\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\Vendor\ProfileController::class, 'update'])->name('profile.update');
+
+    // Product Management
+    Route::get('/products', [App\Http\Controllers\Vendor\ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [App\Http\Controllers\Vendor\ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [App\Http\Controllers\Vendor\ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}', [App\Http\Controllers\Vendor\ProductController::class, 'show'])->name('products.show');
+    Route::get('/products/{product}/edit', [App\Http\Controllers\Vendor\ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product}', [App\Http\Controllers\Vendor\ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [App\Http\Controllers\Vendor\ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Orders
+    Route::get('/orders', [App\Http\Controllers\Vendor\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [App\Http\Controllers\Vendor\OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/ship', [App\Http\Controllers\Vendor\OrderController::class, 'markShipped'])->name('orders.ship');
+    Route::post('/orders/{order}/deliver', [App\Http\Controllers\Vendor\OrderController::class, 'markDelivered'])->name('orders.deliver');
+
+    // Payouts
+    Route::get('/payouts', [App\Http\Controllers\Vendor\PayoutController::class, 'index'])->name('payouts.index');
+    Route::get('/payouts/connect', [App\Http\Controllers\Vendor\PayoutController::class, 'connectStripe'])->name('payouts.connect');
+    Route::get('/payouts/connect/callback', [App\Http\Controllers\Vendor\PayoutController::class, 'connectCallback'])->name('payouts.connect.callback');
+    Route::get('/payouts/reports', [App\Http\Controllers\Vendor\PayoutController::class, 'reports'])->name('payouts.reports');
 });
 
 // Public Resource Library

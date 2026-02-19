@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'trainer' => \App\Http\Middleware\EnsureIsTrainer::class,
+            'vendor' => \App\Http\Middleware\EnsureIsVendor::class,
             'nda' => \App\Http\Middleware\EnsureNdaSigned::class,
         ]);
     })

@@ -33,6 +33,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'configure payout percentages',
             'issue revoke certificates',
             'manage plans prices',
+            'manage own products',
+            'view own orders',
+            'update order status',
+            'view vendor payout reports',
+            'manage vendor profile',
         ];
 
         foreach ($permissions as $permission) {
@@ -63,6 +68,18 @@ class RolesAndPermissionsSeeder extends Seeder
             'mark training attendees complete',
             'view training attendee lists',
             'view payout reports',
+            'connect stripe account',
+        ]);
+
+        $vendor = Role::firstOrCreate(['name' => 'vendor']);
+        $vendor->syncPermissions([
+            'view dashboard',
+            'manage own billing',
+            'manage own products',
+            'view own orders',
+            'update order status',
+            'view vendor payout reports',
+            'manage vendor profile',
             'connect stripe account',
         ]);
 

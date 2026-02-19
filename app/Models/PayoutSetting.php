@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PayoutSetting extends Model
 {
     protected $fillable = [
-        'trainer_id',
+        'type',
+        'user_id',
         'platform_percentage',
-        'trainer_percentage',
+        'payee_percentage',
         'is_active',
         'notes',
     ];
@@ -19,30 +20,49 @@ class PayoutSetting extends Model
     {
         return [
             'platform_percentage' => 'decimal:2',
-            'trainer_percentage' => 'decimal:2',
+            'payee_percentage' => 'decimal:2',
             'is_active' => 'boolean',
         ];
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function trainer(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'trainer_id');
+        return $this->user();
     }
 
     public static function getForTrainer(?int $trainerId): self
     {
-        if ($trainerId) {
-            $custom = static::where('trainer_id', $trainerId)->where('is_active', true)->first();
+        return static::getForUser($trainerId, 'trainer');
+    }
+
+    public static function getForVendor(?int $userId): self
+    {
+        return static::getForUser($userId, 'vendor');
+    }
+
+    public static function getForUser(?int $userId, string $type = 'trainer'): self
+    {
+        if ($userId) {
+            $custom = static::where('user_id', $userId)
+                ->where('type', $type)
+                ->where('is_active', true)
+                ->first();
+
             if ($custom) {
                 return $custom;
             }
         }
 
-        return static::whereNull('trainer_id')->firstOrFail();
+        return static::whereNull('user_id')->where('type', $type)->firstOrFail();
     }
 
-    public static function globalDefault(): self
+    public static function globalDefault(string $type = 'trainer'): self
     {
-        return static::whereNull('trainer_id')->firstOrFail();
+        return static::whereNull('user_id')->where('type', $type)->firstOrFail();
     }
 }

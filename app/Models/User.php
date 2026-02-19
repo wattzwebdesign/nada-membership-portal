@@ -40,6 +40,7 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         'trainer_application_status',
         'trainer_approved_at',
         'trainer_approved_by',
+        'vendor_application_status',
         'profile_photo_path',
         'nda_accepted_at',
         'latitude',
@@ -131,7 +132,7 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
 
     public function payoutSetting(): HasOne
     {
-        return $this->hasOne(PayoutSetting::class, 'trainer_id');
+        return $this->hasOne(PayoutSetting::class, 'user_id');
     }
 
     public function invoices(): HasMany
@@ -164,6 +165,21 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return $this->hasMany(WalletPass::class);
     }
 
+    public function vendorProfile(): HasOne
+    {
+        return $this->hasOne(VendorProfile::class);
+    }
+
+    public function vendorApplications(): HasMany
+    {
+        return $this->hasMany(VendorApplication::class);
+    }
+
+    public function shopOrders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
     // Scopes & Helpers
 
     public function isTrainer(): bool
@@ -174,6 +190,16 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
     public function isAdmin(): bool
     {
         return $this->hasRole('admin');
+    }
+
+    public function isVendor(): bool
+    {
+        return $this->hasRole('vendor');
+    }
+
+    public function hasActiveVendorProfile(): bool
+    {
+        return $this->vendorProfile && $this->vendorProfile->is_active;
     }
 
     public function hasActiveSubscription(): bool

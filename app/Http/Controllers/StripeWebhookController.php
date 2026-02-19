@@ -426,6 +426,22 @@ class StripeWebhookController extends Controller
 
         }
 
+        // Handle store checkout payment
+        if ($type === 'store_checkout' && $session->payment_status === 'paid') {
+            $orderId = $session->metadata->order_id ?? null;
+            $order = $orderId ? \App\Models\Order::find($orderId) : null;
+
+            if ($order && $order->status->value === 'pending') {
+                app(\App\Services\StoreCheckoutService::class)->processPayment($order, $session->payment_intent);
+
+                Log::info('Store order paid from webhook.', [
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'payment_intent' => $session->payment_intent,
+                ]);
+            }
+        }
+
         // Attach Stripe transaction ID to consent signature if present
         $tcSignatureId = $session->metadata->tc_signature_id ?? null;
         $paymentIntent = $session->payment_intent ?? $session->subscription ?? null;

@@ -175,6 +175,39 @@
                                     </div>
                                 @endif
 
+                                {{-- Become a Vendor --}}
+                                @if (!$user->isVendor())
+                                    <div class="p-4 border border-gray-200 rounded-lg">
+                                        <p class="text-sm font-medium text-gray-900">Become a Vendor</p>
+                                        <p class="text-xs text-gray-500 mt-1">Sell products on the NADA marketplace.</p>
+                                        <div class="mt-3">
+                                            @if ($user->vendor_application_status === 'pending')
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    Application Pending
+                                                </span>
+                                            @elseif ($user->vendor_application_status === 'denied')
+                                                <a href="{{ route('vendor-application.create') }}" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md border-brand-primary text-brand-primary">
+                                                    Reapply
+                                                </a>
+                                            @else
+                                                <a href="{{ route('vendor-application.create') }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-brand-secondary">
+                                                    Apply Now
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="p-4 border border-emerald-200 bg-emerald-50 rounded-lg">
+                                        <p class="text-sm font-medium text-emerald-800">Approved Vendor</p>
+                                        <p class="text-xs text-emerald-600 mt-1">You are an approved NADA marketplace vendor.</p>
+                                        <div class="mt-3">
+                                            <a href="{{ route('vendor.dashboard') }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-brand-primary">
+                                                Vendor Portal
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
+
                                 {{-- Profile & Password --}}
                                 <div class="p-4 border border-gray-200 rounded-lg">
                                     <p class="text-sm font-medium text-gray-900">Password & Security</p>
