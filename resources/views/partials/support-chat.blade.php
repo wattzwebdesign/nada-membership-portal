@@ -85,7 +85,7 @@
                     placeholder="Type your question..."
                     maxlength="500"
                     :disabled="isLoading"
-                    class="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                    class="flex-1 rounded-full border border-gray-300 px-4 py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                     autocomplete="off"
                 />
                 <button
