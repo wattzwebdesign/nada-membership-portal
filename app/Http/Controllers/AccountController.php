@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\GeocodingService;
 use App\Services\StripeService;
+use App\Services\WalletPassService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -86,6 +87,11 @@ class AccountController extends Controller
                     'error' => $e->getMessage(),
                 ]);
             }
+        }
+
+        // Update wallet passes if name changed
+        if ($user->wasChanged(['first_name', 'last_name'])) {
+            app(WalletPassService::class)->updateAllPassesForUser($user);
         }
 
         return redirect()->route('account.edit')

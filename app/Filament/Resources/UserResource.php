@@ -5,8 +5,10 @@ namespace App\Filament\Resources;
 use App\Enums\DiscountType;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use App\Services\WalletPassService;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -225,6 +227,22 @@ class UserResource extends Resource
                         ])
                         ->action(function (User $record, array $data) {
                             // Placeholder: implement certificate issuance logic
+                        }),
+                    Tables\Actions\Action::make('push_wallet_update')
+                        ->label('Push Wallet Update')
+                        ->icon('heroicon-o-device-phone-mobile')
+                        ->color('gray')
+                        ->requiresConfirmation()
+                        ->modalHeading('Push Wallet Update')
+                        ->modalDescription('This will push updated membership data to all wallet passes for this user.')
+                        ->visible(fn (User $record): bool => $record->walletPasses()->exists())
+                        ->action(function (User $record) {
+                            app(WalletPassService::class)->updateAllPassesForUser($record);
+
+                            Notification::make()
+                                ->title('Wallet passes updated')
+                                ->success()
+                                ->send();
                         }),
                 ]),
             ])
