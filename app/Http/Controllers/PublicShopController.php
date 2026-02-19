@@ -24,14 +24,18 @@ class PublicShopController extends Controller
             });
         }
 
+        $currentCategory = null;
         if ($categorySlug = $request->input('category')) {
-            $query->whereHas('category', fn ($q) => $q->where('slug', $categorySlug));
+            $currentCategory = ProductCategory::where('slug', $categorySlug)->first();
+            if ($currentCategory) {
+                $query->where('product_category_id', $currentCategory->id);
+            }
         }
 
         $sort = $request->input('sort', 'newest');
         $query = match ($sort) {
-            'price_asc' => $query->orderBy('price_cents', 'asc'),
-            'price_desc' => $query->orderBy('price_cents', 'desc'),
+            'price_low' => $query->orderBy('price_cents', 'asc'),
+            'price_high' => $query->orderBy('price_cents', 'desc'),
             default => $query->orderByDesc('created_at'),
         };
 
@@ -43,7 +47,7 @@ class PublicShopController extends Controller
             'categories' => $categories,
             'search' => $search,
             'sort' => $sort,
-            'currentCategory' => $categorySlug,
+            'currentCategory' => $currentCategory,
         ]);
     }
 
@@ -63,7 +67,7 @@ class PublicShopController extends Controller
             'categories' => $categories,
             'search' => null,
             'sort' => 'newest',
-            'currentCategory' => $category->slug,
+            'currentCategory' => $category,
         ]);
     }
 

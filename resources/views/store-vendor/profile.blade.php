@@ -131,7 +131,7 @@
                                     </div>
                                 @endif
                                 <input type="file" name="logo" id="logo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20">
-                                <p class="mt-1 text-xs text-gray-400">Recommended: 400x400px, JPG or PNG.</p>
+                                <p class="mt-1 text-xs text-gray-400">Recommended: 400x400px, JPG or PNG. Your logo will be cropped to a square.</p>
                                 @error('logo')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror

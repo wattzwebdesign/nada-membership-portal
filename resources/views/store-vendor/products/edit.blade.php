@@ -67,6 +67,38 @@
                             </div>
                         </div>
 
+                        {{-- Product Type --}}
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Product Type</h3>
+
+                            <div class="space-y-5">
+                                {{-- Digital Product Toggle --}}
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="checkbox" name="is_digital" value="1" class="rounded border-gray-300 shadow-sm text-brand-primary" x-model="isDigital" {{ old('is_digital', $product->is_digital) ? 'checked' : '' }}>
+                                        <span class="ml-2 text-sm font-medium text-gray-700">Digital product</span>
+                                    </label>
+                                    <p class="mt-1 ml-6 text-xs text-gray-500">Delivered electronically, no shipping required.</p>
+                                </div>
+
+                                {{-- Stock --}}
+                                <div x-show="!isDigital" class="border border-gray-200 rounded-lg p-4 space-y-4">
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="checkbox" name="track_stock" value="1" class="rounded border-gray-300 shadow-sm text-brand-primary" x-model="trackStock" {{ old('track_stock', $product->track_stock) ? 'checked' : '' }}>
+                                        <span class="ml-2 text-sm font-medium text-gray-700">Track stock</span>
+                                    </label>
+
+                                    <div x-show="trackStock" x-cloak>
+                                        <label for="stock_quantity" class="block text-sm font-medium text-gray-700">Quantity *</label>
+                                        <input type="number" name="stock_quantity" id="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                        @error('stock_quantity')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- Pricing --}}
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <h3 class="text-lg font-semibold mb-4 text-brand-primary">Pricing</h3>
@@ -285,38 +317,6 @@
                                     @error('new_category')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Product Type --}}
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Product Type</h3>
-
-                            <div class="space-y-5">
-                                {{-- Digital Product Toggle --}}
-                                <div class="border border-gray-200 rounded-lg p-4">
-                                    <label class="flex items-center cursor-pointer">
-                                        <input type="checkbox" name="is_digital" value="1" class="rounded border-gray-300 shadow-sm text-brand-primary" x-model="isDigital" {{ old('is_digital', $product->is_digital) ? 'checked' : '' }}>
-                                        <span class="ml-2 text-sm font-medium text-gray-700">Digital product</span>
-                                    </label>
-                                    <p class="mt-1 ml-6 text-xs text-gray-500">Delivered electronically, no shipping required.</p>
-                                </div>
-
-                                {{-- Stock --}}
-                                <div x-show="!isDigital" class="border border-gray-200 rounded-lg p-4 space-y-4">
-                                    <label class="flex items-center cursor-pointer">
-                                        <input type="checkbox" name="track_stock" value="1" class="rounded border-gray-300 shadow-sm text-brand-primary" x-model="trackStock" {{ old('track_stock', $product->track_stock) ? 'checked' : '' }}>
-                                        <span class="ml-2 text-sm font-medium text-gray-700">Track stock</span>
-                                    </label>
-
-                                    <div x-show="trackStock" x-cloak>
-                                        <label for="stock_quantity" class="block text-sm font-medium text-gray-700">Quantity *</label>
-                                        <input type="number" name="stock_quantity" id="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
-                                        @error('stock_quantity')
-                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
                                 </div>
                             </div>
                         </div>
