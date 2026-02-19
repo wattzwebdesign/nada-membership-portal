@@ -203,6 +203,7 @@
                             @else
                                 <form method="POST" action="{{ route('trainings.register', $training) }}">
                                     @csrf
+                                    <x-terms-checkbox :terms="$activeTerms" />
                                     <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition bg-brand-secondary hover:opacity-90">
                                         {{ $training->is_paid ? 'Register & Pay' : 'Register Now' }}
                                     </button>

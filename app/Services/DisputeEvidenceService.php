@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\AgreementSignature;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+class DisputeEvidenceService
+{
+    public function generate(AgreementSignature $signature): \Barryvdh\DomPDF\PDF
+    {
+        $signature->load(['user', 'agreement']);
+
+        $contextReference = $this->resolveContextReference($signature);
+
+        $html = $this->buildHtml($signature, $contextReference);
+
+        return Pdf::loadHTML($html)->setPaper('a4');
+    }
+
+    protected function resolveContextReference(AgreementSignature $signature): ?string
+    {
+        if (! $signature->context_reference_type || ! $signature->context_reference_id) {
+            return null;
+        }
+
+        $model = $signature->context_reference_type::find($signature->context_reference_id);
+
+        if (! $model) {
+            return null;
+        }
+
+        return match ($signature->context_reference_type) {
+            'App\Models\Plan' => $model->name,
+            'App\Models\Training' => $model->title . ' (' . $model->start_date->format('M j, Y') . ')',
+            default => 'ID: ' . $signature->context_reference_id,
+        };
+    }
+
+    protected function buildHtml(AgreementSignature $signature, ?string $contextReference): string
+    {
+        $user = $signature->user;
+        $agreement = $signature->agreement;
+
+        $contextLabel = match ($signature->consent_context) {
+            'membership_subscription' => 'Membership Subscription',
+            'plan_switch' => 'Plan Switch',
+            'training_registration' => 'Training Registration',
+            'trainer_application' => 'Trainer Application',
+            default => $signature->consent_context ?? 'N/A',
+        };
+
+        $signedAt = $signature->signed_at->format('F j, Y \a\t g:i:s A T');
+        $generatedAt = now()->format('F j, Y \a\t g:i:s A T');
+
+        return <<<HTML
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <style>
+                body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #333; line-height: 1.6; margin: 40px; }
+                h1 { color: #1C3519; font-size: 20px; border-bottom: 2px solid #1C3519; padding-bottom: 8px; }
+                h2 { color: #1C3519; font-size: 16px; margin-top: 24px; }
+                .section { margin-bottom: 20px; }
+                .field { margin-bottom: 6px; }
+                .label { font-weight: bold; color: #555; }
+                .value { color: #111; }
+                .snapshot { border: 1px solid #ddd; padding: 16px; background: #fafafa; margin-top: 12px; font-size: 11px; }
+                .footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #ccc; font-size: 10px; color: #777; text-align: center; }
+            </style>
+        </head>
+        <body>
+            <h1>NADA &mdash; Terms &amp; Conditions Consent Evidence</h1>
+
+            <div class="section">
+                <h2>User Information</h2>
+                <div class="field"><span class="label">Name:</span> <span class="value">{$this->e($user->full_name)}</span></div>
+                <div class="field"><span class="label">Email:</span> <span class="value">{$this->e($user->email)}</span></div>
+                <div class="field"><span class="label">User ID:</span> <span class="value">{$user->id}</span></div>
+            </div>
+
+            <div class="section">
+                <h2>Consent Details</h2>
+                <div class="field"><span class="label">Agreement:</span> <span class="value">{$this->e($agreement->title)} (v{$agreement->version})</span></div>
+                <div class="field"><span class="label">Signature ID:</span> <span class="value">{$signature->id}</span></div>
+                <div class="field"><span class="label">Signed At:</span> <span class="value">{$signedAt}</span></div>
+                <div class="field"><span class="label">IP Address:</span> <span class="value">{$this->e($signature->ip_address ?? 'N/A')}</span></div>
+                <div class="field"><span class="label">User Agent:</span> <span class="value">{$this->e($signature->user_agent ?? 'N/A')}</span></div>
+                <div class="field"><span class="label">Consent Context:</span> <span class="value">{$this->e($contextLabel)}</span></div>
+                <div class="field"><span class="label">Context Reference:</span> <span class="value">{$this->e($contextReference ?? 'N/A')}</span></div>
+            </div>
+
+            <div class="section">
+                <h2>Terms &amp; Conditions (Snapshot at Time of Consent)</h2>
+                <div class="snapshot">{$signature->consent_snapshot}</div>
+            </div>
+
+            <div class="footer">
+                Generated {$generatedAt} &mdash; Proof of user consent for payment dispute resolution.
+            </div>
+        </body>
+        </html>
+        HTML;
+    }
+
+    protected function e(?string $value): string
+    {
+        return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
+    }
+}

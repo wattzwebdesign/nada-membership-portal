@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agreement;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\SiteSetting;
@@ -9,6 +10,7 @@ use App\Models\TrainerApplication;
 use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\TrainerApplicationSubmittedNotification;
 use App\Services\StripeService;
+use App\Services\TermsConsentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +24,7 @@ class TrainerApplicationController extends Controller
 
     public function __construct(
         protected StripeService $stripeService,
+        protected TermsConsentService $termsConsentService,
     ) {}
 
     /**
@@ -30,8 +33,9 @@ class TrainerApplicationController extends Controller
     public function create(Request $request): View
     {
         $user = $request->user();
+        $activeTerms = Agreement::getActiveTerms();
 
-        return view('account.upgrade-to-trainer', compact('user'));
+        return view('account.upgrade-to-trainer', compact('user', 'activeTerms'));
     }
 
     /**
@@ -60,6 +64,7 @@ class TrainerApplicationController extends Controller
             'phone' => ['required', 'string', 'max:50'],
             'letter_of_nomination' => ['required', 'file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,doc,docx'],
             'application_submission' => ['required', 'file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,doc,docx'],
+            'accept_terms' => ['required', 'accepted'],
         ]);
 
         // Update user profile fields
@@ -81,6 +86,10 @@ class TrainerApplicationController extends Controller
             'application_path' => $applicationPath,
             'application_name' => $request->file('application_submission')->getClientOriginalName(),
         ]);
+
+        // Record T&C consent
+        $signature = $this->termsConsentService->recordConsent($request, $user, 'trainer_application');
+        $tcMetadata = $this->termsConsentService->stripeMetadata($signature);
 
         // Create Stripe Checkout session for $75 application fee
         try {
@@ -105,10 +114,10 @@ class TrainerApplicationController extends Controller
                 'mode' => 'payment',
                 'success_url' => route('trainer-application.payment.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('trainer-application.payment.cancel'),
-                'metadata' => [
+                'metadata' => array_merge([
                     'user_id' => $user->id,
                     'type' => 'trainer_application',
-                ],
+                ], $tcMetadata),
             ]);
 
             return redirect($session->url);

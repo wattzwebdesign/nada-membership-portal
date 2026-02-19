@@ -13,6 +13,7 @@ use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\NewTrainingRegistrationNotification;
 use App\Notifications\TrainingRegisteredNotification;
 use App\Services\StripeService;
+use App\Services\TermsConsentService;
 use App\Services\WalletPassService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ class TrainingRegistrationController extends Controller
 
     public function __construct(
         protected StripeService $stripeService,
+        protected TermsConsentService $termsConsentService,
     ) {}
 
     /**
@@ -48,6 +50,10 @@ class TrainingRegistrationController extends Controller
      */
     public function store(Request $request, Training $training): RedirectResponse
     {
+        $request->validate([
+            'accept_terms' => ['required', 'accepted'],
+        ]);
+
         $user = $request->user();
 
         // Require active membership plan
@@ -75,9 +81,13 @@ class TrainingRegistrationController extends Controller
             return back()->with('error', 'Registration for this training has closed.');
         }
 
+        // Record T&C consent
+        $signature = $this->termsConsentService->recordConsent($request, $user, 'training_registration', Training::class, $training->id);
+        $tcMetadata = $this->termsConsentService->stripeMetadata($signature);
+
         // Paid training: redirect to Stripe Checkout
         if ($training->is_paid) {
-            return $this->createPaidCheckout($user, $training);
+            return $this->createPaidCheckout($user, $training, $tcMetadata);
         }
 
         // Free training: register directly
@@ -206,7 +216,7 @@ class TrainingRegistrationController extends Controller
     /**
      * Create a Stripe Checkout Session for a paid training and redirect.
      */
-    protected function createPaidCheckout($user, Training $training): RedirectResponse
+    protected function createPaidCheckout($user, Training $training, array $termsMetadata = []): RedirectResponse
     {
         try {
             Stripe::setApiKey(config('services.stripe.secret'));
@@ -233,11 +243,11 @@ class TrainingRegistrationController extends Controller
                 'mode' => 'payment',
                 'success_url' => route('trainings.payment.success', $training) . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('trainings.show', $training),
-                'metadata' => [
+                'metadata' => array_merge([
                     'user_id' => $user->id,
                     'training_id' => $training->id,
                     'type' => 'training_registration',
-                ],
+                ], $termsMetadata),
             ];
 
             // Route payment through trainer's connected Stripe account if available
@@ -250,6 +260,7 @@ class TrainingRegistrationController extends Controller
                     'transfer_data' => [
                         'destination' => $stripeAccount->stripe_connect_account_id,
                     ],
+                    'metadata' => $termsMetadata,
                 ];
             }
 

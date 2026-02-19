@@ -157,6 +157,9 @@
                                 </div>
                             </div>
 
+                            {{-- Terms & Conditions --}}
+                            <x-terms-checkbox :terms="$activeTerms" />
+
                             {{-- Submit --}}
                             <div class="mt-6 flex items-center justify-between">
                                 <a href="{{ route('account.edit') }}" class="text-sm text-gray-500 hover:text-gray-700">Back to Account</a>

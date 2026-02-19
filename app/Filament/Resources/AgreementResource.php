@@ -113,9 +113,11 @@ class AgreementResource extends Resource
                         $newAgreement->published_at = now();
                         $newAgreement->save();
 
-                        // Reset nda_accepted_at for all users so they must re-sign
-                        \App\Models\User::whereNotNull('nda_accepted_at')
-                            ->update(['nda_accepted_at' => null]);
+                        // Reset nda_accepted_at only for NDA agreements
+                        if ($record->slug === 'nda') {
+                            \App\Models\User::whereNotNull('nda_accepted_at')
+                                ->update(['nda_accepted_at' => null]);
+                        }
                     }),
             ])
             ->bulkActions([

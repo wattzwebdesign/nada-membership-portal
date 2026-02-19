@@ -94,6 +94,7 @@
                                         @csrf
                                         @method('PUT')
                                         <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                        <x-terms-checkbox :terms="$activeTerms" />
                                         <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition-colors bg-brand-primary hover:bg-brand-primary-hover">
                                             Switch to This Plan
                                         </button>
@@ -102,6 +103,7 @@
                                     <form method="POST" action="{{ route('membership.subscribe') }}">
                                         @csrf
                                         <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                        <x-terms-checkbox :terms="$activeTerms" />
                                         <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white transition-colors bg-brand-secondary hover:opacity-90">
                                             Subscribe
                                         </button>

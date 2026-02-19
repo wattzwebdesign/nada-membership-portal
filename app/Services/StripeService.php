@@ -54,7 +54,7 @@ class StripeService
 
     // Checkout Sessions
 
-    public function createSubscriptionCheckout(User $user, Plan $plan, string $successUrl, string $cancelUrl): CheckoutSession
+    public function createSubscriptionCheckout(User $user, Plan $plan, string $successUrl, string $cancelUrl, array $extraMetadata = []): CheckoutSession
     {
         $customer = $this->getOrCreateCustomer($user);
 
@@ -68,10 +68,10 @@ class StripeService
             'mode' => 'subscription',
             'success_url' => $successUrl,
             'cancel_url' => $cancelUrl,
-            'metadata' => [
+            'metadata' => array_merge([
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
-            ],
+            ], $extraMetadata),
         ]);
     }
 
@@ -82,17 +82,23 @@ class StripeService
         return Subscription::retrieve($subscriptionId);
     }
 
-    public function switchPlan(string $subscriptionId, Plan $newPlan): Subscription
+    public function switchPlan(string $subscriptionId, Plan $newPlan, array $extraMetadata = []): Subscription
     {
         $subscription = Subscription::retrieve($subscriptionId);
 
-        return Subscription::update($subscriptionId, [
+        $params = [
             'items' => [[
                 'id' => $subscription->items->data[0]->id,
                 'price' => $newPlan->stripe_price_id,
             ]],
             'proration_behavior' => 'create_prorations',
-        ]);
+        ];
+
+        if (! empty($extraMetadata)) {
+            $params['metadata'] = $extraMetadata;
+        }
+
+        return Subscription::update($subscriptionId, $params);
     }
 
     public function cancelAtPeriodEnd(string $subscriptionId): Subscription

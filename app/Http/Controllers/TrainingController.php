@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\RegistrationStatus;
 use App\Enums\TrainingStatus;
+use App\Models\Agreement;
 use App\Models\Training;
 use App\Models\TrainingInvitee;
 use Illuminate\Http\Request;
@@ -116,6 +117,8 @@ class TrainingController extends Controller
             }
         }
 
-        return view('trainings.show', compact('training', 'spotsRemaining', 'isFull', 'userRegistration', 'hasTrainingWalletPass'));
+        $activeTerms = Agreement::getActiveTerms();
+
+        return view('trainings.show', compact('training', 'spotsRemaining', 'isFull', 'userRegistration', 'hasTrainingWalletPass', 'activeTerms'));
     }
 }

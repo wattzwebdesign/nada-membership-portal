@@ -19,6 +19,7 @@ use App\Http\Controllers\NdaController;
 use App\Http\Controllers\GroupTrainingController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ResourceBookmarkController;
+use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\TrainingRegistrationController;
 use App\Http\Controllers\WalletPassController;
@@ -35,6 +36,7 @@ Route::get('/trainers', [PublicTrainerController::class, 'index'])->name('public
 Route::get('/trainers/{user}', [PublicTrainerController::class, 'show'])->name('public.trainers.show');
 Route::post('/trainers/{user}/contact', [PublicTrainerController::class, 'contact'])->middleware('throttle:5,1')->name('public.trainers.contact');
 Route::get('/verify/{certificate_code?}', [PublicCertificateController::class, 'verify'])->name('public.verify');
+Route::get('/terms', [TermsController::class, 'show'])->name('terms.show');
 
 // Group Training (public form, no auth)
 Route::get('/group-training', [GroupTrainingController::class, 'create'])->name('group-training.create');

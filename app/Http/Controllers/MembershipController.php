@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agreement;
 use App\Models\Plan;
 use App\Notifications\Concerns\SafelyNotifies;
 use App\Notifications\SubscriptionCanceledNotification;
 use App\Services\StripeService;
 use App\Services\SubscriptionService;
+use App\Services\TermsConsentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -18,6 +20,7 @@ class MembershipController extends Controller
     public function __construct(
         protected StripeService $stripeService,
         protected SubscriptionService $subscriptionService,
+        protected TermsConsentService $termsConsentService,
     ) {}
 
     /**
@@ -42,8 +45,9 @@ class MembershipController extends Controller
             ->values();
         $currentSubscription = $user->activeSubscription?->load('plan');
         $currentPlan = $currentSubscription?->plan;
+        $activeTerms = Agreement::getActiveTerms();
 
-        return view('membership.plans', compact('plans', 'currentSubscription', 'currentPlan', 'user'));
+        return view('membership.plans', compact('plans', 'currentSubscription', 'currentPlan', 'user', 'activeTerms'));
     }
 
     /**
@@ -53,6 +57,7 @@ class MembershipController extends Controller
     {
         $request->validate([
             'plan_id' => ['required', 'exists:plans,id'],
+            'accept_terms' => ['required', 'accepted'],
         ]);
 
         $user = $request->user();
@@ -62,6 +67,10 @@ class MembershipController extends Controller
         if ($user->hasActiveSubscription()) {
             return back()->with('error', 'You already have an active subscription. Please switch plans instead.');
         }
+
+        // Record T&C consent
+        $signature = $this->termsConsentService->recordConsent($request, $user, 'membership_subscription', Plan::class, $plan->id);
+        $tcMetadata = $this->termsConsentService->stripeMetadata($signature);
 
         try {
             // Auto-sync to Stripe if missing
@@ -75,6 +84,7 @@ class MembershipController extends Controller
                 $plan,
                 route('membership.index') . '?checkout=success',
                 route('membership.plans') . '?checkout=canceled',
+                $tcMetadata,
             );
 
             return redirect($checkoutSession->url);
@@ -89,6 +99,7 @@ class MembershipController extends Controller
                     $plan,
                     route('membership.index') . '?checkout=success',
                     route('membership.plans') . '?checkout=canceled',
+                    $tcMetadata,
                 );
 
                 return redirect($checkoutSession->url);
@@ -107,6 +118,7 @@ class MembershipController extends Controller
     {
         $request->validate([
             'plan_id' => ['required', 'exists:plans,id'],
+            'accept_terms' => ['required', 'accepted'],
         ]);
 
         $user = $request->user();
@@ -118,7 +130,11 @@ class MembershipController extends Controller
 
         $newPlan = Plan::findOrFail($request->input('plan_id'));
 
-        $this->stripeService->switchPlan($subscription->stripe_subscription_id, $newPlan);
+        // Record T&C consent
+        $signature = $this->termsConsentService->recordConsent($request, $user, 'plan_switch', Plan::class, $newPlan->id);
+        $tcMetadata = $this->termsConsentService->stripeMetadata($signature);
+
+        $this->stripeService->switchPlan($subscription->stripe_subscription_id, $newPlan, $tcMetadata);
 
         $subscription->update([
             'plan_id' => $newPlan->id,
