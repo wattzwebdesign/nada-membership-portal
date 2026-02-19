@@ -100,6 +100,16 @@
                         @error('business_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
 
+                    {{-- Website --}}
+                    <div class="mt-4">
+                        <label for="website" class="block text-sm font-medium text-gray-700">Website</label>
+                        <input type="url" name="website" id="website"
+                               value="{{ old('website') }}"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm"
+                               placeholder="https://www.example.com">
+                        @error('website') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    </div>
+
                     {{-- What They Sell --}}
                     <div class="mt-4">
                         <label for="what_they_sell" class="block text-sm font-medium text-gray-700">What do you plan to sell? <span class="text-red-500">*</span></label>

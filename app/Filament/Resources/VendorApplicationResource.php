@@ -55,6 +55,9 @@ class VendorApplicationResource extends Resource
                         Forms\Components\TextInput::make('business_name')
                             ->required()
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('website')
+                            ->url()
+                            ->maxLength(255),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Details')
@@ -105,6 +108,10 @@ class VendorApplicationResource extends Resource
                     ->label('What They Sell')
                     ->limit(40)
                     ->toggleable(),
+                Tables\Columns\TextColumn::make('website')
+                    ->url(fn ($record) => $record->website)
+                    ->openUrlInNewTab()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {

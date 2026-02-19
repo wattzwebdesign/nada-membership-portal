@@ -43,6 +43,7 @@ class VendorApplicationController extends Controller
             'email' => ['required', 'email', 'max:255'],
             'business_name' => ['required', 'string', 'max:255'],
             'what_they_sell' => ['required', 'string', 'max:2000'],
+            'website' => ['nullable', 'url', 'max:255'],
         ]);
 
         $application = VendorApplication::create([
@@ -52,6 +53,7 @@ class VendorApplicationController extends Controller
             'email' => $validated['email'],
             'business_name' => $validated['business_name'],
             'what_they_sell' => $validated['what_they_sell'],
+            'website' => $validated['website'] ?? null,
             'status' => 'pending',
         ]);
 

@@ -14,6 +14,7 @@ class VendorApplication extends Model
         'email',
         'business_name',
         'what_they_sell',
+        'website',
         'status',
         'admin_notes',
         'reviewed_at',

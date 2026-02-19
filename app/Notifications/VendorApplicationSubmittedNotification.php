@@ -26,6 +26,7 @@ class VendorApplicationSubmittedNotification extends Notification
             'applicant_name' => "{$this->application->first_name} {$this->application->last_name}",
             'applicant_email' => $this->application->email,
             'business_name' => $this->application->business_name,
+            'website' => $this->application->website,
             'application_id' => $this->application->id,
         ], fn () => (new MailMessage)
             ->subject('New Vendor Application')
@@ -34,6 +35,7 @@ class VendorApplicationSubmittedNotification extends Notification
             ->line("Applicant: {$this->application->first_name} {$this->application->last_name}")
             ->line("Business: {$this->application->business_name}")
             ->line("Email: {$this->application->email}")
+            ->when($this->application->website, fn ($msg) => $msg->line("Website: {$this->application->website}"))
             ->action('Review Application', url("/admin/vendor-applications/{$this->application->id}"))
             ->line('Please review and process this application.'));
     }
