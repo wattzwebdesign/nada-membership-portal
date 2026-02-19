@@ -125,16 +125,22 @@
                         </div>
                     </div>
 
+
+                </div>
+
+                {{-- Right Column: Actions & Certificate Sidebar (1/3) --}}
+                <div class="lg:col-span-1 space-y-6 lg:sticky lg:top-8 lg:self-start">
+
                     {{-- Action Buttons --}}
                     @if (in_array($clinical->status, ['submitted', 'under_review']))
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
                                 <h3 class="text-lg font-semibold mb-4 text-brand-primary">Actions</h3>
-                                <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="flex flex-col gap-3">
                                     {{-- Approve --}}
                                     <form method="POST" action="{{ route('trainer.clinicals.approve', $clinical) }}">
                                         @csrf
-                                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
+                                        <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
                                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             Approve
                                         </button>
@@ -142,12 +148,12 @@
 
                                     {{-- Reject --}}
                                     <div x-data="{ showReject: false }">
-                                        <button @click="showReject = !showReject" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition">
+                                        <button @click="showReject = !showReject" type="button" class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition">
                                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             Reject
                                         </button>
 
-                                        <div x-show="showReject" x-cloak class="mt-4">
+                                        <div x-show="showReject" x-cloak class="mt-3">
                                             <form method="POST" action="{{ route('trainer.clinicals.reject', $clinical) }}">
                                                 @csrf
                                                 <div class="mb-3">
@@ -157,7 +163,7 @@
                                                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                                     @enderror
                                                 </div>
-                                                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition">
+                                                <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition">
                                                     Confirm Rejection
                                                 </button>
                                             </form>
@@ -168,11 +174,8 @@
                         </div>
                     @endif
 
-                </div>
-
-                {{-- Right Column: Certificate Sidebar (1/3) --}}
-                <div class="lg:col-span-1">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg sticky top-8">
+                    {{-- Certificate --}}
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
                             <h3 class="text-lg font-semibold mb-4 text-brand-primary">Certificate</h3>
 
