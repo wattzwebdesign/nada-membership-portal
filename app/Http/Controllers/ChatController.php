@@ -161,9 +161,10 @@ class ChatController extends Controller
             }
         }
 
-        // Recent shop orders
+        // Recent shop orders with tracking info
         $recentOrders = $user->shopOrders()
             ->where('status', '!=', 'pending')
+            ->with('vendorOrderSplits.vendorProfile')
             ->latest()
             ->take(5)
             ->get();
@@ -174,6 +175,21 @@ class ChatController extends Controller
             foreach ($recentOrders as $order) {
                 $status = $order->status->value ?? $order->status;
                 $lines[] = "- **{$order->order_number}** — {$order->total_formatted}, Status: " . ucfirst($status) . ', Date: ' . $order->created_at->format('F j, Y');
+
+                foreach ($order->vendorOrderSplits as $split) {
+                    $vendorName = $split->vendorProfile?->business_name ?? 'Unknown vendor';
+                    if ($split->tracking_number) {
+                        $shippedDate = $split->shipped_at?->format('F j, Y') ?? 'N/A';
+                        $lines[] = "  - **{$vendorName}:** Tracking #{$split->tracking_number}, Shipped: {$shippedDate}";
+                        if ($split->delivered_at) {
+                            $lines[] = "    Delivered: {$split->delivered_at->format('F j, Y')}";
+                        }
+                    } elseif ($split->shipped_at) {
+                        $lines[] = "  - **{$vendorName}:** Shipped {$split->shipped_at->format('F j, Y')} (no tracking number provided)";
+                    } elseif (!$split->canceled_at) {
+                        $lines[] = "  - **{$vendorName}:** Awaiting shipment";
+                    }
+                }
             }
         }
 
