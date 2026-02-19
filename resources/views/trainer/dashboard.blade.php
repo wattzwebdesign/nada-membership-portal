@@ -54,7 +54,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
-                            <div class="flex-shrink-0 p-3 rounded-lg bg-brand-primary/10"
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-brand-primary/10">
                                 <svg class="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             </div>
                             <div class="ml-4">
@@ -82,7 +82,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
-                            <div class="flex-shrink-0 p-3 rounded-lg bg-brand-secondary/10"
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-brand-secondary/10">
                                 <svg class="w-6 h-6 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div class="ml-4">
@@ -97,7 +97,7 @@
             {{-- Quick Actions Grid --}}
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
                 <a href="{{ route('trainer.profile.edit') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
-                    <div class="p-2 rounded-lg bg-brand-secondary/10"
+                    <div class="p-2 rounded-lg bg-brand-secondary/10">
                         <svg class="w-5 h-5 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     </div>
                     <p class="mt-2 text-xs font-medium text-gray-900">Edit Profile</p>
@@ -125,7 +125,7 @@
                 </a>
 
                 <a href="{{ route('trainer.payouts.index') }}" class="flex flex-col items-center p-4 bg-white shadow-sm sm:rounded-lg border border-gray-200 hover:bg-gray-50 transition text-center">
-                    <div class="p-2 rounded-lg bg-brand-secondary/10"
+                    <div class="p-2 rounded-lg bg-brand-secondary/10">
                         <svg class="w-5 h-5 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                     <p class="mt-2 text-xs font-medium text-gray-900">Payouts</p>
@@ -150,7 +150,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" x-data="groupTrainingLinkBuilder()">
                 <div class="p-6">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="flex-shrink-0 p-2 rounded-lg bg-brand-primary/10"
+                        <div class="flex-shrink-0 p-2 rounded-lg bg-brand-primary/10">
                             <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                         </div>
                         <div>
