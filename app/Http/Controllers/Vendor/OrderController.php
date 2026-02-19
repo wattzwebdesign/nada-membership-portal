@@ -60,6 +60,7 @@ class OrderController extends Controller
         ]);
 
         $split->update([
+            'status' => 'shipped',
             'shipped_at' => now(),
             'tracking_number' => $validated['tracking_number'] ?? null,
         ]);
@@ -90,7 +91,10 @@ class OrderController extends Controller
             ->where('vendor_profile_id', $vendorProfile->id)
             ->firstOrFail();
 
-        $split->update(['delivered_at' => now()]);
+        $split->update([
+            'status' => 'delivered',
+            'delivered_at' => now(),
+        ]);
 
         // Update order status if all splits are delivered
         $allDelivered = $order->vendorOrderSplits()->whereNull('delivered_at')->whereNull('canceled_at')->count() === 0;

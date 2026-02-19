@@ -64,16 +64,21 @@
                                 </div>
                                 <div>
                                     <p class="font-medium text-gray-900">Customer</p>
-                                    <p class="text-gray-500">{{ $order->user->full_name ?? 'N/A' }}</p>
+                                    <p class="text-gray-500">{{ $order->customer_full_name }}</p>
                                 </div>
                                 <div>
                                     <p class="font-medium text-gray-900">Customer Email</p>
-                                    <p class="text-gray-500">{{ $order->user->email ?? 'N/A' }}</p>
+                                    <p class="text-gray-500">{{ $order->customer_email }}</p>
                                 </div>
-                                @if ($order->shipping_address)
+                                @if ($order->shipping_address_line_1)
                                     <div class="sm:col-span-2">
                                         <p class="font-medium text-gray-900">Shipping Address</p>
-                                        <p class="text-gray-500">{{ $order->shipping_address }}</p>
+                                        <p class="text-gray-500">
+                                            {{ $order->shipping_address_line_1 }}
+                                            @if ($order->shipping_address_line_2)<br>{{ $order->shipping_address_line_2 }}@endif
+                                            <br>{{ $order->shipping_city }}, {{ $order->shipping_state }} {{ $order->shipping_zip }}
+                                            @if ($order->shipping_country)<br>{{ $order->shipping_country }}@endif
+                                        </p>
                                     </div>
                                 @endif
                             </div>
@@ -98,14 +103,14 @@
                                         @foreach ($items as $item)
                                             <tr>
                                                 <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                                                    {{ $item->product->title ?? $item->product_name ?? 'N/A' }}
-                                                    @if ($item->product && $item->product->is_digital)
+                                                    {{ $item->product_title }}
+                                                    @if ($item->is_digital)
                                                         <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 ml-1">Digital</span>
                                                     @endif
                                                 </td>
                                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $item->quantity }}</td>
-                                                <td class="px-6 py-4 text-sm text-gray-500">${{ number_format($item->unit_price / 100, 2) }}</td>
-                                                <td class="px-6 py-4 text-sm text-gray-900">${{ number_format(($item->unit_price * $item->quantity) / 100, 2) }}</td>
+                                                <td class="px-6 py-4 text-sm text-gray-500">${{ number_format($item->unit_price_cents / 100, 2) }}</td>
+                                                <td class="px-6 py-4 text-sm text-gray-900">${{ number_format($item->total_cents / 100, 2) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -120,16 +125,16 @@
                             <h3 class="text-lg font-semibold mb-4 text-brand-primary">Payout Breakdown</h3>
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between py-2 border-b border-gray-100">
-                                    <span class="text-sm text-gray-500">Vendor Amount</span>
-                                    <span class="text-sm font-semibold text-gray-900">${{ number_format($split->vendor_amount / 100, 2) }}</span>
+                                    <span class="text-sm text-gray-500">Order Subtotal</span>
+                                    <span class="text-sm font-semibold text-gray-900">${{ number_format($split->subtotal_cents / 100, 2) }}</span>
                                 </div>
                                 <div class="flex items-center justify-between py-2 border-b border-gray-100">
-                                    <span class="text-sm text-gray-500">Platform Fee</span>
-                                    <span class="text-sm text-gray-500">${{ number_format($split->platform_fee / 100, 2) }}</span>
+                                    <span class="text-sm text-gray-500">Platform Fee ({{ number_format($split->platform_percentage, 1) }}%)</span>
+                                    <span class="text-sm text-gray-500">-${{ number_format($split->platform_fee_cents / 100, 2) }}</span>
                                 </div>
                                 <div class="flex items-center justify-between py-2">
                                     <span class="text-sm font-semibold text-gray-900">Your Payout</span>
-                                    <span class="text-lg font-bold text-brand-secondary">${{ number_format(($split->vendor_amount - $split->platform_fee) / 100, 2) }}</span>
+                                    <span class="text-lg font-bold text-brand-secondary">${{ number_format($split->vendor_payout_cents / 100, 2) }}</span>
                                 </div>
                             </div>
                             @if ($split->shipped_at)

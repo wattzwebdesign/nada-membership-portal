@@ -163,7 +163,7 @@ class ShopCheckoutController extends Controller
             }
 
             return redirect()->route('shop.checkout.index')
-                ->with('error', 'Unable to process payment: ' . $e->getMessage());
+                ->with('error', 'Unable to process payment. Please try again or contact support.');
         }
     }
 

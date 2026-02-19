@@ -62,13 +62,13 @@
                                             <a href="{{ route('vendor.orders.show', $split->order) }}" class="text-sm font-medium hover:underline text-brand-primary">#{{ $split->order->order_number }}</a>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $split->order->user->full_name ?? 'N/A' }}
+                                            {{ $split->order->customer_full_name }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $split->items_count ?? $split->items->count() }} item{{ ($split->items_count ?? $split->items->count()) !== 1 ? 's' : '' }}
+                                            {{ $split->order->items->count() }} item{{ $split->order->items->count() !== 1 ? 's' : '' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            ${{ number_format($split->vendor_amount / 100, 2) }}
+                                            ${{ number_format($split->vendor_payout_cents / 100, 2) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $splitStatusColor }}">
@@ -112,9 +112,9 @@
                                         {{ ucfirst($splitStatus) }}
                                     </span>
                                 </div>
-                                <p class="text-xs text-gray-500">{{ $split->order->user->full_name ?? 'N/A' }} | {{ $split->items_count ?? $split->items->count() }} item{{ ($split->items_count ?? $split->items->count()) !== 1 ? 's' : '' }}</p>
+                                <p class="text-xs text-gray-500">{{ $split->order->customer_full_name }} | {{ $split->order->items->count() }} item{{ $split->order->items->count() !== 1 ? 's' : '' }}</p>
                                 <div class="flex items-center justify-between mt-2">
-                                    <span class="text-sm font-semibold text-gray-900">${{ number_format($split->vendor_amount / 100, 2) }}</span>
+                                    <span class="text-sm font-semibold text-gray-900">${{ number_format($split->vendor_payout_cents / 100, 2) }}</span>
                                     <a href="{{ route('vendor.orders.show', $split->order) }}" class="text-xs font-medium text-brand-primary">View Details</a>
                                 </div>
                                 @if ($split->shipped_at)
