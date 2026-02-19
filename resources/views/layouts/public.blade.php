@@ -22,7 +22,7 @@
                         </a>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="{{ route('public.pricing') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Pricing</a>
+                        <a href="{{ route('public.pricing') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Memberships</a>
                         @auth
                             <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Dashboard</a>
                         @else

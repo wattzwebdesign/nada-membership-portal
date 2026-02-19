@@ -81,8 +81,8 @@
                             </ul>
 
                             <div class="mt-8">
-                                <a href="{{ route('register', ['plan' => $plan->id]) }}" class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white transition-colors {{ $plan->plan_type === 'trainer' ? 'bg-brand-secondary hover:bg-brand-secondary-hover' : 'bg-brand-primary hover:bg-brand-primary-hover' }}">
-                                    Get Started
+                                <a href="{{ auth()->check() ? route('membership.plans') : route('register', ['plan' => $plan->id]) }}" class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white transition-colors {{ $plan->plan_type === 'trainer' ? 'bg-brand-secondary hover:bg-brand-secondary-hover' : 'bg-brand-primary hover:bg-brand-primary-hover' }}">
+                                    {{ auth()->check() ? 'View Plans' : 'Get Started' }}
                                 </a>
                             </div>
                         </div>
