@@ -7,6 +7,8 @@ use App\Models\AgreementSignature;
 use App\Models\Plan;
 use App\Models\Training;
 use App\Services\DisputeEvidenceService;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -129,21 +131,99 @@ class AgreementSignatureResource extends Resource
                     ),
             ])
             ->actions([
-                Tables\Actions\Action::make('export_evidence')
-                    ->label('Export Evidence')
-                    ->icon('heroicon-o-document-arrow-down')
-                    ->color('success')
-                    ->visible(fn (AgreementSignature $record): bool => $record->consent_snapshot !== null)
-                    ->action(function (AgreementSignature $record) {
-                        $service = app(DisputeEvidenceService::class);
-                        $pdf = $service->generate($record);
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make()
+                        ->modalHeading(fn (AgreementSignature $record) => 'Consent Signature #' . $record->id)
+                        ->infolist([
+                            Infolists\Components\Section::make('User Information')
+                                ->schema([
+                                    Infolists\Components\TextEntry::make('user.full_name')
+                                        ->label('Name'),
+                                    Infolists\Components\TextEntry::make('user.email')
+                                        ->label('Email'),
+                                    Infolists\Components\TextEntry::make('user_id')
+                                        ->label('User ID'),
+                                ])->columns(3),
 
-                        return response()->streamDownload(
-                            fn () => print($pdf->output()),
-                            'consent-evidence-' . $record->id . '.pdf',
-                            ['Content-Type' => 'application/pdf']
-                        );
-                    }),
+                            Infolists\Components\Section::make('Consent Details')
+                                ->schema([
+                                    Infolists\Components\TextEntry::make('agreement.title')
+                                        ->label('Agreement'),
+                                    Infolists\Components\TextEntry::make('agreement.version')
+                                        ->label('Version')
+                                        ->badge(),
+                                    Infolists\Components\TextEntry::make('signed_at')
+                                        ->label('Signed At')
+                                        ->dateTime(),
+                                    Infolists\Components\TextEntry::make('ip_address')
+                                        ->label('IP Address'),
+                                    Infolists\Components\TextEntry::make('user_agent')
+                                        ->label('User Agent')
+                                        ->columnSpanFull(),
+                                    Infolists\Components\TextEntry::make('consent_context')
+                                        ->label('Context')
+                                        ->badge()
+                                        ->color(fn (?string $state): string => match ($state) {
+                                            'membership_subscription' => 'success',
+                                            'plan_switch' => 'info',
+                                            'training_registration' => 'warning',
+                                            'trainer_application' => 'danger',
+                                            default => 'gray',
+                                        })
+                                        ->formatStateUsing(fn (?string $state): string => match ($state) {
+                                            'membership_subscription' => 'Membership Subscription',
+                                            'plan_switch' => 'Plan Switch',
+                                            'training_registration' => 'Training Registration',
+                                            'trainer_application' => 'Trainer Application',
+                                            default => $state ?? 'N/A',
+                                        }),
+                                    Infolists\Components\TextEntry::make('context_reference_display')
+                                        ->label('Reference')
+                                        ->state(function (AgreementSignature $record): string {
+                                            if (! $record->context_reference_type || ! $record->context_reference_id) {
+                                                return 'N/A';
+                                            }
+                                            $model = $record->context_reference_type::find($record->context_reference_id);
+                                            if (! $model) {
+                                                return 'Deleted (#' . $record->context_reference_id . ')';
+                                            }
+                                            return match ($record->context_reference_type) {
+                                                'App\Models\Plan' => $model->name,
+                                                'App\Models\Training' => $model->title . ' (' . $model->start_date->format('M j, Y') . ')',
+                                                default => '#' . $record->context_reference_id,
+                                            };
+                                        }),
+                                ])->columns(2),
+
+                            Infolists\Components\Section::make('Terms & Conditions Snapshot')
+                                ->schema([
+                                    Infolists\Components\TextEntry::make('consent_snapshot')
+                                        ->label('')
+                                        ->html()
+                                        ->columnSpanFull(),
+                                ])
+                                ->visible(fn (AgreementSignature $record): bool => $record->consent_snapshot !== null)
+                                ->collapsible(),
+                        ]),
+
+                    Tables\Actions\Action::make('export_evidence')
+                        ->label('Export Evidence PDF')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->color('success')
+                        ->visible(fn (AgreementSignature $record): bool => $record->consent_snapshot !== null)
+                        ->action(function (AgreementSignature $record) {
+                            $service = app(DisputeEvidenceService::class);
+                            $pdf = $service->generate($record);
+
+                            return response()->streamDownload(
+                                fn () => print($pdf->output()),
+                                'consent-evidence-' . $record->id . '.pdf',
+                                ['Content-Type' => 'application/pdf']
+                            );
+                        }),
+                ])
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('Actions'),
             ]);
     }
 
