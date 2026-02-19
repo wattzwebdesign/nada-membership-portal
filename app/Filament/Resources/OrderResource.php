@@ -22,6 +22,21 @@ class OrderResource extends Resource
 
     protected static ?string $navigationGroup = 'Store';
 
+    protected static ?string $recordTitleAttribute = 'order_number';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['order_number', 'customer_first_name', 'customer_last_name', 'customer_email'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Customer' => $record->customer_email,
+            'Status' => $record->status?->label(),
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

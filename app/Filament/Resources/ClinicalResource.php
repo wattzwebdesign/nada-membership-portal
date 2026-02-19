@@ -31,6 +31,21 @@ class ClinicalResource extends Resource
 
     protected static ?string $pluralModelLabel = 'clinical submissions';
 
+    protected static ?string $recordTitleAttribute = 'email';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['first_name', 'last_name', 'email'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Email' => $record->email,
+            'Status' => $record->status?->label(),
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

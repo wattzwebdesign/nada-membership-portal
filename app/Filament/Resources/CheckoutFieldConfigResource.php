@@ -20,6 +20,20 @@ class CheckoutFieldConfigResource extends Resource
 
     protected static ?string $navigationLabel = 'Checkout Fields';
 
+    protected static ?string $recordTitleAttribute = 'label';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['field_name', 'label'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Section' => $record->section,
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

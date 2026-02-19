@@ -32,6 +32,19 @@ class TrainingResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'location_name'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Type' => $record->type?->label(),
+            'Status' => $record->status?->label(),
+        ];
+    }
+
     public static function getNavigationBadge(): ?string
     {
         $count = Training::pendingApproval()->count();

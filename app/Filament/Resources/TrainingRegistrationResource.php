@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TrainingRegistrationResource extends Resource
 {
@@ -22,6 +23,31 @@ class TrainingRegistrationResource extends Resource
     protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = 'Registrations';
+
+    protected static ?string $recordTitleAttribute = 'id';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['user.email', 'user.first_name', 'training.title'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['user', 'training']);
+    }
+
+    public static function getGlobalSearchResultTitle(\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return ($record->user?->first_name ?? '') . ' ' . ($record->user?->last_name ?? '') . ' — ' . ($record->training?->title ?? '');
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'User' => $record->user?->email,
+            'Training' => $record->training?->title,
+        ];
+    }
 
     public static function form(Form $form): Form
     {

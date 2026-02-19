@@ -23,6 +23,18 @@ class AgreementResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'slug'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Version' => $record->version,
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

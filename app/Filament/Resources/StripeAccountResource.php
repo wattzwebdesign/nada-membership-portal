@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class StripeAccountResource extends Resource
 {
@@ -21,6 +22,25 @@ class StripeAccountResource extends Resource
     protected static ?int $navigationSort = 5;
 
     protected static ?string $navigationLabel = 'Stripe Connect Accounts';
+
+    protected static ?string $recordTitleAttribute = 'stripe_connect_account_id';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['stripe_connect_account_id', 'user.email'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with('user');
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'User' => $record->user?->email,
+        ];
+    }
 
     public static function form(Form $form): Form
     {

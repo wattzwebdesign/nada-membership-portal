@@ -10,6 +10,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CertificateResource extends Resource
 {
@@ -22,6 +23,23 @@ class CertificateResource extends Resource
     protected static ?int $navigationSort = 3;
 
     protected static ?string $recordTitleAttribute = 'certificate_code';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['certificate_code', 'user.email', 'user.first_name', 'user.last_name'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with('user');
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'User' => $record->user?->email,
+        ];
+    }
 
     public static function form(Form $form): Form
     {

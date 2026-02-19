@@ -25,6 +25,18 @@ class EmailTemplateResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'key', 'subject'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Key' => $record->key,
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

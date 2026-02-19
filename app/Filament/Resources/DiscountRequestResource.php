@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
 
 class DiscountRequestResource extends Resource
@@ -27,6 +28,26 @@ class DiscountRequestResource extends Resource
     protected static ?string $navigationGroup = 'User Management';
 
     protected static ?int $navigationSort = 3;
+
+    protected static ?string $recordTitleAttribute = 'school_name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['user.email', 'user.first_name', 'user.last_name', 'school_name'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with('user');
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'User' => $record->user?->email,
+            'Status' => $record->status,
+        ];
+    }
 
     public static function form(Form $form): Form
     {

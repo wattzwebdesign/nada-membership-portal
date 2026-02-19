@@ -25,6 +25,18 @@ class ResourceResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'slug'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Published' => $record->is_published ? 'Yes' : 'No',
+        ];
+    }
+
     protected static ?string $modelLabel = 'Resource';
 
     protected static ?string $pluralModelLabel = 'Resources';

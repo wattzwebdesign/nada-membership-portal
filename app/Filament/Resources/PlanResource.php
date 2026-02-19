@@ -23,6 +23,18 @@ class PlanResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'slug'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Type' => $record->type?->label(),
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

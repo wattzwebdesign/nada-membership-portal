@@ -21,6 +21,21 @@ class ProductResource extends Resource
 
     protected static ?string $navigationGroup = 'Store';
 
+    protected static ?string $recordTitleAttribute = 'title';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'sku'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'SKU' => $record->sku,
+            'Status' => $record->status?->label(),
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

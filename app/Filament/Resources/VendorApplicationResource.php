@@ -24,6 +24,21 @@ class VendorApplicationResource extends Resource
 
     protected static ?string $navigationGroup = 'Store';
 
+    protected static ?string $recordTitleAttribute = 'business_name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['first_name', 'last_name', 'email', 'business_name'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Email' => $record->email,
+            'Status' => $record->status,
+        ];
+    }
+
     public static function getNavigationBadge(): ?string
     {
         $count = static::getModel()::where('status', 'pending')->count();

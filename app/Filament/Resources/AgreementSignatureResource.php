@@ -30,6 +30,31 @@ class AgreementSignatureResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Consent Signatures';
 
+    protected static ?string $recordTitleAttribute = 'id';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['user.email', 'user.first_name', 'user.last_name'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['user', 'agreement']);
+    }
+
+    public static function getGlobalSearchResultTitle(\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return ($record->user?->first_name ?? '') . ' ' . ($record->user?->last_name ?? '') . ' — ' . ($record->agreement?->title ?? '');
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'User' => $record->user?->email,
+            'Agreement' => $record->agreement?->title,
+        ];
+    }
+
     public static function canCreate(): bool
     {
         return false;

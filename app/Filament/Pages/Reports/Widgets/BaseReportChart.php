@@ -6,7 +6,6 @@ use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\HtmlString;
 use Filament\Support\RawJs;
 
 abstract class BaseReportChart extends ChartWidget
@@ -160,68 +159,47 @@ abstract class BaseReportChart extends ChartWidget
     }
 
     /**
-     * Format the description with a big bold number and % change.
+     * Format the description with a number and % change (plain text).
      */
-    protected function formatDescription(float $current, float $previous, string $prefix = '', string $suffix = ''): string|HtmlString
+    protected function formatDescription(float $current, float $previous, string $prefix = '', string $suffix = ''): string
     {
         $formatted = $prefix . number_format($current, ($current == (int) $current && $prefix !== '$') ? 0 : 2) . $suffix;
 
         if ($previous == 0 && $current == 0) {
-            return new HtmlString(
-                "<span class='text-xl font-bold text-gray-900 dark:text-white'>{$formatted}</span> "
-                . "<span class='text-sm text-gray-500'>No change</span>"
-            );
+            return "{$formatted} · No change";
         }
 
         if ($previous == 0) {
-            return new HtmlString(
-                "<span class='text-xl font-bold text-gray-900 dark:text-white'>{$formatted}</span> "
-                . "<span class='text-sm text-emerald-600'>New</span>"
-            );
+            return "{$formatted} · New";
         }
 
         $change = (($current - $previous) / $previous) * 100;
         $arrow = $change >= 0 ? '↑' : '↓';
-        $color = $change >= 0 ? 'text-emerald-600' : 'text-rose-600';
         $pct = number_format(abs($change), 1) . '%';
 
-        return new HtmlString(
-            "<span class='text-xl font-bold text-gray-900 dark:text-white'>{$formatted}</span> "
-            . "<span class='text-sm {$color}'>{$arrow} {$pct} vs prior period</span>"
-        );
+        return "{$formatted} · {$arrow} {$pct} vs prior period";
     }
 
     /**
-     * Format description where an increase is bad (churn).
+     * Format description where an increase is bad (churn) — plain text.
      */
-    protected function formatDescriptionInverted(float $current, float $previous, string $prefix = '', string $suffix = ''): string|HtmlString
+    protected function formatDescriptionInverted(float $current, float $previous, string $prefix = '', string $suffix = ''): string
     {
         $formatted = $prefix . number_format($current, ($current == (int) $current && $prefix !== '$') ? 0 : 2) . $suffix;
 
         if ($previous == 0 && $current == 0) {
-            return new HtmlString(
-                "<span class='text-xl font-bold text-gray-900 dark:text-white'>{$formatted}</span> "
-                . "<span class='text-sm text-gray-500'>No change</span>"
-            );
+            return "{$formatted} · No change";
         }
 
         if ($previous == 0) {
-            return new HtmlString(
-                "<span class='text-xl font-bold text-gray-900 dark:text-white'>{$formatted}</span> "
-                . "<span class='text-sm text-rose-600'>New</span>"
-            );
+            return "{$formatted} · New";
         }
 
         $change = (($current - $previous) / $previous) * 100;
         $arrow = $change >= 0 ? '↑' : '↓';
-        // Inverted: increase = bad (red), decrease = good (green)
-        $color = $change >= 0 ? 'text-rose-600' : 'text-emerald-600';
         $pct = number_format(abs($change), 1) . '%';
 
-        return new HtmlString(
-            "<span class='text-xl font-bold text-gray-900 dark:text-white'>{$formatted}</span> "
-            . "<span class='text-sm {$color}'>{$arrow} {$pct} vs prior period</span>"
-        );
+        return "{$formatted} · {$arrow} {$pct} vs prior period";
     }
 
     /**

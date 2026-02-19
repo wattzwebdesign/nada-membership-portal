@@ -24,6 +24,19 @@ class GroupTrainingRequestResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'training_name';
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['training_name', 'company_first_name', 'company_last_name', 'company_email'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Contact' => $record->company_email,
+            'Status' => $record->status,
+        ];
+    }
+
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist

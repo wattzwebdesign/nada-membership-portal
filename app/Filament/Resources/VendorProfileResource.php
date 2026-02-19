@@ -19,6 +19,20 @@ class VendorProfileResource extends Resource
 
     protected static ?string $navigationGroup = 'Store';
 
+    protected static ?string $recordTitleAttribute = 'business_name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['business_name', 'email'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Email' => $record->email,
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class SubscriptionResource extends Resource
 {
@@ -20,6 +21,26 @@ class SubscriptionResource extends Resource
     protected static ?string $navigationGroup = 'Billing';
 
     protected static ?int $navigationSort = 2;
+
+    protected static ?string $recordTitleAttribute = 'stripe_subscription_id';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['stripe_subscription_id', 'user.email', 'user.first_name', 'user.last_name'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with('user');
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'User' => $record->user?->email,
+            'Status' => $record->status?->label(),
+        ];
+    }
 
     public static function form(Form $form): Form
     {
