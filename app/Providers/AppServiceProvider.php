@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\SiteSetting;
 use App\Models\Training;
 use App\Observers\TrainingObserver;
 use Illuminate\Support\ServiceProvider;
@@ -22,5 +23,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Training::observe(TrainingObserver::class);
+
+        try {
+            $websiteId = SiteSetting::umamiWebsiteId();
+            if ($websiteId) {
+                config(['filament-umami-widgets.website_id' => $websiteId]);
+            }
+        } catch (\Throwable) {
+            // Table may not exist yet during migrations
+        }
     }
 }

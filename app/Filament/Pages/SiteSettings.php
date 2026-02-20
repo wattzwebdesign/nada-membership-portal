@@ -35,6 +35,9 @@ class SiteSettings extends Page implements HasForms
     public ?string $image_max_width = '1920';
     public ?string $image_max_height = '1920';
     public ?string $image_thumb_size = '400';
+    public bool $umami_enabled = false;
+    public ?string $umami_script_url = '';
+    public ?string $umami_website_id = '';
 
     public array $stripeInfo = [];
 
@@ -48,6 +51,9 @@ class SiteSettings extends Page implements HasForms
         $this->image_max_width = SiteSetting::get('image_max_width', '1920');
         $this->image_max_height = SiteSetting::get('image_max_height', '1920');
         $this->image_thumb_size = SiteSetting::get('image_thumb_size', '400');
+        $this->umami_enabled = SiteSetting::umamiEnabled();
+        $this->umami_script_url = SiteSetting::get('umami_script_url', '');
+        $this->umami_website_id = SiteSetting::get('umami_website_id', '');
         $this->stripeInfo = $this->fetchStripeInfo();
     }
 
@@ -106,6 +112,23 @@ class SiteSettings extends Page implements HasForms
                             ->maxValue(800)
                             ->helperText('Width & height of generated thumbnail conversions.'),
                     ]),
+
+                Section::make('Umami Analytics')
+                    ->description('Configure Umami website analytics tracking. API credentials for the admin analytics dashboard are configured in .env.')
+                    ->schema([
+                        Toggle::make('umami_enabled')
+                            ->label('Enable Umami Tracking')
+                            ->helperText('When enabled, the Umami tracking script is added to all pages.'),
+                        TextInput::make('umami_script_url')
+                            ->label('Tracking Script URL')
+                            ->url()
+                            ->placeholder('https://analytics.yourdomain.com/script.js')
+                            ->helperText('The URL to your Umami tracking script.'),
+                        TextInput::make('umami_website_id')
+                            ->label('Website ID')
+                            ->placeholder('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
+                            ->helperText('The Umami Website ID for this site. Also used by the admin analytics dashboard widgets.'),
+                    ]),
             ]);
     }
 
@@ -129,6 +152,9 @@ class SiteSettings extends Page implements HasForms
         SiteSetting::set('image_max_width', $this->image_max_width);
         SiteSetting::set('image_max_height', $this->image_max_height);
         SiteSetting::set('image_thumb_size', $this->image_thumb_size);
+        SiteSetting::set('umami_enabled', $this->umami_enabled ? '1' : '0');
+        SiteSetting::set('umami_script_url', $this->umami_script_url);
+        SiteSetting::set('umami_website_id', $this->umami_website_id);
 
         Notification::make()
             ->title('Settings saved successfully')

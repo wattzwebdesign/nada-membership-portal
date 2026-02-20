@@ -11,6 +11,8 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        @include('partials.umami-tracking')
     </head>
     <body class="font-sans antialiased bg-gray-50">
         <nav class="bg-white shadow-sm border-b border-gray-200">

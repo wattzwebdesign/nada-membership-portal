@@ -37,6 +37,8 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
 
         @stack('styles')
+
+        @include('partials.umami-tracking')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">

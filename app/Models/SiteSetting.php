@@ -47,4 +47,19 @@ class SiteSetting extends Model
     {
         return (int) static::get('image_thumb_size', '400');
     }
+
+    public static function umamiEnabled(): bool
+    {
+        return (bool) static::get('umami_enabled', '0');
+    }
+
+    public static function umamiScriptUrl(): string
+    {
+        return static::get('umami_script_url', '') ?? '';
+    }
+
+    public static function umamiWebsiteId(): string
+    {
+        return static::get('umami_website_id', '') ?? '';
+    }
 }

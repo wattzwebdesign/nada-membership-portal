@@ -9,6 +9,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
+use App\Models\SiteSetting;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\HtmlString;
 use Filament\View\PanelsRenderHook;
@@ -86,6 +87,12 @@ class AdminPanelProvider extends PanelProvider
                         }
                     </style>
                 '),
+            )
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => SiteSetting::umamiEnabled() && SiteSetting::umamiScriptUrl()
+                    ? new HtmlString('<script defer src="' . e(SiteSetting::umamiScriptUrl()) . '" data-website-id="' . e(SiteSetting::umamiWebsiteId()) . '"></script>')
+                    : '',
             );
     }
 }

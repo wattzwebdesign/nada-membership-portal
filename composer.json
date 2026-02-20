@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",
         "pkpass/pkpass": "^2.5",
+        "schmeits/filament-umami-widgets": "^1.4",
         "spatie/laravel-activitylog": "^4.11",
         "spatie/laravel-image-optimizer": "^1.8",
         "spatie/laravel-medialibrary": "^11.19",

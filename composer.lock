@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "54e3f9838cd7e43ddd05a18d819fd229",
+    "content-hash": "97d1ee0a158f868de52f7657e1560519",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4116,6 +4116,72 @@
             "time": "2025-12-10T09:58:31+00:00"
         },
         {
+            "name": "malzariey/filament-daterangepicker-filter",
+            "version": "3.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/malzariey/filament-daterangepicker-filter.git",
+                "reference": "d25acec4fb0c0b0dafd84aebf59e4a33f0f28140"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/malzariey/filament-daterangepicker-filter/zipball/d25acec4fb0c0b0dafd84aebf59e4a33f0f28140",
+                "reference": "d25acec4fb0c0b0dafd84aebf59e4a33f0f28140",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^11.0|^12.0",
+                "spatie/laravel-package-tools": "^1.16.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentDaterangepickerFilter": "Malzariey\\FilamentDaterangepickerFilter\\Facades\\FilamentDaterangepickerFilter"
+                    },
+                    "providers": [
+                        "Malzariey\\FilamentDaterangepickerFilter\\FilamentDaterangepickerFilterServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Malzariey\\FilamentDaterangepickerFilter\\": "src",
+                    "Malzariey\\FilamentDaterangepickerFilter\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Majid Al-Zariey",
+                    "email": "malzariey@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "This package uses daterangepciker library to filter date by a range or predefined date ranges (Today , Yesterday ...etc)",
+            "homepage": "https://github.com/malzariey/filament-daterangepicker-filter",
+            "keywords": [
+                "Malzariey",
+                "filament-daterangepicker-filter",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/malzariey/filament-daterangepicker-filter/issues",
+                "source": "https://github.com/malzariey/filament-daterangepicker-filter/tree/3.4.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Malzariey",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-06-12T08:50:07+00:00"
+        },
+        {
             "name": "markbaker/complex",
             "version": "3.0.2",
             "source": {
@@ -6026,6 +6092,80 @@
                 "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v9.1.0"
             },
             "time": "2025-09-14T07:37:21+00:00"
+        },
+        {
+            "name": "schmeits/filament-umami-widgets",
+            "version": "1.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schmeits/filament-umami-widgets.git",
+                "reference": "9eea2c9490f5e7bd6319e18170367bb811a654ac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/schmeits/filament-umami-widgets/zipball/9eea2c9490f5e7bd6319e18170367bb811a654ac",
+                "reference": "9eea2c9490f5e7bd6319e18170367bb811a654ac",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "malzariey/filament-daterangepicker-filter": "^3.2",
+                "php": "^8.1|^8.2|^8.3|^8.4",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0 | ^9.0 | ^10.0",
+                "pestphp/pest": "^2.0|^3.0",
+                "pestphp/pest-plugin-arch": "^2.0|^3.0",
+                "pestphp/pest-plugin-laravel": "^2.0|^3.0",
+                "phpunit/phpunit": "^10.0|^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentUmami": "Schmeits\\FilamentUmami\\Facades\\FilamentUmami"
+                    },
+                    "providers": [
+                        "Schmeits\\FilamentUmami\\FilamentUmamiServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Schmeits\\FilamentUmami\\": "src/",
+                    "Schmeits\\FilamentUmami\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tally Schmeits",
+                    "email": "tally@schmeits.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Umami Analytics Widgets for Filament",
+            "homepage": "https://github.com/schmeits/filament-umami-widgets",
+            "keywords": [
+                "filament-umami-widgets",
+                "laravel",
+                "schmeits"
+            ],
+            "support": {
+                "issues": "https://github.com/schmeits/filament-umami-widgets/issues",
+                "source": "https://github.com/schmeits/filament-umami-widgets"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/schmeits",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-26T15:18:58+00:00"
         },
         {
             "name": "spatie/color",
