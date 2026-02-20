@@ -98,6 +98,43 @@ class AdminPanelProvider extends PanelProvider
                 fn () => SiteSetting::umamiEnabled() && SiteSetting::umamiScriptUrl()
                     ? new HtmlString('<script defer src="' . e(SiteSetting::umamiScriptUrl()) . '" data-website-id="' . e(SiteSetting::umamiWebsiteId()) . '"></script>')
                     : '',
+            )
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => new HtmlString('
+                    <style>
+                        /* Chat widget brand colors (not in Filament\'s Tailwind build) */
+                        .bg-brand-primary { background-color: #1C3519; }
+                        .bg-brand-secondary { background-color: #AD7E07; }
+                        .focus\:ring-brand-primary:focus { --tw-ring-color: #1C3519; }
+                        /* Guide overlay for "Show Me Where" feature */
+                        @keyframes nada-guide-pulse {
+                            0%, 100% { box-shadow: 0 0 0 0 rgba(173, 126, 7, 0.5); }
+                            50% { box-shadow: 0 0 0 8px rgba(173, 126, 7, 0); }
+                        }
+                        .guide-overlay {
+                            position: fixed;
+                            inset: 0;
+                            background: rgba(0, 0, 0, 0.4);
+                            z-index: 40;
+                            animation: guide-fade-in 0.3s ease;
+                        }
+                        @keyframes guide-fade-in {
+                            from { opacity: 0; }
+                            to { opacity: 1; }
+                        }
+                        [data-guide-active] {
+                            animation: nada-guide-pulse 1.5s ease-in-out 3;
+                            outline: 2px solid #AD7E07;
+                            outline-offset: 2px;
+                            border-radius: 4px;
+                        }
+                    </style>
+                '),
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn () => view('partials.support-chat')->render(),
             );
     }
 }

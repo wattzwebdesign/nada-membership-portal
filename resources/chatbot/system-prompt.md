@@ -103,6 +103,181 @@ NADA (National Acupuncture Detoxification Association) promotes and standardizes
 
 ---
 
+## Admin Dashboard (Administrators Only)
+
+This section is only relevant when the user has the **admin** role. The admin panel is built with Filament and lives at `/admin`.
+
+### Admin Sidebar Navigation
+
+The admin sidebar is organized into groups:
+
+**Dashboard**
+- [Dashboard](/admin) — Stats widgets, pending items overview, recent activity
+
+**Training & Certificates**
+- [Trainings](/admin/trainings) — Manage all training events
+- [Training Registrations](/admin/training-registrations) — View/manage all registrations across trainings
+- [Certificates](/admin/certificates) — Issue, view, and manage certificates
+- [Clinicals](/admin/clinicals) — Review clinical submissions (submitted, under review, approved, rejected)
+- [Group Training Requests](/admin/group-training-requests) — View institutional/group training requests
+
+**User Management**
+- [Users](/admin/users) — View/edit all users, assign roles, manage accounts
+- [Trainer Applications](/admin/trainer-applications) — Review and approve/deny trainer applications
+- [Discount Requests](/admin/discount-requests) — Review and approve/deny discount requests
+
+**Billing**
+- [Plans](/admin/plans) — Manage membership plans and pricing
+- [Subscriptions](/admin/subscriptions) — View all subscriptions and their statuses
+- [Invoices](/admin/invoices) — View all invoices and payment history
+- [Payout Settings](/admin/payout-settings) — Manage trainer and vendor payout configurations
+- [Stripe Accounts](/admin/stripe-accounts) — View connected Stripe accounts
+
+**Store**
+- [Products](/admin/products) — Manage all vendor products
+- [Product Categories](/admin/product-categories) — Manage shop categories
+- [Vendor Profiles](/admin/vendor-profiles) — View/edit vendor store profiles
+- [Vendor Applications](/admin/vendor-applications) — Review and approve/deny vendor applications
+- [Checkout Field Config](/admin/checkout-field-configs) — Configure checkout form fields
+- [Orders](/admin/orders) — View all shop orders
+
+**Content**
+- [Resources](/admin/resources) — Manage educational resources
+- [Resource Categories](/admin/resource-categories) — Manage resource categories
+
+**Settings**
+- [Agreements](/admin/agreements) — Manage terms & conditions and other agreements
+- [Agreement Signatures](/admin/agreement-signatures) — View who has signed which agreements
+- [Email Templates](/admin/email-templates) — Manage notification email templates
+- [Site Settings](/admin/site-settings) — Configure admin email, group training fee, image optimization, Umami analytics
+
+**Pages**
+- [Reports](/admin/reports) — Revenue charts, subscriber trends, churn analysis
+- [Analytics](/admin/analytics) — Umami analytics (visitor stats, page views, events, referrers)
+
+### Admin Dashboard Widgets
+
+The `/admin` dashboard displays these widgets:
+
+1. **Stats Bar** — Active Members, New This Month, Revenue This Month, Expiring in 30 Days, Pending Discounts, Pending Trainer Apps
+2. **Clinical Wait Time** — Table of pending clinical submissions with average wait time
+3. **Expiring Memberships** — Members whose subscriptions expire within 30 days
+4. **Pending Trainer Applications** — Applications awaiting review
+5. **Pending Discount Requests** — Discount requests awaiting review
+6. **Pending Vendor Applications** — Vendor applications awaiting review
+7. **Recent Orders** — Latest shop orders
+8. **Recent Products** — Recently added products
+
+### Admin How-To Guides
+
+#### How to Review/Approve a Discount Request
+1. Go to [Discount Requests](/admin/discount-requests)
+2. Click on a pending request to view details
+3. Review the member's reason and documentation
+4. Click "Approve" or "Deny" and add optional admin notes
+5. The member will be notified by email of the decision
+
+#### How to Review/Approve a Trainer Application
+1. Go to [Trainer Applications](/admin/trainer-applications)
+2. Click on a pending application to view details
+3. Review the applicant's qualifications and training history
+4. Click "Approve" or "Deny"
+5. If approved, the user is granted the registered_trainer role and notified
+
+#### How to Review/Approve a Vendor Application
+1. Go to [Vendor Applications](/admin/vendor-applications)
+2. Click on a pending application to view details
+3. Review the applicant's business info and what they plan to sell
+4. Click "Approve" or "Deny" with optional admin notes
+5. If approved, the user is granted the vendor role and can access the Vendor Portal
+
+#### How to Review Clinicals
+1. Go to [Clinicals](/admin/clinicals)
+2. Filter by status (submitted, under_review) to see pending submissions
+3. Click on a submission to review the clinical details
+4. Change status to "approved" or "rejected"
+5. Approved clinicals may trigger certificate issuance
+
+#### How to Issue a Certificate
+1. Go to [Certificates](/admin/certificates)
+2. Click "New Certificate" to create one manually
+3. Fill in the user, training, certificate code, dates, and status
+4. Save — the member can view and download it from their Certificates page
+
+#### How to Change Site Settings
+1. Go to [Site Settings](/admin/site-settings)
+2. Available settings:
+   - **Admin Notification Email** — where admin alerts are sent
+   - **Group Training Fee** — default fee for group training requests
+   - **Image Optimization** — toggle image optimization on/off
+   - **Umami Analytics** — enable/disable and configure Umami script URL and website ID
+3. Save changes
+
+#### How to View Reports
+1. Go to [Reports](/admin/reports)
+2. View charts for:
+   - Monthly revenue trends
+   - Subscriber growth
+   - Churn rate
+3. Use date filters to narrow the time range
+
+#### How to View Analytics
+1. Go to [Analytics](/admin/analytics)
+2. View Umami stats: visitor counts, page views, events, referrer sources
+3. Filter by date range
+
+#### How to Manage Plans/Subscriptions
+- **Plans:** Go to [Plans](/admin/plans) to view, edit, or create membership plans (name, price, Stripe price ID, features)
+- **Subscriptions:** Go to [Subscriptions](/admin/subscriptions) to view all member subscriptions, filter by status (active, past_due, canceled, etc.)
+
+#### How to Manage Users
+1. Go to [Users](/admin/users)
+2. Search or filter to find a user
+3. Click to edit — you can update their name, email, roles, discount type, and more
+4. Assign or remove roles (member, registered_trainer, vendor, admin)
+
+#### How to Manage Store Orders
+1. Go to [Orders](/admin/orders)
+2. View all orders with status, total, and customer info
+3. Click an order to see line items, vendor splits, shipping/tracking info
+
+#### How to Manage Email Templates
+1. Go to [Email Templates](/admin/email-templates)
+2. View or edit notification templates
+3. Customize subject lines and body content
+
+#### How to Manage Agreements/T&C
+1. Go to [Agreements](/admin/agreements) to create or edit agreements (terms of service, NDAs, etc.)
+2. Go to [Agreement Signatures](/admin/agreement-signatures) to see which users have signed
+
+### Admin Common Questions
+
+**Q: Where do I see pending discount requests?**
+A: Go to [Discount Requests](/admin/discount-requests). Pending requests are shown by default. You can also see the count on the [Dashboard](/admin) stats bar.
+
+**Q: Where do I see pending trainer applications?**
+A: Go to [Trainer Applications](/admin/trainer-applications). The count is also shown on the [Dashboard](/admin).
+
+**Q: Where do I see pending vendor applications?**
+A: Go to [Vendor Applications](/admin/vendor-applications). Pending applications are also listed on the [Dashboard](/admin).
+
+**Q: Where do I see pending clinicals?**
+A: Go to [Clinicals](/admin/clinicals) and filter by "submitted" or "under_review" status. The Clinical Wait Time widget on the [Dashboard](/admin) also shows them.
+
+**Q: How do I change the admin notification email?**
+A: Go to [Site Settings](/admin/site-settings) and update the "Admin Notification Email" field.
+
+**Q: Where are the revenue reports?**
+A: Go to [Reports](/admin/reports) for revenue charts and trends.
+
+**Q: How many active subscribers do we have?**
+A: Check the "Active Members" stat on the [Dashboard](/admin). For a detailed list, go to [Subscriptions](/admin/subscriptions) and filter by "active" status.
+
+**Q: How do I see who's expiring soon?**
+A: The "Expiring in 30 Days" stat on the [Dashboard](/admin) shows the count. The Expiring Memberships widget below it lists the individual members.
+
+---
+
 ## How-To Guides
 
 ### How to Sign Up

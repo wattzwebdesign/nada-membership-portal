@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
+use App\Enums\SubscriptionStatus;
+use App\Models\Clinical;
+use App\Models\DiscountRequest;
+use App\Models\Invoice;
+use App\Models\Order;
 use App\Models\Product;
+use App\Models\Subscription;
+use App\Models\TrainerApplication;
 use App\Models\User;
+use App\Models\VendorApplication;
+use App\Models\VendorOrderSplit;
 use App\Services\ChatbotService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
@@ -35,8 +46,9 @@ class ChatController extends Controller
 
         $catalogContext = $this->buildCatalogContext();
         $userContext = $this->buildUserContext();
+        $adminContext = $this->buildAdminContext();
 
-        $context = collect([$catalogContext, $userContext])->filter()->implode("\n\n");
+        $context = collect([$catalogContext, $userContext, $adminContext])->filter()->implode("\n\n");
 
         $currentPath = $request->input('current_path');
         if ($currentPath) {
@@ -257,5 +269,90 @@ class ChatController extends Controller
         }
 
         return implode("\n", $lines);
+    }
+
+    private function buildAdminContext(): ?string
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        if (! $user || ! $user->hasRole('admin')) {
+            return null;
+        }
+
+        return Cache::remember('chatbot:admin-context', 60, function () {
+            $lines = [];
+            $lines[] = '## Admin Dashboard — Live Data';
+            $lines[] = '';
+
+            // Quick Stats
+            $activeMembers = Subscription::where('status', SubscriptionStatus::Active)->count();
+            $newThisMonth = User::where('created_at', '>=', Carbon::now()->startOfMonth())->count();
+            $revenueThisMonth = Invoice::where('paid_at', '>=', Carbon::now()->startOfMonth())->sum('amount_paid');
+            $formattedRevenue = '$' . number_format($revenueThisMonth, 2);
+            $expiringCount = Subscription::where('status', SubscriptionStatus::Active)
+                ->whereBetween('current_period_end', [Carbon::now(), Carbon::now()->addDays(30)])
+                ->count();
+
+            $lines[] = '### Quick Stats';
+            $lines[] = "- Active Members: {$activeMembers}";
+            $lines[] = "- New Users This Month: {$newThisMonth}";
+            $lines[] = "- Revenue This Month: {$formattedRevenue}";
+            $lines[] = "- Memberships Expiring in 30 Days: {$expiringCount}";
+            $lines[] = '';
+
+            // Pending Items
+            $pendingDiscounts = DiscountRequest::pending()->count();
+            $pendingTrainerApps = TrainerApplication::pending()->count();
+            $pendingVendorApps = VendorApplication::pending()->count();
+            $pendingClinicals = Clinical::whereIn('status', ['submitted', 'under_review'])->count();
+
+            $clinicalDates = Clinical::whereIn('status', ['submitted', 'under_review'])->pluck('created_at');
+            $avgWaitDays = $clinicalDates->isNotEmpty()
+                ? (int) round($clinicalDates->avg(fn ($date) => now()->diffInDays($date)))
+                : 0;
+
+            $lines[] = '### Pending Items';
+            $lines[] = "- Pending Discount Requests: {$pendingDiscounts}";
+            $lines[] = "- Pending Trainer Applications: {$pendingTrainerApps}";
+            $lines[] = "- Pending Vendor Applications: {$pendingVendorApps}";
+            $lines[] = "- Pending Clinicals (submitted/under review): {$pendingClinicals}";
+            $lines[] = "- Average Clinical Wait Time: {$avgWaitDays} " . str('day')->plural($avgWaitDays);
+            $lines[] = '';
+
+            // Store Stats
+            $activeProducts = Product::active()->count();
+            $recentOrders = Order::where('status', '!=', OrderStatus::Pending)
+                ->where('created_at', '>=', Carbon::now()->subDays(7))
+                ->count();
+            $awaitingShipment = VendorOrderSplit::whereNull('shipped_at')
+                ->whereNull('canceled_at')
+                ->whereHas('order', fn ($q) => $q->where('status', '!=', OrderStatus::Pending)->where('status', '!=', OrderStatus::Canceled))
+                ->count();
+
+            $lines[] = '### Store Stats';
+            $lines[] = "- Total Active Products: {$activeProducts}";
+            $lines[] = "- Recent Orders (last 7 days): {$recentOrders}";
+            $lines[] = "- Orders Awaiting Shipment: {$awaitingShipment}";
+            $lines[] = '';
+
+            // Subscriber Breakdown
+            $activeSubs = Subscription::where('status', SubscriptionStatus::Active)->count();
+            $pastDue = Subscription::where('status', SubscriptionStatus::PastDue)->count();
+            $canceled = Subscription::where('status', SubscriptionStatus::Canceled)->count();
+            $totalUsers = User::count();
+            $totalTrainers = User::role('registered_trainer')->count();
+            $totalVendors = User::role('vendor')->count();
+
+            $lines[] = '### Subscriber Breakdown';
+            $lines[] = "- Active Subscriptions: {$activeSubs}";
+            $lines[] = "- Past Due: {$pastDue}";
+            $lines[] = "- Canceled: {$canceled}";
+            $lines[] = "- Total Registered Users: {$totalUsers}";
+            $lines[] = "- Total Trainers: {$totalTrainers}";
+            $lines[] = "- Total Vendors: {$totalVendors}";
+
+            return implode("\n", $lines);
+        });
     }
 }
