@@ -70,6 +70,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\EnsureNdaSigned::class,
             ])
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
