@@ -32,7 +32,7 @@ class RecentProductsWidget extends TableWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->url(fn (Product $record): string => route('products.show', $record))
+                    ->url(fn (Product $record): string => route('public.shop.show', $record))
                     ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('vendorProfile.business_name')
                     ->label('Vendor'),
