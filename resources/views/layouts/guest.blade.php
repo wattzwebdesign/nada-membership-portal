@@ -34,5 +34,6 @@
             </div>
         </div>
         @include('partials.support-chat')
+        @include('partials.umami-events')
     </body>
 </html>

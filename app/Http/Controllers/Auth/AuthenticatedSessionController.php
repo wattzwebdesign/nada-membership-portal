@@ -28,6 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        session()->flash('umami_event', 'User Login');
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

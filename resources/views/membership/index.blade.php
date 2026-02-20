@@ -162,4 +162,15 @@
 
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+    if (typeof umami !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('checkout') === 'success') {
+            umami.track('Membership Purchase');
+        }
+    }
+    </script>
+    @endpush
 </x-app-layout>

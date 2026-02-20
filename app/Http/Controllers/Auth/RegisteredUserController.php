@@ -59,6 +59,8 @@ class RegisteredUserController extends Controller
             Cache::put("pending_plan:{$user->id}", (int) $request->input('plan_id'), now()->addHours(24));
         }
 
+        session()->flash('umami_event', 'User Registration');
+
         return redirect(route('dashboard', absolute: false));
     }
 }

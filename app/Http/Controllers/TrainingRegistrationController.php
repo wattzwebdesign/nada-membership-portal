@@ -110,6 +110,8 @@ class TrainingRegistrationController extends Controller
         $this->safeNotify($user, new TrainingRegisteredNotification($registration));
         $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($registration));
 
+        session()->flash('umami_event', 'Training Registration');
+
         return redirect()->route('trainings.my-registrations')
             ->with('success', 'You have been registered for "' . $training->title . '".');
     }
@@ -194,6 +196,8 @@ class TrainingRegistrationController extends Controller
             if ($tcSignatureId && $session->payment_intent) {
                 TermsConsentService::attachTransaction((int) $tcSignatureId, $session->payment_intent);
             }
+
+            session()->flash('umami_event', 'Training Registration');
 
             return redirect()->route('trainings.my-registrations')
                 ->with('success', 'Payment confirmed! You are registered for "' . $training->title . '".');

@@ -105,7 +105,7 @@
                                                     </a>
                                                 @endif
                                                 @if ($registration->certificate_id)
-                                                    <a href="{{ route('certificates.download', $registration->certificate_id) }}" class="text-sm font-medium text-brand-primary">
+                                                    <a href="{{ route('certificates.download', $registration->certificate_id) }}" data-umami-event="Certificate Download" class="text-sm font-medium text-brand-primary">
                                                         Download Certificate
                                                     </a>
                                                 @endif
@@ -158,7 +158,7 @@
                                             </a>
                                         @endif
                                         @if ($registration->certificate_id)
-                                            <a href="{{ route('certificates.download', $registration->certificate_id) }}" class="text-xs font-medium text-brand-primary">
+                                            <a href="{{ route('certificates.download', $registration->certificate_id) }}" data-umami-event="Certificate Download" class="text-xs font-medium text-brand-primary">
                                                 Download Certificate
                                             </a>
                                         @endif

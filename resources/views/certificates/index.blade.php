@@ -60,7 +60,7 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right">
-                                                <a href="{{ route('certificates.download', $certificate) }}" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md hover:bg-gray-50 transition border-brand-primary text-brand-primary">
+                                                <a href="{{ route('certificates.download', $certificate) }}" data-umami-event="Certificate Download" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md hover:bg-gray-50 transition border-brand-primary text-brand-primary">
                                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                                     Download PDF
                                                 </a>
@@ -88,7 +88,7 @@
                                     <p class="text-xs text-gray-500">Issued: {{ $certificate->date_issued->format('M j, Y') }}</p>
                                     <p class="text-xs text-gray-500">Expires: {{ $certificate->expiration_date ? $certificate->expiration_date->format('M j, Y') : 'N/A' }}</p>
                                     <div class="mt-3">
-                                        <a href="{{ route('certificates.download', $certificate) }}" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md border-brand-primary text-brand-primary">
+                                        <a href="{{ route('certificates.download', $certificate) }}" data-umami-event="Certificate Download" class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-md border-brand-primary text-brand-primary">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                             Download PDF
                                         </a>
