@@ -133,7 +133,7 @@ class AdminPanelProvider extends PanelProvider
                 '),
             )
             ->renderHook(
-                PanelsRenderHook::BODY_END,
+                PanelsRenderHook::SCRIPTS_BEFORE,
                 fn () => new HtmlString(view('partials.support-chat')->render()),
             );
     }
