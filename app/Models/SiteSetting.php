@@ -62,4 +62,27 @@ class SiteSetting extends Model
     {
         return static::get('umami_website_id', '') ?? '';
     }
+
+    public static function getJson(string $key, array $default = []): array
+    {
+        $value = static::get($key);
+
+        return $value ? json_decode($value, true) : $default;
+    }
+
+    public static function setJson(string $key, array $value): void
+    {
+        static::set($key, json_encode($value));
+    }
+
+    public static function stateLawLink(?string $state): ?string
+    {
+        if (! $state) {
+            return null;
+        }
+
+        $links = static::getJson('state_law_links');
+
+        return $links[strtoupper($state)] ?? null;
+    }
 }

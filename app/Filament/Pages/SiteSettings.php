@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\SiteSetting;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -38,6 +39,7 @@ class SiteSettings extends Page implements HasForms
     public bool $umami_enabled = false;
     public ?string $umami_script_url = '';
     public ?string $umami_website_id = '';
+    public array $state_law_links = [];
 
     public array $stripeInfo = [];
 
@@ -54,6 +56,10 @@ class SiteSettings extends Page implements HasForms
         $this->umami_enabled = SiteSetting::umamiEnabled();
         $this->umami_script_url = SiteSetting::get('umami_script_url', '');
         $this->umami_website_id = SiteSetting::get('umami_website_id', '');
+        $this->state_law_links = collect(SiteSetting::getJson('state_law_links'))
+            ->map(fn ($url, $state) => ['state' => $state, 'url' => $url])
+            ->values()
+            ->toArray();
         $this->stripeInfo = $this->fetchStripeInfo();
     }
 
@@ -129,6 +135,34 @@ class SiteSettings extends Page implements HasForms
                             ->placeholder('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
                             ->helperText('The Umami Website ID for this site. Also used by the admin analytics dashboard widgets.'),
                     ]),
+
+                Section::make('State Law Links')
+                    ->description('Set a link per US state to that state\'s acupuncture law page. Members will see a "Your State Laws" link in the sidebar based on their address.')
+                    ->schema([
+                        Repeater::make('state_law_links')
+                            ->label('')
+                            ->schema([
+                                Select::make('state')
+                                    ->label('State')
+                                    ->options(array_combine(
+                                        ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'],
+                                        ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'],
+                                    ))
+                                    ->required()
+                                    ->searchable(),
+                                TextInput::make('url')
+                                    ->label('Law Page URL')
+                                    ->url()
+                                    ->required()
+                                    ->placeholder('https://...'),
+                            ])
+                            ->columns(2)
+                            ->addActionLabel('Add State')
+                            ->defaultItems(0)
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['state'] ?? null),
+                    ])
+                    ->collapsible(),
             ]);
     }
 
@@ -155,6 +189,12 @@ class SiteSettings extends Page implements HasForms
         SiteSetting::set('umami_enabled', $this->umami_enabled ? '1' : '0');
         SiteSetting::set('umami_script_url', $this->umami_script_url);
         SiteSetting::set('umami_website_id', $this->umami_website_id);
+
+        $linksMap = collect($this->state_law_links)
+            ->filter(fn ($item) => ! empty($item['state']) && ! empty($item['url']))
+            ->mapWithKeys(fn ($item) => [$item['state'] => $item['url']])
+            ->toArray();
+        SiteSetting::setJson('state_law_links', $linksMap);
 
         Notification::make()
             ->title('Settings saved successfully')

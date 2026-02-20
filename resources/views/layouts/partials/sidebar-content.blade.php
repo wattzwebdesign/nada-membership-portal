@@ -293,6 +293,19 @@
                 Account Settings
             </a>
 
+            @php
+                $stateLawUrl = \App\Models\SiteSetting::stateLawLink(Auth::user()->state);
+            @endphp
+            @if($stateLawUrl)
+            <a href="{{ $stateLawUrl }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium hover:bg-black/5 transition-colors duration-150 text-brand-text mx-1">
+                <span class="w-5 h-5 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" /></svg>
+                </span>
+                Your State Laws
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 ml-auto opacity-50"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+            </a>
+            @endif
+
             <a href="{{ route('profile.edit') }}" data-guide="nav-profile" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium hover:bg-black/5 transition-colors duration-150 text-brand-text mx-1">
                 <span class="w-5 h-5 shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
