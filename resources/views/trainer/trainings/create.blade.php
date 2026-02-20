@@ -97,28 +97,6 @@
                             </div>
                         </div>
 
-                        {{-- Date & Time --}}
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Date & Time</h3>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date & Time *</label>
-                                    <input type="text" name="start_date" id="start_date" value="{{ old('start_date', isset($fromRequest) && $fromRequest ? $fromRequest->training_date->format('Y-m-d') . ' 09:00' : '') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"enableTime":true,"time_24hr":false,"minuteIncrement":15,"altInput":true,"altFormat":"M j, Y h:i K","dateFormat":"Y-m-d H:i","minDate":"today"}'>
-                                    @error('start_date')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div>
-                                    <label for="end_date" class="block text-sm font-medium text-gray-700">End Date & Time *</label>
-                                    <input type="text" name="end_date" id="end_date" value="{{ old('end_date') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"enableTime":true,"time_24hr":false,"minuteIncrement":15,"altInput":true,"altFormat":"M j, Y h:i K","dateFormat":"Y-m-d H:i","minDate":"today"}'>
-                                    @error('end_date')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
                         {{-- Group Training --}}
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <div class="border border-gray-200 rounded-lg p-4">
@@ -218,6 +196,28 @@
                                 @error('type')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
+                            </div>
+                        </div>
+
+                        {{-- Date & Time --}}
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                            <h3 class="text-lg font-semibold mb-4 text-brand-primary">Date & Time</h3>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date & Time *</label>
+                                    <input type="text" name="start_date" id="start_date" value="{{ old('start_date', isset($fromRequest) && $fromRequest ? $fromRequest->training_date->format('Y-m-d') . ' 09:00' : '') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"enableTime":true,"time_24hr":false,"minuteIncrement":15,"altInput":true,"altFormat":"M j, Y h:i K","dateFormat":"Y-m-d H:i","minDate":"today"}'>
+                                    @error('start_date')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="end_date" class="block text-sm font-medium text-gray-700">End Date & Time *</label>
+                                    <input type="text" name="end_date" id="end_date" value="{{ old('end_date') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"enableTime":true,"time_24hr":false,"minuteIncrement":15,"altInput":true,"altFormat":"M j, Y h:i K","dateFormat":"Y-m-d H:i","minDate":"today"}'>
+                                    @error('end_date')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
 
