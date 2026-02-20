@@ -41,6 +41,7 @@
         @include('partials.umami-tracking')
     </head>
     <body class="font-sans antialiased">
+        @include('partials.impersonation-banner')
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 

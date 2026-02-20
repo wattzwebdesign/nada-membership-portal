@@ -18,6 +18,9 @@ use Filament\Tables;
 use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Log;
 
 class UserResource extends Resource
 {
@@ -257,6 +260,33 @@ class UserResource extends Resource
                                 ->success()
                                 ->send();
                         }),
+                    Tables\Actions\Action::make('impersonate')
+                        ->label('Login as User')
+                        ->icon('heroicon-o-arrow-right-on-rectangle')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Login as User')
+                        ->modalDescription(fn (User $record) => "You will be logged in as {$record->first_name} {$record->last_name} ({$record->email}). You can switch back at any time.")
+                        ->modalSubmitActionLabel('Login as User')
+                        ->visible(fn (User $record): bool => ! $record->hasRole('admin') && ! $record->trashed())
+                        ->action(function (User $record) {
+                            $admin = Auth::user();
+
+                            session(['impersonator_id' => $admin->id]);
+                            session(['impersonator_name' => $admin->first_name . ' ' . $admin->last_name]);
+
+                            Cookie::queue('impersonator_id', $admin->id, config('session.lifetime'), null, null, true, true);
+
+                            Log::info('Impersonation started', [
+                                'admin_id' => $admin->id,
+                                'admin_email' => $admin->email,
+                                'target_id' => $record->id,
+                                'target_email' => $record->email,
+                            ]);
+
+                            Auth::login($record);
+                        })
+                        ->successRedirectUrl('/dashboard'),
                 ]),
             ])
             ->bulkActions([

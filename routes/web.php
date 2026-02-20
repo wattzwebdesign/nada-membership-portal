@@ -28,6 +28,7 @@ use App\Http\Controllers\ShopCartController;
 use App\Http\Controllers\ShopCheckoutController;
 use App\Http\Controllers\OrderContactController;
 use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\WalletPassController;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +81,7 @@ Route::post('/admin/discount-requests/{token}/deny', [DiscountApprovalController
 Route::middleware(['auth'])->group(function () {
     Route::get('/nda', [NdaController::class, 'show'])->name('nda.show');
     Route::post('/nda', [NdaController::class, 'accept'])->name('nda.accept');
+    Route::post('/impersonate/stop', [ImpersonationController::class, 'stop'])->name('impersonate.stop');
 });
 
 // Authenticated Member Routes

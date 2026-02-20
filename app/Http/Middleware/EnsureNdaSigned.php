@@ -11,6 +11,11 @@ class EnsureNdaSigned
 {
     public function handle(Request $request, Closure $next): Response
     {
+        // Skip NDA check when admin is impersonating a user
+        if (session()->has('impersonator_id')) {
+            return $next($request);
+        }
+
         if ($request->user() && $request->user()->isCustomerOnly()) {
             return $next($request);
         }

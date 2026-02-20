@@ -29,8 +29,8 @@ class DashboardController extends Controller
             return view('dashboard-customer', compact('user', 'recentOrders'));
         }
 
-        // Check for a pending plan from registration flow
-        $pendingPlanId = Cache::pull("pending_plan:{$user->id}");
+        // Check for a pending plan from registration flow (skip during impersonation)
+        $pendingPlanId = session()->has('impersonator_id') ? null : Cache::pull("pending_plan:{$user->id}");
         if ($pendingPlanId && !$user->hasActiveSubscription()) {
             $plan = Plan::where('is_active', true)->find($pendingPlanId);
 
