@@ -1,5 +1,5 @@
 @if(config('chatbot.enabled'))
-<div x-data="supportChat" class="fixed bottom-6 right-6 z-50" style="font-family: 'Figtree', sans-serif;">
+<div x-data="supportChat" class="fixed bottom-6 right-6 z-50" style="font-family: 'Figtree', sans-serif; position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;">
     {{-- Chat Panel --}}
     <div
         x-show="open"
@@ -106,6 +106,7 @@
     <button
         @click="open = !open"
         class="ml-auto flex items-center justify-center w-14 h-14 rounded-full text-white shadow-lg transition hover:scale-105 hover:shadow-xl bg-brand-primary"
+        style="display: flex; align-items: center; justify-content: center; width: 3.5rem; height: 3.5rem; border-radius: 9999px; color: white; background-color: #1C3519; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1); cursor: pointer; border: none;"
         title="Chat with NADA Support"
     >
         <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -118,8 +119,8 @@
 </div>
 
 <script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('supportChat', () => ({
+(function() {
+    var componentDef = () => ({
         open: false,
         messages: [],
         userInput: '',
@@ -277,7 +278,21 @@ document.addEventListener('alpine:init', () => {
 
             return html;
         }
-    }));
-});
+    });
+
+    // Handle both cases: Alpine not yet loaded (app layout) or already loaded (Filament admin)
+    if (window.Alpine) {
+        // Alpine already running (Filament) — register and init the DOM element
+        window.Alpine.data('supportChat', componentDef);
+        document.querySelectorAll('[x-data="supportChat"]').forEach(function(el) {
+            if (!el._x_dataStack) window.Alpine.initTree(el);
+        });
+    } else {
+        // Alpine not yet loaded (app layout) — wait for init event
+        document.addEventListener('alpine:init', function() {
+            Alpine.data('supportChat', componentDef);
+        });
+    }
+})();
 </script>
 @endif
