@@ -68,6 +68,14 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::HEAD_END,
                 fn () => new HtmlString('
                     <style>
+                        /* Hide sidebar scrollbar while keeping scroll */
+                        .fi-sidebar-nav {
+                            scrollbar-width: none;
+                            -ms-overflow-style: none;
+                        }
+                        .fi-sidebar-nav::-webkit-scrollbar {
+                            display: none;
+                        }
                         /* Stronger visual separation between global search resource groups */
                         .fi-global-search-result-group + .fi-global-search-result-group {
                             border-top: 2px solid rgb(209 213 219);

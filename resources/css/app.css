@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide sidebar scrollbar while keeping scroll functionality */
+nav[x-ref="navScroll"] {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+nav[x-ref="navScroll"]::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
 /* Chatbot "Show Me Where" guide pulse animation */
 @keyframes nada-guide-pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(173, 126, 7, 0.5); }
