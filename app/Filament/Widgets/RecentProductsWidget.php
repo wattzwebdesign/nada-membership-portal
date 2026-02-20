@@ -2,7 +2,6 @@
 
 namespace App\Filament\Widgets;
 
-use App\Filament\Resources\ProductResource;
 use App\Models\Product;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -32,7 +31,9 @@ class RecentProductsWidget extends TableWidget
                     ->limit(10)
             )
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('title')
+                    ->url(fn (Product $record): string => route('products.show', $record))
+                    ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('vendorProfile.business_name')
                     ->label('Vendor'),
                 Tables\Columns\TextColumn::make('price_formatted')
@@ -47,11 +48,7 @@ class RecentProductsWidget extends TableWidget
                     ->label('Date')
                     ->date(),
             ])
-            ->actions([
-                Tables\Actions\Action::make('edit')
-                    ->url(fn (Product $record): string => ProductResource::getUrl('edit', ['record' => $record]))
-                    ->icon('heroicon-m-pencil-square'),
-            ])
+            ->actions([])
             ->emptyStateHeading('No active products')
             ->emptyStateIcon('heroicon-o-cube')
             ->paginated([10]);
