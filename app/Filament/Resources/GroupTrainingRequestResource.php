@@ -55,10 +55,9 @@ class GroupTrainingRequestResource extends Resource
                             ->label('Trainer')
                             ->options(
                                 User::whereHas('roles', fn ($q) => $q->where('name', 'registered_trainer'))
-                                    ->whereHas('stripeAccount', fn ($q) => $q->where('charges_enabled', true))
                                     ->orderBy('last_name')
                                     ->get()
-                                    ->mapWithKeys(fn ($u) => [$u->id => $u->first_name . ' ' . $u->last_name])
+                                    ->mapWithKeys(fn ($u) => [$u->id => $u->first_name . ' ' . $u->last_name . ($u->stripeAccount?->charges_enabled ? '' : ' (No Stripe)')])
                             )
                             ->searchable()
                             ->required(),
