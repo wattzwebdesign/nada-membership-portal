@@ -126,6 +126,45 @@ class GroupTrainingController extends Controller
             $groupRequest = GroupTrainingRequest::where('stripe_checkout_session_id', $sessionId)
                 ->with(['trainer', 'members'])
                 ->first();
+
+            // Fallback: verify payment with Stripe if webhook hasn't fired yet
+            if ($groupRequest && $groupRequest->status !== 'paid') {
+                try {
+                    Stripe::setApiKey(config('services.stripe.secret'));
+                    $session = CheckoutSession::retrieve($sessionId);
+
+                    if ($session->payment_status === 'paid') {
+                        $groupRequest->update([
+                            'status' => 'paid',
+                            'stripe_payment_intent_id' => $session->payment_intent,
+                            'paid_at' => now(),
+                        ]);
+
+                        // Notify trainer
+                        $trainer = $groupRequest->trainer;
+                        if ($trainer) {
+                            $this->safeNotify($trainer, new \App\Notifications\GroupTrainingPaidNotification($groupRequest));
+                        }
+
+                        // Notify admin
+                        $adminEmail = \App\Models\SiteSetting::adminEmail();
+                        $this->safeNotifyRoute($adminEmail, new \App\Notifications\GroupTrainingPaidNotification($groupRequest));
+
+                        // Confirmation to company contact
+                        $this->safeNotifyRoute(
+                            $groupRequest->company_email,
+                            new \App\Notifications\GroupTrainingConfirmationNotification($groupRequest)
+                        );
+
+                        $groupRequest->refresh();
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Failed to verify group training payment on success page.', [
+                        'session_id' => $sessionId,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
         }
 
         return view('group-training.success', [
