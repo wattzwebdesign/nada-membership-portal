@@ -143,9 +143,10 @@
                             <h3 class="text-lg font-semibold mb-4 text-brand-primary">Images</h3>
 
                             <div class="space-y-5">
-                                <div>
+                                <div x-data="imageCompressor">
                                     <label for="images" class="block text-sm font-medium text-gray-700">Product Images</label>
-                                    <input type="file" name="images[]" id="images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20">
+                                    <input type="file" name="images[]" id="images" accept="image/*" multiple x-on:change="compressFiles($event)" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20">
+                                    <span x-show="compressing" x-cloak class="mt-1 text-sm text-gray-500">Optimizing images...</span>
                                     <p class="mt-1 text-xs text-gray-400">Upload up to 10 product images. First image will be the primary image.</p>
                                     @error('images')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

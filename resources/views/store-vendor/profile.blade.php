@@ -122,7 +122,7 @@
                             </div>
 
                             {{-- Logo Upload --}}
-                            <div>
+                            <div x-data="imageCompressor">
                                 <label for="logo" class="block text-sm font-medium text-gray-700">Business Logo</label>
                                 @if ($vendorProfile && $vendorProfile->logo_url)
                                     <div class="mt-2 mb-3 flex items-center gap-4">
@@ -130,7 +130,8 @@
                                         <span class="text-xs text-gray-500">Current logo</span>
                                     </div>
                                 @endif
-                                <input type="file" name="logo" id="logo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20">
+                                <input type="file" name="logo" id="logo" accept="image/*" x-on:change="compressFiles($event)" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20">
+                                <span x-show="compressing" x-cloak class="mt-1 text-sm text-gray-500">Optimizing image...</span>
                                 <p class="mt-1 text-xs text-gray-400">Recommended: 400x400px, JPG or PNG. Your logo will be cropped to a square.</p>
                                 @error('logo')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -138,16 +139,20 @@
                             </div>
 
                             {{-- Gallery Images --}}
-                            <div>
+                            <div x-data="imageCompressor">
                                 <label for="gallery" class="block text-sm font-medium text-gray-700">Gallery Images</label>
-                                @if ($vendorProfile && $vendorProfile->gallery_urls && count($vendorProfile->gallery_urls) > 0)
-                                    <div class="mt-2 mb-3 flex flex-wrap gap-3">
-                                        @foreach ($vendorProfile->gallery_urls as $url)
-                                            <img src="{{ $url }}" alt="Gallery image" class="h-20 w-20 rounded-lg object-cover border border-gray-200">
-                                        @endforeach
-                                    </div>
+                                @if ($vendorProfile)
+                                    @php $galleryMedia = $vendorProfile->getMedia('gallery'); @endphp
+                                    @if ($galleryMedia->isNotEmpty())
+                                        <div class="mt-2 mb-3 flex flex-wrap gap-3">
+                                            @foreach ($galleryMedia as $media)
+                                                <img src="{{ $media->hasGeneratedConversion('thumb') ? $media->getUrl('thumb') : $media->getUrl() }}" alt="Gallery image" class="h-20 w-20 rounded-lg object-cover border border-gray-200">
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 @endif
-                                <input type="file" name="gallery[]" id="gallery" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20">
+                                <input type="file" name="gallery[]" id="gallery" accept="image/*" multiple x-on:change="compressFiles($event)" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20">
+                                <span x-show="compressing" x-cloak class="mt-1 text-sm text-gray-500">Optimizing images...</span>
                                 <p class="mt-1 text-xs text-gray-400">Upload multiple images to showcase your business. Max 5 images.</p>
                                 @error('gallery')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia
 {
@@ -81,6 +82,30 @@ class Product extends Model implements HasMedia
     {
         $this->addMediaCollection('images');
         $this->addMediaCollection('digital_file')->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        if (! SiteSetting::imageOptimizationEnabled()) {
+            return;
+        }
+
+        $quality = SiteSetting::imageWebpQuality();
+        $thumbSize = SiteSetting::imageThumbSize();
+
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->quality($quality)
+            ->nonQueued()
+            ->performOnCollections('images');
+
+        $this->addMediaConversion('thumb')
+            ->width($thumbSize)
+            ->height($thumbSize)
+            ->format('webp')
+            ->quality($quality)
+            ->nonQueued()
+            ->performOnCollections('images');
     }
 
     public function getEffectivePrice(?User $user = null): int
@@ -187,6 +212,12 @@ class Product extends Model implements HasMedia
     {
         $media = $this->getFirstMedia('images');
 
-        return $media?->getUrl();
+        if (! $media) {
+            return null;
+        }
+
+        return $media->hasGeneratedConversion('thumb')
+            ? $media->getUrl('thumb')
+            : $media->getUrl();
     }
 }

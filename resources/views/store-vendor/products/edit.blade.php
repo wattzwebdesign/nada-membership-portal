@@ -159,7 +159,7 @@
                                 @if ($mediaImages->count() > 0)
                                     <div x-data="{
                                         dragging: null,
-                                        items: @js($mediaImages->map(fn ($m) => ['id' => $m->id, 'url' => $m->getUrl()])->values()),
+                                        items: @js($mediaImages->map(fn ($m) => ['id' => $m->id, 'url' => $m->hasGeneratedConversion('thumb') ? $m->getUrl('thumb') : $m->getUrl()])->values()),
                                         removing: [],
                                         toggleRemove(id) {
                                             if (this.removing.includes(id)) {
@@ -213,9 +213,10 @@
                                 @endif
 
                                 {{-- Upload New Images --}}
-                                <div>
+                                <div x-data="imageCompressor">
                                     <label for="images" class="block text-sm font-medium text-gray-700">Add More Images</label>
-                                    <input type="file" name="images[]" id="images" accept="image/*" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20">
+                                    <input type="file" name="images[]" id="images" accept="image/*" multiple x-on:change="compressFiles($event)" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20">
+                                    <span x-show="compressing" x-cloak class="mt-1 text-sm text-gray-500">Optimizing images...</span>
                                     @error('images')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror

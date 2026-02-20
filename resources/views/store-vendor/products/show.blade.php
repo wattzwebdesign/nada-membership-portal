@@ -40,7 +40,7 @@
                             <div class="p-6">
                                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                     @foreach ($product->getMedia('images') as $image)
-                                        <img src="{{ $image->getUrl() }}" alt="{{ $product->title }}" class="w-full h-48 rounded-lg object-cover border border-gray-200">
+                                        <img src="{{ $image->hasGeneratedConversion('webp') ? $image->getUrl('webp') : $image->getUrl() }}" alt="{{ $product->title }}" class="w-full h-48 rounded-lg object-cover border border-gray-200">
                                     @endforeach
                                 </div>
                             </div>

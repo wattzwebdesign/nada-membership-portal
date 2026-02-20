@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class VendorProfile extends Model implements HasMedia
 {
@@ -58,6 +59,30 @@ class VendorProfile extends Model implements HasMedia
         $this->addMediaCollection('gallery');
     }
 
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        if (! SiteSetting::imageOptimizationEnabled()) {
+            return;
+        }
+
+        $quality = SiteSetting::imageWebpQuality();
+        $thumbSize = SiteSetting::imageThumbSize();
+
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->quality($quality)
+            ->nonQueued()
+            ->performOnCollections('logo', 'gallery');
+
+        $this->addMediaConversion('thumb')
+            ->width($thumbSize)
+            ->height($thumbSize)
+            ->format('webp')
+            ->quality($quality)
+            ->nonQueued()
+            ->performOnCollections('gallery');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
@@ -72,6 +97,12 @@ class VendorProfile extends Model implements HasMedia
     {
         $media = $this->getFirstMedia('logo');
 
-        return $media?->getUrl();
+        if (! $media) {
+            return null;
+        }
+
+        return $media->hasGeneratedConversion('webp')
+            ? $media->getUrl('webp')
+            : $media->getUrl();
     }
 }

@@ -3,8 +3,10 @@
 namespace App\Filament\Pages;
 
 use App\Models\SiteSetting;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -28,6 +30,11 @@ class SiteSettings extends Page implements HasForms
     public ?string $admin_notification_email = '';
     public ?string $group_training_fee_type = 'flat';
     public ?string $group_training_fee_value = '0';
+    public bool $image_optimization_enabled = true;
+    public ?string $image_webp_quality = '80';
+    public ?string $image_max_width = '1920';
+    public ?string $image_max_height = '1920';
+    public ?string $image_thumb_size = '400';
 
     public array $stripeInfo = [];
 
@@ -36,6 +43,11 @@ class SiteSettings extends Page implements HasForms
         $this->admin_notification_email = SiteSetting::adminEmail();
         $this->group_training_fee_type = SiteSetting::get('group_training_fee_type', 'flat');
         $this->group_training_fee_value = SiteSetting::get('group_training_fee_value', '0');
+        $this->image_optimization_enabled = SiteSetting::imageOptimizationEnabled();
+        $this->image_webp_quality = SiteSetting::get('image_webp_quality', '80');
+        $this->image_max_width = SiteSetting::get('image_max_width', '1920');
+        $this->image_max_height = SiteSetting::get('image_max_height', '1920');
+        $this->image_thumb_size = SiteSetting::get('image_thumb_size', '400');
         $this->stripeInfo = $this->fetchStripeInfo();
     }
 
@@ -64,6 +76,36 @@ class SiteSettings extends Page implements HasForms
                     ->required()
                     ->minValue(0)
                     ->helperText('For flat fee: dollar amount (e.g. 25 = $25.00). For percentage: percent of subtotal (e.g. 5 = 5%).'),
+
+                Section::make('Image Optimization')
+                    ->description('Configure how uploaded images are compressed and converted.')
+                    ->schema([
+                        Toggle::make('image_optimization_enabled')
+                            ->label('Enable Image Optimization')
+                            ->helperText('When enabled, uploaded images are compressed client-side and converted to WebP server-side.'),
+                        TextInput::make('image_webp_quality')
+                            ->label('WebP Quality')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(100)
+                            ->helperText('Quality for server-side WebP conversion (1-100). Recommended: 80.'),
+                        TextInput::make('image_max_width')
+                            ->label('Max Width (px)')
+                            ->numeric()
+                            ->minValue(100)
+                            ->helperText('Client-side: images wider than this are resized before upload.'),
+                        TextInput::make('image_max_height')
+                            ->label('Max Height (px)')
+                            ->numeric()
+                            ->minValue(100)
+                            ->helperText('Client-side: images taller than this are resized before upload.'),
+                        TextInput::make('image_thumb_size')
+                            ->label('Thumbnail Size (px)')
+                            ->numeric()
+                            ->minValue(50)
+                            ->maxValue(800)
+                            ->helperText('Width & height of generated thumbnail conversions.'),
+                    ]),
             ]);
     }
 
@@ -73,11 +115,20 @@ class SiteSettings extends Page implements HasForms
             'admin_notification_email' => ['required', 'email'],
             'group_training_fee_type' => ['required', 'in:flat,percentage'],
             'group_training_fee_value' => ['required', 'numeric', 'min:0'],
+            'image_webp_quality' => ['nullable', 'numeric', 'min:1', 'max:100'],
+            'image_max_width' => ['nullable', 'numeric', 'min:100'],
+            'image_max_height' => ['nullable', 'numeric', 'min:100'],
+            'image_thumb_size' => ['nullable', 'numeric', 'min:50', 'max:800'],
         ]);
 
         SiteSetting::set('admin_notification_email', $this->admin_notification_email);
         SiteSetting::set('group_training_fee_type', $this->group_training_fee_type);
         SiteSetting::set('group_training_fee_value', $this->group_training_fee_value);
+        SiteSetting::set('image_optimization_enabled', $this->image_optimization_enabled ? '1' : '0');
+        SiteSetting::set('image_webp_quality', $this->image_webp_quality);
+        SiteSetting::set('image_max_width', $this->image_max_width);
+        SiteSetting::set('image_max_height', $this->image_max_height);
+        SiteSetting::set('image_thumb_size', $this->image_thumb_size);
 
         Notification::make()
             ->title('Settings saved successfully')

@@ -41,7 +41,7 @@
                     @if ($images->isNotEmpty())
                         @foreach ($images as $index => $image)
                             <img x-show="activeImage === {{ $index }}"
-                                 src="{{ $image->getUrl() }}" alt="{{ $product->title }}"
+                                 src="{{ $image->hasGeneratedConversion('webp') ? $image->getUrl('webp') : $image->getUrl() }}" alt="{{ $product->title }}"
                                  class="w-full h-full object-cover">
                         @endforeach
                     @else
@@ -58,7 +58,7 @@
                             <button @click="activeImage = {{ $index }}"
                                     :class="activeImage === {{ $index }} ? 'ring-2 ring-brand-primary' : 'ring-1 ring-gray-200 hover:ring-gray-300'"
                                     class="aspect-square rounded-md overflow-hidden focus:outline-none transition-all">
-                                <img src="{{ $image->getUrl() }}" alt="" class="w-full h-full object-cover">
+                                <img src="{{ $image->hasGeneratedConversion('thumb') ? $image->getUrl('thumb') : $image->getUrl() }}" alt="" class="w-full h-full object-cover">
                             </button>
                         @endforeach
                     </div>

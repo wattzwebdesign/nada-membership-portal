@@ -11,7 +11,7 @@
             @foreach($images as $index => $image)
                 <img
                     x-show="activeImage === {{ $index }}"
-                    src="{{ $image->getUrl() }}"
+                    src="{{ $image->hasGeneratedConversion('webp') ? $image->getUrl('webp') : $image->getUrl() }}"
                     alt="{{ $product->title }}"
                     class="w-full h-full object-cover"
                 />
@@ -32,7 +32,7 @@
                     :class="activeImage === {{ $index }} ? 'ring-2 ring-brand-primary' : 'ring-1 ring-gray-200'"
                     class="flex-shrink-0 w-16 h-16 rounded-md overflow-hidden focus:outline-none"
                 >
-                    <img src="{{ $image->getUrl() }}" alt="" class="w-full h-full object-cover" />
+                    <img src="{{ $image->hasGeneratedConversion('thumb') ? $image->getUrl('thumb') : $image->getUrl() }}" alt="" class="w-full h-full object-cover" />
                 </button>
             @endforeach
         </div>

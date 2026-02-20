@@ -61,7 +61,7 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     @foreach ($galleryImages as $image)
                         <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
-                            <img src="{{ $image->getUrl() }}" alt="" class="w-full h-full object-cover">
+                            <img src="{{ $image->hasGeneratedConversion('webp') ? $image->getUrl('webp') : $image->getUrl() }}" alt="" class="w-full h-full object-cover">
                         </div>
                     @endforeach
                 </div>

@@ -22,4 +22,29 @@ class SiteSetting extends Model
     {
         return static::get('admin_notification_email', config('app.nada_admin_email', 'admin@acudetox.com'));
     }
+
+    public static function imageOptimizationEnabled(): bool
+    {
+        return (bool) static::get('image_optimization_enabled', '1');
+    }
+
+    public static function imageWebpQuality(): int
+    {
+        return (int) static::get('image_webp_quality', '80');
+    }
+
+    public static function imageMaxWidth(): int
+    {
+        return (int) static::get('image_max_width', '1920');
+    }
+
+    public static function imageMaxHeight(): int
+    {
+        return (int) static::get('image_max_height', '1920');
+    }
+
+    public static function imageThumbSize(): int
+    {
+        return (int) static::get('image_thumb_size', '400');
+    }
 }
