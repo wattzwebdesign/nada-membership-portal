@@ -5,7 +5,9 @@ namespace App\Providers;
 use App\Models\SiteSetting;
 use App\Models\Training;
 use App\Observers\TrainingObserver;
+use App\Services\FixedFilamentUmami;
 use Illuminate\Support\ServiceProvider;
+use Schmeits\FilamentUmami\FilamentUmami;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(FilamentUmami::class, FixedFilamentUmami::class);
     }
 
     /**
