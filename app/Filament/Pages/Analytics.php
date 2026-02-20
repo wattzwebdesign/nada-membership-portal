@@ -12,6 +12,8 @@ use Schmeits\FilamentUmami\Widgets\UmamiWidgetTableBrowser;
 use Schmeits\FilamentUmami\Widgets\UmamiWidgetTableOs;
 use Schmeits\FilamentUmami\Widgets\UmamiWidgetTableDevice;
 use Schmeits\FilamentUmami\Widgets\UmamiWidgetTableCountry;
+use Schmeits\FilamentUmami\Widgets\UmamiWidgetGraphEvents;
+use Schmeits\FilamentUmami\Widgets\UmamiWidgetTableEvents;
 
 class Analytics extends Dashboard
 {
@@ -31,6 +33,8 @@ class Analytics extends Dashboard
             UmamiWidgetStatsGrouped::class,
             UmamiWidgetGraphPageViews::class,
             UmamiWidgetGraphSessions::class,
+            UmamiWidgetGraphEvents::class,
+            UmamiWidgetTableEvents::class,
             UmamiWidgetTableUrls::class,
             UmamiWidgetTableReferrers::class,
             UmamiWidgetTableBrowser::class,
