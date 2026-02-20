@@ -16,6 +16,7 @@ use App\Services\StripeService;
 use App\Services\TermsConsentService;
 use App\Services\WalletPassService;
 use App\Models\AgreementSignature;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -62,13 +63,12 @@ class TrainingRegistrationController extends Controller
             return back()->with('error', 'You need an active membership plan to register for trainings. Please subscribe first.');
         }
 
-        // Check if already registered
+        // Check for any existing registration (including canceled)
         $existing = TrainingRegistration::where('training_id', $training->id)
             ->where('user_id', $user->id)
-            ->where('status', '!=', RegistrationStatus::Canceled->value)
             ->first();
 
-        if ($existing) {
+        if ($existing && $existing->status !== RegistrationStatus::Canceled) {
             return back()->with('error', 'You are already registered for this training.');
         }
 
@@ -91,13 +91,21 @@ class TrainingRegistrationController extends Controller
             return $this->createPaidCheckout($user, $training, $tcMetadata);
         }
 
-        // Free training: register directly
-        $registration = TrainingRegistration::create([
-            'training_id' => $training->id,
-            'user_id' => $user->id,
-            'status' => RegistrationStatus::Registered->value,
-            'amount_paid_cents' => 0,
-        ]);
+        // Free training: register directly (reactivate canceled or create new)
+        if ($existing) {
+            $existing->update([
+                'status' => RegistrationStatus::Registered->value,
+                'amount_paid_cents' => 0,
+            ]);
+            $registration = $existing;
+        } else {
+            $registration = TrainingRegistration::create([
+                'training_id' => $training->id,
+                'user_id' => $user->id,
+                'status' => RegistrationStatus::Registered->value,
+                'amount_paid_cents' => 0,
+            ]);
+        }
 
         $this->safeNotify($user, new TrainingRegisteredNotification($registration));
         $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($registration));
@@ -128,13 +136,12 @@ class TrainingRegistrationController extends Controller
                     ->with('error', 'Payment was not completed. Please try again.');
             }
 
-            // Check for existing registration (idempotency — webhook may have created it)
+            // Check for any existing registration (including canceled)
             $existing = TrainingRegistration::where('training_id', $training->id)
                 ->where('user_id', $user->id)
-                ->where('status', '!=', RegistrationStatus::Canceled->value)
                 ->first();
 
-            if ($existing) {
+            if ($existing && $existing->status !== RegistrationStatus::Canceled) {
                 return redirect()->route('trainings.my-registrations')
                     ->with('success', 'You are registered for "' . $training->title . '".');
             }
@@ -159,14 +166,25 @@ class TrainingRegistrationController extends Controller
                 'total' => $amountDollars,
             ]);
 
-            $registration = TrainingRegistration::create([
-                'training_id' => $training->id,
-                'user_id' => $user->id,
-                'status' => RegistrationStatus::Registered->value,
-                'stripe_payment_intent_id' => $session->payment_intent,
-                'amount_paid_cents' => $session->amount_total,
-                'invoice_id' => $invoice->id,
-            ]);
+            if ($existing) {
+                // Reactivate canceled registration
+                $existing->update([
+                    'status' => RegistrationStatus::Registered->value,
+                    'stripe_payment_intent_id' => $session->payment_intent,
+                    'amount_paid_cents' => $session->amount_total,
+                    'invoice_id' => $invoice->id,
+                ]);
+                $registration = $existing;
+            } else {
+                $registration = TrainingRegistration::create([
+                    'training_id' => $training->id,
+                    'user_id' => $user->id,
+                    'status' => RegistrationStatus::Registered->value,
+                    'stripe_payment_intent_id' => $session->payment_intent,
+                    'amount_paid_cents' => $session->amount_total,
+                    'invoice_id' => $invoice->id,
+                ]);
+            }
 
             $this->safeNotify($user, new TrainingRegisteredNotification($registration));
             $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($registration));
@@ -179,6 +197,19 @@ class TrainingRegistrationController extends Controller
 
             return redirect()->route('trainings.my-registrations')
                 ->with('success', 'Payment confirmed! You are registered for "' . $training->title . '".');
+        } catch (QueryException $e) {
+            // Race condition: webhook already created the registration — treat as success
+            if (str_contains($e->getMessage(), 'UNIQUE constraint') || str_contains($e->getMessage(), 'Duplicate entry')) {
+                Log::info('Training registration race condition handled (redirect)', [
+                    'user_id' => $user->id,
+                    'training_id' => $training->id,
+                ]);
+
+                return redirect()->route('trainings.my-registrations')
+                    ->with('success', 'Payment confirmed! You are registered for "' . $training->title . '".');
+            }
+
+            throw $e;
         } catch (\Exception $e) {
             Log::error('Training payment verification failed', [
                 'user_id' => $user->id,

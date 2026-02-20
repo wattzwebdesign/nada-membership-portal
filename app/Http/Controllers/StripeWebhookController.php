@@ -345,28 +345,63 @@ class StripeWebhookController extends Controller
             $training = $trainingId ? Training::find($trainingId) : null;
 
             if ($training) {
+                // Check for any existing registration (including canceled)
                 $existing = TrainingRegistration::where('training_id', $training->id)
                     ->where('user_id', $user->id)
-                    ->where('status', '!=', RegistrationStatus::Canceled->value)
                     ->first();
 
-                if (! $existing) {
-                    $registration = TrainingRegistration::create([
-                        'training_id' => $training->id,
+                if ($existing && $existing->status !== RegistrationStatus::Canceled) {
+                    // Already registered (non-canceled) — skip
+                    Log::info('Training registration already exists (webhook skipped).', [
                         'user_id' => $user->id,
+                        'training_id' => $training->id,
+                    ]);
+                } elseif ($existing) {
+                    // Reactivate canceled registration
+                    $existing->update([
                         'status' => RegistrationStatus::Registered->value,
                         'stripe_payment_intent_id' => $session->payment_intent,
                         'amount_paid_cents' => $session->amount_total,
                     ]);
 
-                    $this->safeNotify($user, new TrainingRegisteredNotification($registration));
-                    $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($registration));
+                    $this->safeNotify($user, new TrainingRegisteredNotification($existing));
+                    $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($existing));
 
-                    Log::info('Training registration created from webhook.', [
+                    Log::info('Training registration reactivated from webhook.', [
                         'user_id' => $user->id,
                         'training_id' => $training->id,
                         'payment_intent' => $session->payment_intent,
                     ]);
+                } else {
+                    // No existing row — create new
+                    try {
+                        $registration = TrainingRegistration::create([
+                            'training_id' => $training->id,
+                            'user_id' => $user->id,
+                            'status' => RegistrationStatus::Registered->value,
+                            'stripe_payment_intent_id' => $session->payment_intent,
+                            'amount_paid_cents' => $session->amount_total,
+                        ]);
+
+                        $this->safeNotify($user, new TrainingRegisteredNotification($registration));
+                        $this->safeNotify($training->trainer, new NewTrainingRegistrationNotification($registration));
+
+                        Log::info('Training registration created from webhook.', [
+                            'user_id' => $user->id,
+                            'training_id' => $training->id,
+                            'payment_intent' => $session->payment_intent,
+                        ]);
+                    } catch (\Illuminate\Database\QueryException $e) {
+                        // Race condition: redirect handler already created it
+                        if (str_contains($e->getMessage(), 'UNIQUE constraint') || str_contains($e->getMessage(), 'Duplicate entry')) {
+                            Log::info('Training registration race condition handled (webhook).', [
+                                'user_id' => $user->id,
+                                'training_id' => $training->id,
+                            ]);
+                        } else {
+                            throw $e;
+                        }
+                    }
                 }
             }
         }
