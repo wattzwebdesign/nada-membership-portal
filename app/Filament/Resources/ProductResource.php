@@ -117,7 +117,11 @@ class ProductResource extends Resource
                             ->multiple()
                             ->image()
                             ->reorderable()
-                            ->maxSize(10240),
+                            ->maxSize(10240)
+                            ->imageResizeMode('contain')
+                            ->imageResizeTargetWidth(1920)
+                            ->imageResizeTargetHeight(1920)
+                            ->imageResizeUpscale(false),
                         SpatieMediaLibraryFileUpload::make('digital_file')
                             ->collection('digital_file')
                             ->label('Digital File'),
