@@ -166,10 +166,10 @@
                                         <p class="text-sm font-semibold mb-2">Wallet Pass</p>
                                         <p class="text-xs text-gray-500 mb-3">Get a reminder before your training.</p>
                                         <div data-guide="training-wallet-pass" class="flex flex-wrap items-center gap-3">
-                                            <a href="{{ route('trainings.wallet.apple', $training) }}">
+                                            <a href="{{ route('trainings.wallet.apple', $training) }}" data-umami-event="Apple Wallet - Training">
                                                 <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-11">
                                             </a>
-                                            <a href="{{ route('trainings.wallet.google', $training) }}">
+                                            <a href="{{ route('trainings.wallet.google', $training) }}" data-umami-event="Google Wallet - Training">
                                                 <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-11">
                                             </a>
                                         </div>

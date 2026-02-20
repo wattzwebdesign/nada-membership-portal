@@ -136,10 +136,10 @@
                                 <h4 class="text-sm font-semibold text-gray-900 mb-3">Digital Membership Card</h4>
                                 <p class="text-sm text-gray-500 mb-4">Add your membership card to your phone's wallet. Your card updates automatically when your membership renews.</p>
                                 <div class="flex flex-wrap items-center gap-3">
-                                    <a href="{{ route('membership.wallet.apple') }}">
+                                    <a href="{{ route('membership.wallet.apple') }}" data-umami-event="Apple Wallet - Membership">
                                         <img src="{{ asset('images/add-to-apple-wallet.svg') }}" alt="Add to Apple Wallet" class="h-11">
                                     </a>
-                                    <a href="{{ route('membership.wallet.google') }}">
+                                    <a href="{{ route('membership.wallet.google') }}" data-umami-event="Google Wallet - Membership">
                                         <img src="{{ asset('images/add-to-google-wallet.svg') }}" alt="Add to Google Wallet" class="h-11">
                                     </a>
                                 </div>
