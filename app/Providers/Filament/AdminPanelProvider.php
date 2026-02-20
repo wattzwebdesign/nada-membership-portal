@@ -14,6 +14,7 @@ use App\Models\SiteSetting;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\HtmlString;
 use Filament\View\PanelsRenderHook;
+use Filament\Navigation\MenuItem;
 use Filament\Widgets;
 use Schmeits\FilamentUmami\FilamentUmamiPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -39,6 +40,12 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::hex('#1C3519'),
                 'danger' => Color::Red,
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Member Portal')
+                    ->url('/dashboard')
+                    ->icon('heroicon-m-home'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
