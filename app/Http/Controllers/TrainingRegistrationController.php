@@ -144,6 +144,8 @@ class TrainingRegistrationController extends Controller
                 ->first();
 
             if ($existing && $existing->status !== RegistrationStatus::Canceled) {
+                session()->flash('umami_event', 'Training Registration');
+
                 return redirect()->route('trainings.my-registrations')
                     ->with('success', 'You are registered for "' . $training->title . '".');
             }
@@ -208,6 +210,8 @@ class TrainingRegistrationController extends Controller
                     'user_id' => $user->id,
                     'training_id' => $training->id,
                 ]);
+
+                session()->flash('umami_event', 'Training Registration');
 
                 return redirect()->route('trainings.my-registrations')
                     ->with('success', 'Payment confirmed! You are registered for "' . $training->title . '".');
