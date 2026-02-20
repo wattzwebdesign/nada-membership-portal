@@ -269,7 +269,7 @@ class UserResource extends Resource
                         ->modalDescription(fn (User $record) => "You will be logged in as {$record->first_name} {$record->last_name} ({$record->email}). You can switch back at any time.")
                         ->modalSubmitActionLabel('Login as User')
                         ->visible(fn (User $record): bool => ! $record->hasRole('admin') && ! $record->trashed())
-                        ->action(function (User $record) {
+                        ->action(function (User $record, \Livewire\Component $livewire) {
                             $admin = Auth::user();
 
                             session(['impersonator_id' => $admin->id]);
@@ -285,8 +285,9 @@ class UserResource extends Resource
                             ]);
 
                             Auth::login($record);
-                        })
-                        ->successRedirectUrl('/dashboard'),
+
+                            $livewire->redirect('/dashboard');
+                        }),
                 ]),
             ])
             ->bulkActions([

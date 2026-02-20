@@ -41,11 +41,11 @@
         @include('partials.umami-tracking')
     </head>
     <body class="font-sans antialiased">
-        @include('partials.impersonation-banner')
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
             <div class="lg:pl-64 print:pl-0">
+                @include('partials.impersonation-banner')
                 {{-- Mobile top bar spacer --}}
                 <div class="h-14 lg:hidden print:hidden"></div>
 
