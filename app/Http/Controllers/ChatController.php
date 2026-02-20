@@ -46,7 +46,13 @@ class ChatController extends Controller
 
         $catalogContext = $this->buildCatalogContext();
         $userContext = $this->buildUserContext();
-        $adminContext = $this->buildAdminContext();
+
+        try {
+            $adminContext = $this->buildAdminContext();
+        } catch (\Throwable $e) {
+            report($e);
+            $adminContext = null;
+        }
 
         $context = collect([$catalogContext, $userContext, $adminContext])->filter()->implode("\n\n");
 

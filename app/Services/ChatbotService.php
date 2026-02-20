@@ -27,7 +27,8 @@ class ChatbotService
         ]);
 
         if ($response->failed()) {
-            throw new \RuntimeException('Chatbot API request failed: ' . $response->status());
+            $body = $response->json('error.message', $response->body());
+            throw new \RuntimeException("Chatbot API request failed ({$response->status()}): {$body}");
         }
 
         $data = $response->json();
@@ -51,13 +52,15 @@ class ChatbotService
 
     public function loadSystemPrompt(): string
     {
-        return Cache::remember('chatbot:system-prompt', 3600, function () {
-            $path = resource_path('chatbot/system-prompt.md');
+        $path = resource_path('chatbot/system-prompt.md');
 
-            if (! file_exists($path)) {
-                return 'You are a helpful support assistant for the NADA membership portal.';
-            }
+        if (! file_exists($path)) {
+            return 'You are a helpful support assistant for the NADA membership portal.';
+        }
 
+        $cacheKey = 'chatbot:system-prompt:' . filemtime($path);
+
+        return Cache::remember($cacheKey, 3600, function () use ($path) {
             return file_get_contents($path);
         });
     }
