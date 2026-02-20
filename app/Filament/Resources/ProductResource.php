@@ -116,7 +116,8 @@ class ProductResource extends Resource
                             ->collection('images')
                             ->multiple()
                             ->image()
-                            ->reorderable(),
+                            ->reorderable()
+                            ->maxSize(10240),
                         SpatieMediaLibraryFileUpload::make('digital_file')
                             ->collection('digital_file')
                             ->label('Digital File'),
