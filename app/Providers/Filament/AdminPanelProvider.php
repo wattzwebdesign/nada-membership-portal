@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use App\Filament\Pages\Auth\Login;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -30,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
             ->brandName('NADA Admin')
             ->brandLogo(fn () => new HtmlString('<img src="' . asset('NADAWebsiteLogo.svg') . '" alt="NADA Admin" style="height: 2.5rem;" />'))
             ->brandLogoHeight('2.5rem')

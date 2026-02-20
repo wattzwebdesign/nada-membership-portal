@@ -198,13 +198,6 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\Action::make('impersonate')
-                        ->label('Impersonate')
-                        ->icon('heroicon-o-finger-print')
-                        ->color('warning')
-                        ->requiresConfirmation()
-                        ->url(fn (User $record): string => route('filament.admin.auth.login') . '?impersonate=' . $record->id)
-                        ->openUrlInNewTab(),
                     Tables\Actions\Action::make('assign_comped_plan')
                         ->label('Assign Comped Plan')
                         ->icon('heroicon-o-gift')

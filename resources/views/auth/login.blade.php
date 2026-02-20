@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <div class="mb-4 text-center">
+        <h2 class="text-xl font-semibold text-gray-900">Member Login</h2>
+        <p class="mt-1 text-sm text-gray-500">Sign in to your NADA membership portal</p>
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
