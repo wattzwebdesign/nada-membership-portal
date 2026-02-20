@@ -6,8 +6,10 @@ use App\Models\SiteSetting;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ViewField;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -67,102 +69,118 @@ class SiteSettings extends Page implements HasForms
     {
         return $form
             ->schema([
-                TextInput::make('admin_notification_email')
-                    ->label('Admin Notification Email')
-                    ->email()
-                    ->required()
-                    ->helperText('All admin notification emails will be sent to this address.'),
-
-                Select::make('group_training_fee_type')
-                    ->label('Group Training Fee Type')
-                    ->options([
-                        'flat' => 'Flat Fee ($)',
-                        'percentage' => 'Percentage (%)',
-                    ])
-                    ->required()
-                    ->helperText('How the transaction fee is calculated for group training requests.'),
-
-                TextInput::make('group_training_fee_value')
-                    ->label('Group Training Fee Value')
-                    ->numeric()
-                    ->required()
-                    ->minValue(0)
-                    ->helperText('For flat fee: dollar amount (e.g. 25 = $25.00). For percentage: percent of subtotal (e.g. 5 = 5%).'),
-
-                Section::make('Image Optimization')
-                    ->description('Configure how uploaded images are compressed and converted.')
-                    ->schema([
-                        Toggle::make('image_optimization_enabled')
-                            ->label('Enable Image Optimization')
-                            ->helperText('When enabled, uploaded images are compressed client-side and converted to WebP server-side.'),
-                        TextInput::make('image_webp_quality')
-                            ->label('WebP Quality')
-                            ->numeric()
-                            ->minValue(1)
-                            ->maxValue(100)
-                            ->helperText('Quality for server-side WebP conversion (1-100). Recommended: 80.'),
-                        TextInput::make('image_max_width')
-                            ->label('Max Width (px)')
-                            ->numeric()
-                            ->minValue(100)
-                            ->helperText('Client-side: images wider than this are resized before upload.'),
-                        TextInput::make('image_max_height')
-                            ->label('Max Height (px)')
-                            ->numeric()
-                            ->minValue(100)
-                            ->helperText('Client-side: images taller than this are resized before upload.'),
-                        TextInput::make('image_thumb_size')
-                            ->label('Thumbnail Size (px)')
-                            ->numeric()
-                            ->minValue(50)
-                            ->maxValue(800)
-                            ->helperText('Width & height of generated thumbnail conversions.'),
-                    ]),
-
-                Section::make('Umami Analytics')
-                    ->description('Configure Umami website analytics tracking. API credentials for the admin analytics dashboard are configured in .env.')
-                    ->schema([
-                        Toggle::make('umami_enabled')
-                            ->label('Enable Umami Tracking')
-                            ->helperText('When enabled, the Umami tracking script is added to all pages.'),
-                        TextInput::make('umami_script_url')
-                            ->label('Tracking Script URL')
-                            ->url()
-                            ->placeholder('https://analytics.yourdomain.com/script.js')
-                            ->helperText('The URL to your Umami tracking script.'),
-                        TextInput::make('umami_website_id')
-                            ->label('Website ID')
-                            ->placeholder('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
-                            ->helperText('The Umami Website ID for this site. Also used by the admin analytics dashboard widgets.'),
-                    ]),
-
-                Section::make('State Law Links')
-                    ->description('Set a link per US state to that state\'s acupuncture law page. Members will see a "Your State Laws" link in the sidebar based on their address.')
-                    ->schema([
-                        Repeater::make('state_law_links')
-                            ->label('')
+                Tabs::make('Settings')
+                    ->tabs([
+                        Tabs\Tab::make('General')
+                            ->icon('heroicon-o-cog-6-tooth')
                             ->schema([
-                                Select::make('state')
-                                    ->label('State')
-                                    ->options(array_combine(
-                                        ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'],
-                                        ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'],
-                                    ))
+                                TextInput::make('admin_notification_email')
+                                    ->label('Admin Notification Email')
+                                    ->email()
                                     ->required()
-                                    ->searchable(),
-                                TextInput::make('url')
-                                    ->label('Law Page URL')
+                                    ->helperText('All admin notification emails will be sent to this address.'),
+
+                                Select::make('group_training_fee_type')
+                                    ->label('Group Training Fee Type')
+                                    ->options([
+                                        'flat' => 'Flat Fee ($)',
+                                        'percentage' => 'Percentage (%)',
+                                    ])
+                                    ->required()
+                                    ->helperText('How the transaction fee is calculated for group training requests.'),
+
+                                TextInput::make('group_training_fee_value')
+                                    ->label('Group Training Fee Value')
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(0)
+                                    ->helperText('For flat fee: dollar amount (e.g. 25 = $25.00). For percentage: percent of subtotal (e.g. 5 = 5%).'),
+                            ]),
+
+                        Tabs\Tab::make('Images')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
+                                Toggle::make('image_optimization_enabled')
+                                    ->label('Enable Image Optimization')
+                                    ->helperText('When enabled, uploaded images are compressed client-side and converted to WebP server-side.'),
+                                TextInput::make('image_webp_quality')
+                                    ->label('WebP Quality')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->maxValue(100)
+                                    ->helperText('Quality for server-side WebP conversion (1-100). Recommended: 80.'),
+                                TextInput::make('image_max_width')
+                                    ->label('Max Width (px)')
+                                    ->numeric()
+                                    ->minValue(100)
+                                    ->helperText('Client-side: images wider than this are resized before upload.'),
+                                TextInput::make('image_max_height')
+                                    ->label('Max Height (px)')
+                                    ->numeric()
+                                    ->minValue(100)
+                                    ->helperText('Client-side: images taller than this are resized before upload.'),
+                                TextInput::make('image_thumb_size')
+                                    ->label('Thumbnail Size (px)')
+                                    ->numeric()
+                                    ->minValue(50)
+                                    ->maxValue(800)
+                                    ->helperText('Width & height of generated thumbnail conversions.'),
+                            ]),
+
+                        Tabs\Tab::make('Analytics')
+                            ->icon('heroicon-o-chart-bar')
+                            ->schema([
+                                Toggle::make('umami_enabled')
+                                    ->label('Enable Umami Tracking')
+                                    ->helperText('When enabled, the Umami tracking script is added to all pages.'),
+                                TextInput::make('umami_script_url')
+                                    ->label('Tracking Script URL')
                                     ->url()
-                                    ->required()
-                                    ->placeholder('https://...'),
-                            ])
-                            ->columns(2)
-                            ->addActionLabel('Add State')
-                            ->defaultItems(0)
-                            ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => $state['state'] ?? null),
+                                    ->placeholder('https://analytics.yourdomain.com/script.js')
+                                    ->helperText('The URL to your Umami tracking script.'),
+                                TextInput::make('umami_website_id')
+                                    ->label('Website ID')
+                                    ->placeholder('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
+                                    ->helperText('The Umami Website ID for this site. Also used by the admin analytics dashboard widgets.'),
+                            ]),
+
+                        Tabs\Tab::make('State Laws')
+                            ->icon('heroicon-o-building-library')
+                            ->schema([
+                                Repeater::make('state_law_links')
+                                    ->label('')
+                                    ->helperText('Set a link per US state to that state\'s acupuncture law page. Members will see a "Your State Laws" link in the sidebar based on their address.')
+                                    ->schema([
+                                        Select::make('state')
+                                            ->label('State')
+                                            ->options(array_combine(
+                                                ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'],
+                                                ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'],
+                                            ))
+                                            ->required()
+                                            ->searchable(),
+                                        TextInput::make('url')
+                                            ->label('Law Page URL')
+                                            ->url()
+                                            ->required()
+                                            ->placeholder('https://...'),
+                                    ])
+                                    ->columns(2)
+                                    ->addActionLabel('Add State')
+                                    ->defaultItems(0)
+                                    ->collapsible()
+                                    ->itemLabel(fn (array $state): ?string => $state['state'] ?? null),
+                            ]),
+
+                        Tabs\Tab::make('Stripe')
+                            ->icon('heroicon-o-credit-card')
+                            ->schema([
+                                ViewField::make('stripe_info')
+                                    ->label('')
+                                    ->view('filament.partials.stripe-info'),
+                            ]),
                     ])
-                    ->collapsible(),
+                    ->persistTabInQueryString(),
             ]);
     }
 
