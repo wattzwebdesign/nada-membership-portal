@@ -42,6 +42,7 @@ class Order extends Model
         'status',
         'paid_at',
         'notes',
+        'download_token',
     ];
 
     protected function casts(): array

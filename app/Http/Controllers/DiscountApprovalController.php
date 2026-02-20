@@ -12,8 +12,53 @@ use Illuminate\View\View;
 class DiscountApprovalController extends Controller
 {
     use SafelyNotifies;
+
     /**
-     * Approve a discount request via a token-based link (from admin email).
+     * Show the approval confirmation page (GET).
+     */
+    public function showApprove(Request $request, string $token): View
+    {
+        $discountRequest = DiscountRequest::where('approval_token', $token)->firstOrFail();
+
+        if (!$discountRequest->isTokenValid()) {
+            return view('discount-approvals.invalid', [
+                'reason' => $discountRequest->status !== 'pending'
+                    ? 'This discount request has already been ' . $discountRequest->status . '.'
+                    : 'This approval link has expired.',
+            ]);
+        }
+
+        return view('discount-approvals.confirm', [
+            'discountRequest' => $discountRequest->load('user'),
+            'action' => 'approve',
+            'token' => $token,
+        ]);
+    }
+
+    /**
+     * Show the denial confirmation page (GET).
+     */
+    public function showDeny(Request $request, string $token): View
+    {
+        $discountRequest = DiscountRequest::where('approval_token', $token)->firstOrFail();
+
+        if (!$discountRequest->isTokenValid()) {
+            return view('discount-approvals.invalid', [
+                'reason' => $discountRequest->status !== 'pending'
+                    ? 'This discount request has already been ' . $discountRequest->status . '.'
+                    : 'This approval link has expired.',
+            ]);
+        }
+
+        return view('discount-approvals.confirm', [
+            'discountRequest' => $discountRequest->load('user'),
+            'action' => 'deny',
+            'token' => $token,
+        ]);
+    }
+
+    /**
+     * Approve a discount request (POST).
      */
     public function approve(Request $request, string $token): View
     {
@@ -35,11 +80,11 @@ class DiscountApprovalController extends Controller
         ]);
 
         // Update the user's discount status
-        $discountRequest->user->update([
-            'discount_type' => $discountRequest->discount_type,
-            'discount_approved' => true,
-            'discount_approved_at' => now(),
-        ]);
+        $user = $discountRequest->user;
+        $user->discount_type = $discountRequest->discount_type;
+        $user->discount_approved = true;
+        $user->discount_approved_at = now();
+        $user->save();
 
         $this->safeNotify($discountRequest->user, new DiscountApprovedNotification($discountRequest));
 
@@ -49,7 +94,7 @@ class DiscountApprovalController extends Controller
     }
 
     /**
-     * Deny a discount request via a token-based link (from admin email).
+     * Deny a discount request (POST).
      */
     public function deny(Request $request, string $token): View
     {

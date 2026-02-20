@@ -55,8 +55,10 @@ class VendorProfile extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('logo')->singleFile();
-        $this->addMediaCollection('gallery');
+        $this->addMediaCollection('logo')->singleFile()
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+        $this->addMediaCollection('gallery')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
     }
 
     public function registerMediaConversions(?Media $media = null): void

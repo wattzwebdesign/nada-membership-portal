@@ -30,7 +30,8 @@ class StripeService
             'metadata' => ['user_id' => $user->id],
         ]);
 
-        $user->update(['stripe_customer_id' => $customer->id]);
+        $user->stripe_customer_id = $customer->id;
+        $user->save();
 
         return $customer;
     }

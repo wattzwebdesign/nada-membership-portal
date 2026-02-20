@@ -16,4 +16,15 @@ class EditUser extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Handle fields that are not in $fillable — apply them directly
+        if (array_key_exists('discount_approved', $data)) {
+            $this->record->discount_approved = $data['discount_approved'];
+            unset($data['discount_approved']);
+        }
+
+        return $data;
+    }
 }

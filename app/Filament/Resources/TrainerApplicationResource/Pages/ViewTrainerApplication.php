@@ -39,11 +39,11 @@ class ViewTrainerApplication extends ViewRecord
                     ]);
 
                     $this->record->user->assignRole('registered_trainer');
-                    $this->record->user->update([
-                        'trainer_application_status' => 'approved',
-                        'trainer_approved_at' => now(),
-                        'trainer_approved_by' => auth()->id(),
-                    ]);
+                    $user = $this->record->user;
+                    $user->trainer_application_status = 'approved';
+                    $user->trainer_approved_at = now();
+                    $user->trainer_approved_by = auth()->id();
+                    $user->save();
 
                     try {
                         $this->record->user->notify(new TrainerApplicationApprovedNotification($this->record));
@@ -80,9 +80,8 @@ class ViewTrainerApplication extends ViewRecord
                         'reviewed_at' => now(),
                     ]);
 
-                    $this->record->user->update([
-                        'trainer_application_status' => 'denied',
-                    ]);
+                    $this->record->user->trainer_application_status = 'denied';
+                    $this->record->user->save();
 
                     try {
                         $this->record->user->notify(new TrainerApplicationDeniedNotification($this->record));

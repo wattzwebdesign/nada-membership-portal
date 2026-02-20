@@ -49,8 +49,10 @@ class TrainerApplication extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('letter_of_nomination')->singleFile();
-        $this->addMediaCollection('application_submission')->singleFile();
+        $this->addMediaCollection('letter_of_nomination')->singleFile()
+            ->acceptsMimeTypes(['application/pdf', 'image/jpeg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
+        $this->addMediaCollection('application_submission')->singleFile()
+            ->acceptsMimeTypes(['application/pdf', 'image/jpeg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
     }
 
     public function scopePending($query)

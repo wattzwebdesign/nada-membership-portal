@@ -56,9 +56,8 @@ class ViewVendorApplication extends ViewRecord
                     ]);
 
                     $user->assignRole('vendor');
-                    $user->update([
-                        'vendor_application_status' => 'approved',
-                    ]);
+                    $user->vendor_application_status = 'approved';
+                    $user->save();
 
                     try {
                         $user->notify(new VendorApplicationApprovedNotification($this->record));
@@ -99,9 +98,8 @@ class ViewVendorApplication extends ViewRecord
                     $notifiable = $this->record->user ?? (new User(['email' => $this->record->email]));
 
                     if ($this->record->user) {
-                        $this->record->user->update([
-                            'vendor_application_status' => 'denied',
-                        ]);
+                        $this->record->user->vendor_application_status = 'denied';
+                        $this->record->user->save();
                     }
 
                     try {

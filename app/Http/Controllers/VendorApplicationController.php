@@ -58,7 +58,8 @@ class VendorApplicationController extends Controller
         ]);
 
         if ($user) {
-            $user->update(['vendor_application_status' => 'pending']);
+            $user->vendor_application_status = 'pending';
+            $user->save();
         }
 
         $this->safeNotifyRoute(SiteSetting::adminEmail(), new VendorApplicationSubmittedNotification($application));

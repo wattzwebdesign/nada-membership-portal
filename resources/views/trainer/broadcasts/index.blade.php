@@ -214,7 +214,8 @@
     <script>
         function formatBody(text) {
             if (!text) return '';
-            return text.split(/\n\s*\n/).map(p => '<p>' + p.trim().replace(/\n/g, '<br>') + '</p>').join('');
+            var escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+            return escaped.split(/\n\s*\n/).map(p => '<p>' + p.trim().replace(/\n/g, '<br>') + '</p>').join('');
         }
 
         function broadcastForm() {

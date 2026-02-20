@@ -36,6 +36,13 @@ class StripeWebhookController extends Controller
 
     public function handle(Request $request): Response
     {
+        $webhookSecret = config('services.stripe.webhook_secret');
+        if (empty($webhookSecret)) {
+            Log::critical('Stripe webhook secret is not configured.');
+
+            return response('Webhook configuration error', 500);
+        }
+
         $payload = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
 
@@ -43,7 +50,7 @@ class StripeWebhookController extends Controller
             $event = Webhook::constructEvent(
                 $payload,
                 $sigHeader,
-                config('services.stripe.webhook_secret')
+                $webhookSecret
             );
         } catch (\Exception $e) {
             Log::error('Stripe webhook signature verification failed.', [
@@ -335,7 +342,8 @@ class StripeWebhookController extends Controller
 
         // Ensure the Stripe customer ID is stored on the user.
         if (isset($session->customer) && $user->stripe_customer_id !== $session->customer) {
-            $user->update(['stripe_customer_id' => $session->customer]);
+            $user->stripe_customer_id = $session->customer;
+            $user->save();
         }
 
         // Handle training registration payment

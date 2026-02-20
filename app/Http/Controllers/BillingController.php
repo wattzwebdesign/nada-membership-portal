@@ -8,6 +8,7 @@ use App\Notifications\PaymentMethodUpdatedNotification;
 use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class BillingController extends Controller
@@ -89,7 +90,12 @@ class BillingController extends Controller
             return redirect()->route('billing.index')
                 ->with('success', 'Your payment method has been updated.');
         } catch (\Stripe\Exception\ApiErrorException $e) {
-            return back()->with('error', 'Failed to update payment method: ' . $e->getMessage());
+            Log::error('Failed to update payment method.', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Failed to update payment method. Please try again or contact support.');
         }
     }
 
@@ -112,7 +118,12 @@ class BillingController extends Controller
             return redirect()->route('billing.index')
                 ->with('success', 'Your card has been removed. Auto-payments are now stopped.');
         } catch (\Stripe\Exception\ApiErrorException $e) {
-            return back()->with('error', 'Failed to remove payment method: ' . $e->getMessage());
+            Log::error('Failed to remove payment method.', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Failed to remove payment method. Please try again or contact support.');
         }
     }
 }

@@ -46,7 +46,7 @@ Route::get('/terms', [TermsController::class, 'show'])->name('terms.show');
 
 // Vendor Application (public form, no auth required)
 Route::get('/sell', [VendorApplicationController::class, 'create'])->name('vendor-application.create');
-Route::post('/sell', [VendorApplicationController::class, 'store'])->name('vendor-application.store');
+Route::post('/sell', [VendorApplicationController::class, 'store'])->middleware('throttle:5,1')->name('vendor-application.store');
 Route::get('/sell/thank-you', [VendorApplicationController::class, 'success'])->name('vendor-application.success');
 
 // Public Shop (no auth required)
@@ -66,13 +66,15 @@ Route::get('/shop/orders/{order}/download/{orderItem}', [ShopCheckoutController:
 
 // Group Training (public form, no auth)
 Route::get('/group-training', [GroupTrainingController::class, 'create'])->name('group-training.create');
-Route::post('/group-training', [GroupTrainingController::class, 'store'])->name('group-training.store');
+Route::post('/group-training', [GroupTrainingController::class, 'store'])->middleware('throttle:5,1')->name('group-training.store');
 Route::get('/group-training/success', [GroupTrainingController::class, 'success'])->name('group-training.success');
 Route::get('/group-training/cancel', [GroupTrainingController::class, 'cancel'])->name('group-training.cancel');
 
 // Admin Discount Approval (token-based, no auth required — links sent via email)
-Route::get('/admin/discount-requests/{token}/approve', [DiscountApprovalController::class, 'approve'])->name('discount.approve');
-Route::get('/admin/discount-requests/{token}/deny', [DiscountApprovalController::class, 'deny'])->name('discount.deny');
+Route::get('/admin/discount-requests/{token}/approve', [DiscountApprovalController::class, 'showApprove'])->name('discount.approve');
+Route::post('/admin/discount-requests/{token}/approve', [DiscountApprovalController::class, 'approve'])->name('discount.approve.confirm');
+Route::get('/admin/discount-requests/{token}/deny', [DiscountApprovalController::class, 'showDeny'])->name('discount.deny');
+Route::post('/admin/discount-requests/{token}/deny', [DiscountApprovalController::class, 'deny'])->name('discount.deny.confirm');
 
 // NDA Agreement (auth required, but before verified/nda middleware)
 Route::middleware(['auth'])->group(function () {

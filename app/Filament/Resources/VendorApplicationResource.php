@@ -194,9 +194,8 @@ class VendorApplicationResource extends Resource
                         ]);
 
                         $user->assignRole('vendor');
-                        $user->update([
-                            'vendor_application_status' => 'approved',
-                        ]);
+                        $user->vendor_application_status = 'approved';
+                        $user->save();
 
                         try {
                             $user->notify(new VendorApplicationApprovedNotification($record));
@@ -235,9 +234,8 @@ class VendorApplicationResource extends Resource
                         $notifiable = $record->user ?? (new User(['email' => $record->email]));
 
                         if ($record->user) {
-                            $record->user->update([
-                                'vendor_application_status' => 'denied',
-                            ]);
+                            $record->user->vendor_application_status = 'denied';
+                            $record->user->save();
                         }
 
                         try {

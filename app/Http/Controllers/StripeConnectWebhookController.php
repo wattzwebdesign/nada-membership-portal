@@ -21,6 +21,13 @@ class StripeConnectWebhookController extends Controller
 
     public function handle(Request $request): Response
     {
+        $webhookSecret = config('services.stripe.connect_webhook_secret');
+        if (empty($webhookSecret)) {
+            Log::critical('Stripe Connect webhook secret is not configured.');
+
+            return response('Webhook configuration error', 500);
+        }
+
         $payload = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
 
@@ -28,7 +35,7 @@ class StripeConnectWebhookController extends Controller
             $event = Webhook::constructEvent(
                 $payload,
                 $sigHeader,
-                config('services.stripe.connect_webhook_secret')
+                $webhookSecret
             );
         } catch (\Exception $e) {
             Log::error('Stripe Connect webhook signature verification failed.', [

@@ -38,12 +38,12 @@ class ViewDiscountRequest extends ViewRecord
                         'reviewed_at' => now(),
                     ]);
 
-                    $this->record->user->update([
-                        'discount_type' => $this->record->discount_type,
-                        'discount_approved' => true,
-                        'discount_approved_at' => now(),
-                        'discount_approved_by' => auth()->id(),
-                    ]);
+                    $user = $this->record->user;
+                    $user->discount_type = $this->record->discount_type;
+                    $user->discount_approved = true;
+                    $user->discount_approved_at = now();
+                    $user->discount_approved_by = auth()->id();
+                    $user->save();
 
                     try {
                         $this->record->user->notify(new DiscountApprovedNotification($this->record));

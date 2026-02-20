@@ -284,12 +284,12 @@ class DiscountRequestResource extends Resource
                             'reviewed_at' => now(),
                         ]);
 
-                        $record->user->update([
-                            'discount_type' => $record->discount_type,
-                            'discount_approved' => true,
-                            'discount_approved_at' => now(),
-                            'discount_approved_by' => auth()->id(),
-                        ]);
+                        $user = $record->user;
+                        $user->discount_type = $record->discount_type;
+                        $user->discount_approved = true;
+                        $user->discount_approved_at = now();
+                        $user->discount_approved_by = auth()->id();
+                        $user->save();
 
                         try {
                             $record->user->notify(new DiscountApprovedNotification($record));

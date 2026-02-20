@@ -298,11 +298,11 @@ class TrainerApplicationResource extends Resource
                         ]);
 
                         $record->user->assignRole('registered_trainer');
-                        $record->user->update([
-                            'trainer_application_status' => 'approved',
-                            'trainer_approved_at' => now(),
-                            'trainer_approved_by' => auth()->id(),
-                        ]);
+                        $user = $record->user;
+                        $user->trainer_application_status = 'approved';
+                        $user->trainer_approved_at = now();
+                        $user->trainer_approved_by = auth()->id();
+                        $user->save();
 
                         try {
                             $record->user->notify(new TrainerApplicationApprovedNotification($record));
@@ -337,9 +337,8 @@ class TrainerApplicationResource extends Resource
                             'reviewed_at' => now(),
                         ]);
 
-                        $record->user->update([
-                            'trainer_application_status' => 'denied',
-                        ]);
+                        $record->user->trainer_application_status = 'denied';
+                        $record->user->save();
 
                         try {
                             $record->user->notify(new TrainerApplicationDeniedNotification($record));

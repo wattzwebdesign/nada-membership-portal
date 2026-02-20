@@ -34,13 +34,13 @@ class WalletPassController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return back()->with('error', 'Unable to generate your wallet pass: ' . $e->getMessage());
+            return back()->with('error', 'Unable to generate your wallet pass. Please try again or contact support.');
         }
 
         if (empty($pkpass)) {
             Log::error('Apple Wallet pass generation returned empty content.', ['user_id' => $user->id]);
 
-            return back()->with('error', 'Wallet pass generated empty content. Check server logs.');
+            return back()->with('error', 'Unable to generate your wallet pass. Please try again or contact support.');
         }
 
         Log::info('Apple Wallet pass generated.', [
@@ -92,11 +92,11 @@ class WalletPassController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return back()->with('error', 'Unable to generate your training pass: ' . $e->getMessage());
+            return back()->with('error', 'Unable to generate your training pass. Please try again or contact support.');
         }
 
         if (empty($pkpass)) {
-            return back()->with('error', 'Training pass generated empty content. Check server logs.');
+            return back()->with('error', 'Unable to generate your training pass. Please try again or contact support.');
         }
 
         return response($pkpass, 200, [
@@ -132,7 +132,7 @@ class WalletPassController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return back()->with('error', 'Unable to generate your training pass: ' . $e->getMessage());
+            return back()->with('error', 'Unable to generate your training pass. Please try again or contact support.');
         }
 
         return redirect()->away($url);

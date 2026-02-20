@@ -56,7 +56,17 @@ class Resource extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('attachments')
-            ->acceptsFile(fn ($file) => $file->size <= 25 * 1024 * 1024); // 25 MB
+            ->acceptsFile(fn ($file) => $file->size <= 25 * 1024 * 1024)
+            ->acceptsMimeTypes([
+                'application/pdf',
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
     }
 
     public function canViewFullContent(): bool

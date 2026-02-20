@@ -102,14 +102,16 @@ class ImportSubscriptions extends Command
                         'last_name' => $nameParts['last'],
                         'email' => $customer['email'],
                         'password' => Hash::make(Str::random(24)),
-                        'stripe_customer_id' => $customer['id'],
                         'email_verified_at' => now(),
                     ]);
+                    $user->stripe_customer_id = $customer['id'];
+                    $user->save();
                     $user->assignRole('member');
                     $importedUsers++;
                     $importLog[] = ['type' => 'user', 'id' => $user->id];
                 } elseif (!$user->stripe_customer_id) {
-                    $user->update(['stripe_customer_id' => $customer['id']]);
+                    $user->stripe_customer_id = $customer['id'];
+                    $user->save();
                 }
 
                 // Create subscription

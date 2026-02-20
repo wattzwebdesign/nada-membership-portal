@@ -84,7 +84,7 @@
                     <div class="space-y-2">
                         @foreach ($order->items as $item)
                             @if ($item->is_digital && $item->product)
-                                <a href="{{ route('shop.download', ['order' => $order, 'orderItem' => $item]) }}"
+                                <a href="{{ route('shop.download', ['order' => $order, 'orderItem' => $item]) }}{{ ! $order->user_id && $order->download_token ? '?token=' . $order->download_token : '' }}"
                                    class="inline-flex items-center px-4 py-2 border border-brand-primary text-sm font-medium rounded-md text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                     Download {{ $item->product_title }}

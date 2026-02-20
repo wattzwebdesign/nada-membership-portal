@@ -117,6 +117,7 @@ class ShopCheckoutController extends Controller
                 'total_cents' => $total,
                 'currency' => 'usd',
                 'status' => 'pending',
+                'download_token' => bin2hex(random_bytes(32)),
             ]));
 
             // Create order items
@@ -216,12 +217,20 @@ class ShopCheckoutController extends Controller
         return view('public.shop.cancel');
     }
 
-    public function download(Order $order, OrderItem $orderItem): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function download(Request $request, Order $order, OrderItem $orderItem): \Symfony\Component\HttpFoundation\StreamedResponse
     {
-        $user = request()->user();
+        $user = $request->user();
 
-        if ($order->user_id && (! $user || $user->id !== $order->user_id)) {
-            abort(403);
+        if ($order->user_id) {
+            // Authenticated order: require the owning user
+            if (! $user || $user->id !== $order->user_id) {
+                abort(403);
+            }
+        } else {
+            // Guest order: require a valid download token
+            if (! $order->download_token || $request->query('token') !== $order->download_token) {
+                abort(403);
+            }
         }
 
         if ($orderItem->order_id !== $order->id) {

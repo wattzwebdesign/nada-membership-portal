@@ -221,7 +221,8 @@ class TrainerApplicationController extends Controller
             }
 
             // Update user status
-            $user->update(['trainer_application_status' => 'pending']);
+            $user->trainer_application_status = 'pending';
+            $user->save();
 
             // Clear session data
             $request->session()->forget('trainer_application');
