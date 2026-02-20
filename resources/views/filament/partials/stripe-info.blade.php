@@ -18,88 +18,90 @@
             <p class="text-sm text-red-700">{{ $this->stripeInfo['error'] }}</p>
         </div>
     @elseif ($this->stripeInfo['configured'])
-        {{-- Account Details --}}
-        @if (isset($this->stripeInfo['account']))
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {{-- Account Details --}}
+            @if (isset($this->stripeInfo['account']))
+                <div class="rounded-lg border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700 overflow-hidden">
+                    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Account Details</h4>
+                    </div>
+                    <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Account ID</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0 font-mono">{{ $this->stripeInfo['account']['id'] }}</dd>
+                        </div>
+                        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Business Name</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{{ $this->stripeInfo['account']['business_name'] }}</dd>
+                        </div>
+                        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{{ $this->stripeInfo['account']['email'] }}</dd>
+                        </div>
+                        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Country / Currency</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{{ $this->stripeInfo['account']['country'] }} / {{ $this->stripeInfo['account']['default_currency'] }}</dd>
+                        </div>
+                        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Charges Enabled</dt>
+                            <dd class="mt-1 text-sm sm:col-span-2 sm:mt-0">
+                                @if ($this->stripeInfo['account']['charges_enabled'])
+                                    <span class="inline-flex items-center gap-1 text-green-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Yes</span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 text-red-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg> No</span>
+                                @endif
+                            </dd>
+                        </div>
+                        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Payouts Enabled</dt>
+                            <dd class="mt-1 text-sm sm:col-span-2 sm:mt-0">
+                                @if ($this->stripeInfo['account']['payouts_enabled'])
+                                    <span class="inline-flex items-center gap-1 text-green-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Yes</span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 text-red-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg> No</span>
+                                @endif
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            @endif
+
+            {{-- API Keys --}}
             <div class="rounded-lg border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700 overflow-hidden">
                 <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Account Details</h4>
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white">API Configuration</h4>
                 </div>
                 <dl class="divide-y divide-gray-200 dark:divide-gray-700">
                     <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Account ID</dt>
-                        <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0 font-mono">{{ $this->stripeInfo['account']['id'] }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Publishable Key</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0 font-mono">{{ $this->stripeInfo['publishable_key_last4'] }}</dd>
                     </div>
                     <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Business Name</dt>
-                        <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{{ $this->stripeInfo['account']['business_name'] }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Secret Key</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0 font-mono">{{ $this->stripeInfo['secret_key_last4'] }}</dd>
                     </div>
                     <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
-                        <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{{ $this->stripeInfo['account']['email'] }}</dd>
-                    </div>
-                    <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Country / Currency</dt>
-                        <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{{ $this->stripeInfo['account']['country'] }} / {{ $this->stripeInfo['account']['default_currency'] }}</dd>
-                    </div>
-                    <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Charges Enabled</dt>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Webhook Secret</dt>
                         <dd class="mt-1 text-sm sm:col-span-2 sm:mt-0">
-                            @if ($this->stripeInfo['account']['charges_enabled'])
-                                <span class="inline-flex items-center gap-1 text-green-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Yes</span>
+                            @if ($this->stripeInfo['webhook_configured'])
+                                <span class="inline-flex items-center gap-1 text-green-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Configured</span>
                             @else
-                                <span class="inline-flex items-center gap-1 text-red-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg> No</span>
+                                <span class="inline-flex items-center gap-1 text-yellow-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Not configured</span>
                             @endif
                         </dd>
                     </div>
                     <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Payouts Enabled</dt>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Connect Webhook Secret</dt>
                         <dd class="mt-1 text-sm sm:col-span-2 sm:mt-0">
-                            @if ($this->stripeInfo['account']['payouts_enabled'])
-                                <span class="inline-flex items-center gap-1 text-green-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Yes</span>
+                            @if ($this->stripeInfo['connect_webhook_configured'])
+                                <span class="inline-flex items-center gap-1 text-green-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Configured</span>
                             @else
-                                <span class="inline-flex items-center gap-1 text-red-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg> No</span>
+                                <span class="inline-flex items-center gap-1 text-yellow-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Not configured</span>
                             @endif
                         </dd>
                     </div>
                 </dl>
             </div>
-        @endif
-
-        {{-- API Keys --}}
-        <div class="rounded-lg border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700 overflow-hidden">
-            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                <h4 class="text-sm font-semibold text-gray-900 dark:text-white">API Configuration</h4>
-            </div>
-            <dl class="divide-y divide-gray-200 dark:divide-gray-700">
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Publishable Key</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0 font-mono">{{ $this->stripeInfo['publishable_key_last4'] }}</dd>
-                </div>
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Secret Key</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0 font-mono">{{ $this->stripeInfo['secret_key_last4'] }}</dd>
-                </div>
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Webhook Secret</dt>
-                    <dd class="mt-1 text-sm sm:col-span-2 sm:mt-0">
-                        @if ($this->stripeInfo['webhook_configured'])
-                            <span class="inline-flex items-center gap-1 text-green-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Configured</span>
-                        @else
-                            <span class="inline-flex items-center gap-1 text-yellow-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Not configured</span>
-                        @endif
-                    </dd>
-                </div>
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Connect Webhook Secret</dt>
-                    <dd class="mt-1 text-sm sm:col-span-2 sm:mt-0">
-                        @if ($this->stripeInfo['connect_webhook_configured'])
-                            <span class="inline-flex items-center gap-1 text-green-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Configured</span>
-                        @else
-                            <span class="inline-flex items-center gap-1 text-yellow-700"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Not configured</span>
-                        @endif
-                    </dd>
-                </div>
-            </dl>
         </div>
 
         {{-- Webhook Endpoints --}}
