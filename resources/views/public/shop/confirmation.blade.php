@@ -139,11 +139,13 @@
     </div>
 
     <script>
-    if (typeof umami !== 'undefined') {
-        umami.track('Store Purchase', {
-            order: '{{ $order->order_number }}',
-            total: '{{ $order->total_formatted }}'
-        });
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof umami !== 'undefined') {
+            umami.track('Store Purchase', {
+                order: '{{ $order->order_number }}',
+                total: '{{ $order->total_formatted }}'
+            });
+        }
+    });
     </script>
 </x-public-layout>

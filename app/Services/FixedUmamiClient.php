@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Log;
 use Schmeits\FilamentUmami\Concerns\UmamiClient;
 
 class FixedUmamiClient extends UmamiClient
@@ -10,8 +9,7 @@ class FixedUmamiClient extends UmamiClient
     /**
      * Fix compatibility with newer Umami API versions:
      * - Strip null params (Umami treats them as active filters)
-     * - Map type=url → type=path (renamed in newer API)
-     * - Log responses for debugging
+     * - Normalize response formats for stats and active endpoints
      */
     public function callApi(string $url, array $options): array
     {
@@ -19,13 +17,18 @@ class FixedUmamiClient extends UmamiClient
 
         $result = parent::callApi($url, $options);
 
-        // Temporary debug logging — remove after confirming stats work
-        if (str_contains($url, '/stats') || str_contains($url, '/active')) {
-            Log::info('Umami API debug', [
-                'url' => $url,
-                'options' => $options,
-                'response' => $result,
-            ]);
+        // Active endpoint: new API returns {"visitors": N}, widget expects {"x": N}
+        if (str_contains($url, '/active') && isset($result['visitors']) && ! isset($result['x'])) {
+            $result['x'] = $result['visitors'];
+        }
+
+        // Stats endpoint: new API returns flat values, widget expects nested {"value": N}
+        if (str_contains($url, '/stats')) {
+            foreach (['pageviews', 'visitors', 'visits', 'bounces', 'totaltime'] as $key) {
+                if (isset($result[$key]) && ! is_array($result[$key])) {
+                    $result[$key] = ['value' => $result[$key]];
+                }
+            }
         }
 
         return $result;
