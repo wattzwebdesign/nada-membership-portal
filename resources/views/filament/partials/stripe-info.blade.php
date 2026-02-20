@@ -18,7 +18,7 @@
             <p class="text-sm text-red-700">{{ $this->stripeInfo['error'] }}</p>
         </div>
     @elseif ($this->stripeInfo['configured'])
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {{-- Account Details --}}
             @if (isset($this->stripeInfo['account']))
                 <div class="rounded-lg border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700 overflow-hidden">
