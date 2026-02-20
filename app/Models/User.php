@@ -26,6 +26,7 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         'email',
         'password',
         'phone',
+        'organization',
         'address_line_1',
         'address_line_2',
         'city',

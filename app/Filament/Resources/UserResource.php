@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\DiscountType;
+use App\Filament\Exports\UserExporter;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use App\Services\WalletPassService;
@@ -11,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -51,6 +53,8 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('phone')
                             ->tel()
                             ->maxLength(20),
+                        Forms\Components\TextInput::make('organization')
+                            ->maxLength(255),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Address')
@@ -147,6 +151,13 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('organization')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('city')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('state')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('discount_type')
                     ->badge()
                     ->formatStateUsing(fn (DiscountType $state) => $state->label()),
@@ -193,6 +204,12 @@ class UserResource extends Resource
                         true: fn (Builder $query) => $query->whereNotNull('nda_accepted_at'),
                         false: fn (Builder $query) => $query->whereNull('nda_accepted_at'),
                     ),
+                Tables\Filters\SelectFilter::make('state')
+                    ->options(array_combine(
+                        ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'],
+                        ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'],
+                    ))
+                    ->searchable(),
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
@@ -242,6 +259,8 @@ class UserResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        ->exporter(UserExporter::class),
                 ]),
             ]);
     }

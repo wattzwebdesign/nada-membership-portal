@@ -47,7 +47,18 @@
                     <div class="sm:col-span-2">
                         <label for="company_email" class="block text-sm font-medium text-gray-700">Email Address</label>
                         <input type="email" name="company_email" id="company_email" value="{{ old('company_email') }}" required
+                               x-model="companyEmail"
+                               @blur="checkEmail()"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        <div x-show="emailWarning" x-transition
+                             class="mt-2 rounded-md bg-yellow-50 border border-yellow-200 p-3">
+                            <div class="flex">
+                                <svg class="h-5 w-5 text-yellow-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.168 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                                </svg>
+                                <p class="ml-2 text-sm text-yellow-700">This appears to be a work email. We recommend using a personal email address for training correspondence.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -206,6 +217,9 @@
                 feeType: '{{ $feeType }}',
                 feeValue: parseFloat('{{ $feeValue }}'),
                 members: [],
+                companyEmail: '{{ old('company_email') }}',
+                emailWarning: false,
+                personalDomains: ['gmail.com','yahoo.com','hotmail.com','outlook.com','aol.com','icloud.com','me.com','mac.com','protonmail.com','proton.me','live.com','msn.com','ymail.com','comcast.net','att.net','verizon.net','sbcglobal.net','cox.net','charter.net'],
 
                 get costPerTicketCents() {
                     return Math.round(parseFloat(this.costPerTicketDollars || 0) * 100);
@@ -269,6 +283,17 @@
                         this.members.splice(index, 1);
                         this.numberOfTickets = this.members.length;
                     }
+                },
+
+                checkEmail() {
+                    const email = (this.companyEmail || '').trim().toLowerCase();
+                    const atIndex = email.indexOf('@');
+                    if (atIndex === -1 || atIndex === email.length - 1) {
+                        this.emailWarning = false;
+                        return;
+                    }
+                    const domain = email.substring(atIndex + 1);
+                    this.emailWarning = domain.length > 0 && !this.personalDomains.includes(domain);
                 },
 
                 updatePricing() {

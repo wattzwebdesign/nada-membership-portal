@@ -29,6 +29,18 @@ class TrainerApplicationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'status';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getModel()::where('status', 'pending')->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
+
     public static function getGloballySearchableAttributes(): array
     {
         return ['user.email', 'user.first_name', 'user.last_name'];
