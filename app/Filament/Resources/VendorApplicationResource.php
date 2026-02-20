@@ -39,6 +39,11 @@ class VendorApplicationResource extends Resource
         ];
     }
 
+    public static function getGlobalSearchResultUrl(\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return static::getUrl('view', ['record' => $record]);
+    }
+
     public static function getNavigationBadge(): ?string
     {
         $count = static::getModel()::where('status', 'pending')->count();
