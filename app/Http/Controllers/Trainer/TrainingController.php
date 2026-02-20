@@ -6,6 +6,7 @@ use App\Enums\TrainingStatus;
 use App\Enums\TrainingType;
 use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
+use App\Models\GroupTrainingRequest;
 use App\Models\Training;
 use App\Models\TrainingInvitee;
 use App\Models\User;
@@ -59,8 +60,23 @@ class TrainingController extends Controller
             ]);
         }
 
+        // Load available group requests for the dropdown (paid, no training linked yet)
+        $availableRequests = GroupTrainingRequest::where('trainer_id', $user->id)
+            ->whereNotNull('paid_at')
+            ->whereDoesntHave('training')
+            ->orderByDesc('created_at')
+            ->get();
+
+        // Pre-fill from a specific request if ?from_request=ID is present
+        $fromRequest = null;
+        if ($request->has('from_request')) {
+            $fromRequest = $availableRequests->firstWhere('id', $request->input('from_request'));
+        }
+
         return view('trainer.trainings.create', [
             'trainingTypes' => TrainingType::cases(),
+            'availableRequests' => $availableRequests,
+            'fromRequest' => $fromRequest,
         ]);
     }
 
@@ -91,7 +107,23 @@ class TrainingController extends Controller
             'is_group' => ['boolean'],
             'invitees' => ['array'],
             'invitees.*' => ['nullable', 'email', 'max:255'],
+            'group_training_request_id' => ['nullable', 'integer', 'exists:group_training_requests,id'],
         ]);
+
+        // Verify ownership and eligibility of linked group request
+        if (!empty($validated['group_training_request_id'])) {
+            $groupRequest = GroupTrainingRequest::where('id', $validated['group_training_request_id'])
+                ->where('trainer_id', $request->user()->id)
+                ->whereNotNull('paid_at')
+                ->whereDoesntHave('training')
+                ->first();
+
+            if (!$groupRequest) {
+                return redirect()->back()->withInput()->withErrors([
+                    'group_training_request_id' => 'This group training request is not available.',
+                ]);
+            }
+        }
 
         // Group trainings are always free
         $isGroup = !empty($validated['is_group']);

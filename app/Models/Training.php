@@ -34,6 +34,7 @@ class Training extends Model
         'status',
         'is_group',
         'denied_reason',
+        'group_training_request_id',
     ];
 
     protected function casts(): array
@@ -55,6 +56,11 @@ class Training extends Model
     public function trainer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'trainer_id');
+    }
+
+    public function groupTrainingRequest(): BelongsTo
+    {
+        return $this->belongsTo(GroupTrainingRequest::class);
     }
 
     public function registrations(): HasMany

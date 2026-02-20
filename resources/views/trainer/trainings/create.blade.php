@@ -12,14 +12,33 @@
                     <h3 class="text-lg font-semibold mb-2 text-brand-primary">New Training</h3>
                     <p class="text-sm text-gray-500 mb-6">Fill out the details below to create a new training. It will be submitted for admin approval before being published.</p>
 
+                    @if(isset($availableRequests) && $availableRequests->count() > 0)
+                        <div class="mb-6 p-4 border border-brand-secondary/30 rounded-lg bg-amber-50/50">
+                            <label for="from_request_select" class="block text-sm font-medium text-gray-700 mb-1">Create from Group Request</label>
+                            <p class="text-xs text-gray-500 mb-2">Select a paid group training request to pre-fill the form.</p>
+                            <select id="from_request_select" onchange="if(this.value) window.location='{{ route('trainer.trainings.create') }}?from_request=' + this.value; else window.location='{{ route('trainer.trainings.create') }}';" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm">
+                                <option value="">-- None (blank form) --</option>
+                                @foreach($availableRequests as $req)
+                                    <option value="{{ $req->id }}" {{ (isset($fromRequest) && $fromRequest && $fromRequest->id === $req->id) ? 'selected' : '' }}>
+                                        {{ $req->training_name }} &mdash; {{ $req->company_full_name }} ({{ $req->training_date->format('M j, Y') }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('trainer.trainings.store') }}" x-data="trainingForm()">
                         @csrf
+
+                        @if(isset($fromRequest) && $fromRequest)
+                            <input type="hidden" name="group_training_request_id" value="{{ $fromRequest->id }}">
+                        @endif
 
                         <div class="space-y-6">
                             {{-- Title --}}
                             <div>
                                 <label for="title" class="block text-sm font-medium text-gray-700">Title *</label>
-                                <input type="text" name="title" id="title" value="{{ old('title') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="e.g., NADA ADS Training - Spring 2026">
+                                <input type="text" name="title" id="title" value="{{ old('title', isset($fromRequest) && $fromRequest ? $fromRequest->training_name : '') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="e.g., NADA ADS Training - Spring 2026">
                                 @error('title')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -37,10 +56,11 @@
                             {{-- Type --}}
                             <div>
                                 <label for="type" class="block text-sm font-medium text-gray-700">Training Type *</label>
+                                @php $defaultType = old('type', isset($fromRequest) && $fromRequest ? 'in_person' : ''); @endphp
                                 <select name="type" id="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" onchange="toggleLocationFields()">
-                                    <option value="in_person" {{ old('type') === 'in_person' ? 'selected' : '' }}>In Person</option>
-                                    <option value="virtual" {{ old('type') === 'virtual' ? 'selected' : '' }}>Virtual</option>
-                                    <option value="hybrid" {{ old('type') === 'hybrid' ? 'selected' : '' }}>Hybrid</option>
+                                    <option value="in_person" {{ $defaultType === 'in_person' || !$defaultType ? 'selected' : '' }}>In Person</option>
+                                    <option value="virtual" {{ $defaultType === 'virtual' ? 'selected' : '' }}>Virtual</option>
+                                    <option value="hybrid" {{ $defaultType === 'hybrid' ? 'selected' : '' }}>Hybrid</option>
                                 </select>
                                 @error('type')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -58,7 +78,7 @@
                                 </div>
                                 <div>
                                     <label for="location_address" class="block text-sm font-medium text-gray-700">Location Address</label>
-                                    <input type="text" name="location_address" id="location_address" value="{{ old('location_address') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="e.g., 123 Main St, New York, NY 10001">
+                                    <input type="text" name="location_address" id="location_address" value="{{ old('location_address', isset($fromRequest) && $fromRequest ? $fromRequest->training_city . ', ' . $fromRequest->training_state : '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="e.g., 123 Main St, New York, NY 10001">
                                     @error('location_address')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
@@ -78,7 +98,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date & Time *</label>
-                                    <input type="text" name="start_date" id="start_date" value="{{ old('start_date') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"enableTime":true,"time_24hr":false,"minuteIncrement":15,"altInput":true,"altFormat":"M j, Y h:i K","dateFormat":"Y-m-d H:i","minDate":"today"}'>
+                                    <input type="text" name="start_date" id="start_date" value="{{ old('start_date', isset($fromRequest) && $fromRequest ? $fromRequest->training_date->format('Y-m-d') . ' 09:00' : '') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" data-datepicker='{"enableTime":true,"time_24hr":false,"minuteIncrement":15,"altInput":true,"altFormat":"M j, Y h:i K","dateFormat":"Y-m-d H:i","minDate":"today"}'>
                                     @error('start_date')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
@@ -107,7 +127,7 @@
                             <div>
                                 <label for="max_attendees" class="block text-sm font-medium text-gray-700">Max Attendees</label>
                                 <p class="text-xs text-gray-500 mb-1">Leave blank for unlimited capacity.</p>
-                                <input type="number" name="max_attendees" id="max_attendees" value="{{ old('max_attendees') }}" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="e.g., 30">
+                                <input type="number" name="max_attendees" id="max_attendees" value="{{ old('max_attendees', isset($fromRequest) && $fromRequest ? $fromRequest->number_of_tickets : '') }}" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-opacity-50 sm:text-sm" placeholder="e.g., 30">
                                 @error('max_attendees')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -116,7 +136,7 @@
                             {{-- Group Training Toggle --}}
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="checkbox" name="is_group" value="1" class="rounded border-gray-300 shadow-sm text-brand-primary" x-model="isGroup" {{ old('is_group') ? 'checked' : '' }}>
+                                    <input type="checkbox" name="is_group" value="1" class="rounded border-gray-300 shadow-sm text-brand-primary" x-model="isGroup" {{ old('is_group', isset($fromRequest) && $fromRequest ? '1' : '') ? 'checked' : '' }}>
                                     <span class="ml-2 text-sm font-medium text-gray-700">Group Training (Invite Only)</span>
                                 </label>
                                 <p class="mt-1 ml-6 text-xs text-gray-500">Group trainings are always free and only visible to invited members.</p>
@@ -219,11 +239,25 @@
         }
 
         function trainingForm() {
-            const oldInvitees = @json(old('invitees', ['']));
+            @php
+                $prefillEmails = [];
+                if (isset($fromRequest) && $fromRequest && !old('invitees')) {
+                    $prefillEmails = $fromRequest->members->pluck('email')->toArray();
+                }
+            @endphp
+            const oldInvitees = @json(old('invitees', !empty($prefillEmails) ? $prefillEmails : ['']));
             return {
-                isGroup: {{ old('is_group') ? 'true' : 'false' }},
+                isGroup: {{ old('is_group', isset($fromRequest) && $fromRequest ? '1' : '') ? 'true' : 'false' }},
                 isPaid: {{ old('is_paid') ? 'true' : 'false' }},
                 invitees: oldInvitees.map(email => ({ email: email || '', status: '', message: '', name: '', checking: false })),
+                init() {
+                    // Auto-check membership status for pre-filled invitees
+                    this.invitees.forEach((invitee, index) => {
+                        if (invitee.email && invitee.email.includes('@')) {
+                            this.checkEmail(index);
+                        }
+                    });
+                },
                 addInvitee() {
                     this.invitees.push({ email: '', status: '', message: '', name: '', checking: false });
                 },

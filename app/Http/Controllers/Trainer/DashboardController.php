@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Enums\RegistrationStatus;
 use App\Enums\TrainingStatus;
 use App\Models\Clinical;
+use App\Models\GroupTrainingRequest;
 use App\Services\PayoutService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -64,6 +65,15 @@ class DashboardController extends Controller
         // Earnings summary from the PayoutService
         $earningsSummary = $this->payoutService->getEarningsReport($trainer);
 
+        // Pending group training requests (paid, no training linked yet)
+        $pendingGroupRequests = GroupTrainingRequest::where('trainer_id', $trainer->id)
+            ->whereNotNull('paid_at')
+            ->whereDoesntHave('training')
+            ->withCount('members')
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get();
+
         // Clinicals pending review for this trainer
         $pendingClinicals = Clinical::where('trainer_id', $trainer->id)
             ->whereIn('status', ['submitted', 'under_review'])
@@ -79,6 +89,7 @@ class DashboardController extends Controller
             'totalCompletions' => $totalCompletions,
             'earningsSummary' => $earningsSummary,
             'pendingClinicals' => $pendingClinicals,
+            'pendingGroupRequests' => $pendingGroupRequests,
         ]);
     }
 }

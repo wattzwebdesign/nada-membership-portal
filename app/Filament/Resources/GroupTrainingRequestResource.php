@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\GroupTrainingRequestResource\Pages;
 use App\Models\GroupTrainingRequest;
+use App\Models\User;
+use App\Services\GroupTrainingFeeService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -23,6 +25,105 @@ class GroupTrainingRequestResource extends Resource
     protected static ?int $navigationSort = 5;
 
     protected static ?string $recordTitleAttribute = 'training_name';
+
+    public static function form(Form $form): Form
+    {
+        $feeService = app(GroupTrainingFeeService::class);
+
+        return $form
+            ->schema([
+                Forms\Components\Section::make('Company Contact')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('company_first_name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('company_last_name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('company_email')
+                            ->email()
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                    ]),
+
+                Forms\Components\Section::make('Training Details')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\Select::make('trainer_id')
+                            ->label('Trainer')
+                            ->options(
+                                User::whereHas('roles', fn ($q) => $q->where('name', 'registered_trainer'))
+                                    ->whereHas('stripeAccount', fn ($q) => $q->where('charges_enabled', true))
+                                    ->orderBy('last_name')
+                                    ->get()
+                                    ->mapWithKeys(fn ($u) => [$u->id => $u->first_name . ' ' . $u->last_name])
+                            )
+                            ->searchable()
+                            ->required(),
+                        Forms\Components\TextInput::make('training_name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\DatePicker::make('training_date')
+                            ->required()
+                            ->minDate(now()->addDay()),
+                        Forms\Components\TextInput::make('training_city')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Select::make('training_state')
+                            ->options(array_combine(
+                                $states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'],
+                                $states,
+                            ))
+                            ->searchable()
+                            ->required(),
+                    ]),
+
+                Forms\Components\Section::make('Pricing')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('cost_per_ticket')
+                            ->label('Cost Per Ticket')
+                            ->numeric()
+                            ->prefix('$')
+                            ->minValue(1.00)
+                            ->step(0.01)
+                            ->required(),
+                        Forms\Components\TextInput::make('number_of_tickets')
+                            ->numeric()
+                            ->required()
+                            ->minValue(1)
+                            ->maxValue(500),
+                        Forms\Components\Placeholder::make('fee_info')
+                            ->label('Current Fee Configuration')
+                            ->content($feeService->getFeeDescription())
+                            ->columnSpanFull(),
+                    ]),
+
+                Forms\Components\Section::make('Team Members')
+                    ->schema([
+                        Forms\Components\Repeater::make('members')
+                            ->relationship()
+                            ->schema([
+                                Forms\Components\TextInput::make('first_name')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('last_name')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('email')
+                                    ->email()
+                                    ->required()
+                                    ->maxLength(255),
+                            ])
+                            ->columns(3)
+                            ->minItems(1)
+                            ->defaultItems(1)
+                            ->reorderable(false),
+                    ]),
+            ]);
+    }
 
     public static function getGloballySearchableAttributes(): array
     {
@@ -177,6 +278,7 @@ class GroupTrainingRequestResource extends Resource
     {
         return [
             'index' => Pages\ListGroupTrainingRequests::route('/'),
+            'create' => Pages\CreateGroupTrainingRequest::route('/create'),
             'view' => Pages\ViewGroupTrainingRequest::route('/{record}'),
         ];
     }

@@ -54,6 +54,11 @@ class GroupTrainingRequest extends Model
         return "{$this->company_first_name} {$this->company_last_name}";
     }
 
+    public function training(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Training::class);
+    }
+
     public function getSubtotalCentsAttribute(): int
     {
         return $this->cost_per_ticket_cents * $this->number_of_tickets;

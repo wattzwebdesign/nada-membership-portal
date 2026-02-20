@@ -165,6 +165,10 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::get('/profile', [App\Http\Controllers\Trainer\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [App\Http\Controllers\Trainer\ProfileController::class, 'update'])->name('profile.update');
 
+    // Group Training Requests
+    Route::get('/group-requests', [App\Http\Controllers\Trainer\GroupTrainingRequestController::class, 'index'])->name('group-requests.index');
+    Route::get('/group-requests/{groupTrainingRequest}', [App\Http\Controllers\Trainer\GroupTrainingRequestController::class, 'show'])->name('group-requests.show');
+
     // Training Management
     Route::post('/invitee-check', [App\Http\Controllers\Trainer\TrainingController::class, 'checkInvitee'])->name('invitee.check');
     Route::get('/trainings', [App\Http\Controllers\Trainer\TrainingController::class, 'index'])->name('trainings.index');
