@@ -11,6 +11,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\HtmlString;
+use Filament\View\PanelRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -56,6 +57,35 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                PanelRenderHook::HEAD_END,
+                fn () => new HtmlString('
+                    <style>
+                        /* Stronger visual separation between global search resource groups */
+                        .fi-global-search-result-group + .fi-global-search-result-group {
+                            border-top: 2px solid rgb(209 213 219);
+                            margin-top: 2px;
+                        }
+                        .dark .fi-global-search-result-group + .fi-global-search-result-group {
+                            border-top-color: rgb(55 65 81);
+                        }
+                        /* Bolder group headers */
+                        .fi-global-search-result-group > div:first-child {
+                            background-color: rgb(243 244 246);
+                        }
+                        .dark .fi-global-search-result-group > div:first-child {
+                            background-color: rgb(31 41 55);
+                        }
+                        .fi-global-search-result-group > div:first-child h3 {
+                            font-size: 0.7rem;
+                            text-transform: uppercase;
+                            letter-spacing: 0.06em;
+                            padding-top: 0.5rem;
+                            padding-bottom: 0.5rem;
+                        }
+                    </style>
+                '),
+            );
     }
 }
