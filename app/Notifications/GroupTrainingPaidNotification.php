@@ -33,6 +33,7 @@ class GroupTrainingPaidNotification extends Notification
             'training_location' => $r->training_city . ', ' . $r->training_state,
             'ticket_count' => $r->number_of_tickets,
             'total_paid' => $r->total_formatted,
+            'request_url' => route('trainer.group-requests.show', $r),
         ], fn () => (new MailMessage)
             ->subject('New Group Training Request: ' . $r->training_name)
             ->greeting('Hello ' . ($notifiable->first_name ?? '') . '!')
@@ -43,6 +44,7 @@ class GroupTrainingPaidNotification extends Notification
             ->line('**Company Contact:** ' . $r->company_full_name . ' (' . $r->company_email . ')')
             ->line('**Tickets:** ' . $r->number_of_tickets)
             ->line('**Total Paid:** ' . $r->total_formatted)
-            ->line('Please reach out to the company contact to coordinate training details.'));
+            ->action('View Request & Create Training', route('trainer.group-requests.show', $r))
+            ->line('Please review the request details and create a training from it in your portal.'));
     }
 }
