@@ -182,7 +182,10 @@
                             <div>
                                 <input type="email" :name="'members[' + index + '][email]'" placeholder="Email" required
                                        x-model="member.email"
-                                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                       @blur="checkMemberEmail(index)"
+                                       :class="member.emailWarning ? 'border-yellow-400 ring-1 ring-yellow-400' : 'border-gray-300'"
+                                       class="block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <p x-show="member.emailWarning" x-transition class="mt-1 text-xs text-yellow-600">Please use a personal email, not a company address.</p>
                             </div>
                         </div>
                     </div>
@@ -256,7 +259,7 @@
                 init() {
                     // Restore old members from validation errors, or initialize from ticket count
                     @if(old('members'))
-                        this.members = @json(old('members'));
+                        this.members = @json(old('members')).map(m => ({ ...m, emailWarning: false }));
                     @else
                         this.syncMembers();
                     @endif
@@ -265,7 +268,7 @@
                 syncMembers() {
                     const count = parseInt(this.numberOfTickets) || 1;
                     while (this.members.length < count) {
-                        this.members.push({ first_name: '', last_name: '', email: '' });
+                        this.members.push({ first_name: '', last_name: '', email: '', emailWarning: false });
                     }
                     while (this.members.length > count) {
                         this.members.pop();
@@ -274,7 +277,7 @@
 
                 addMember() {
                     if (this.members.length < parseInt(this.numberOfTickets)) {
-                        this.members.push({ first_name: '', last_name: '', email: '' });
+                        this.members.push({ first_name: '', last_name: '', email: '', emailWarning: false });
                     }
                 },
 
@@ -294,6 +297,18 @@
                     }
                     const domain = email.substring(atIndex + 1);
                     this.emailWarning = domain.length > 0 && !this.personalDomains.includes(domain);
+                },
+
+                checkMemberEmail(index) {
+                    const member = this.members[index];
+                    const email = (member.email || '').trim().toLowerCase();
+                    const atIndex = email.indexOf('@');
+                    if (atIndex === -1 || atIndex === email.length - 1) {
+                        member.emailWarning = false;
+                        return;
+                    }
+                    const domain = email.substring(atIndex + 1);
+                    member.emailWarning = domain.length > 0 && !this.personalDomains.includes(domain);
                 },
 
                 updatePricing() {
