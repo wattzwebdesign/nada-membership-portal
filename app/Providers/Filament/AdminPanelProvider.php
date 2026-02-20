@@ -11,7 +11,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\HtmlString;
-use Filament\View\PanelRenderHook;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -59,7 +59,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->renderHook(
-                PanelRenderHook::HEAD_END,
+                PanelsRenderHook::HEAD_END,
                 fn () => new HtmlString('
                     <style>
                         /* Stronger visual separation between global search resource groups */
