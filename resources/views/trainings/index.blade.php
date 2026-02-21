@@ -29,7 +29,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8" x-data="trainingCalendar('{{ request('view', 'list') }}', '{{ route('trainings.calendar-events') }}')" @set-view.window="setView($event.detail)">
+    <div class="py-8" x-data="trainingCalendar('{{ request('view', 'list') }}', '{{ url('/trainings/calendar-events') }}')" @set-view.window="setView($event.detail)">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @if (session('success'))
