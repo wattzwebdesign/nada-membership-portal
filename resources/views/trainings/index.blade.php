@@ -181,13 +181,13 @@
                 {{-- Legend --}}
                 <div class="mt-4 flex flex-wrap gap-4 text-xs text-gray-600">
                     <div class="flex items-center gap-1.5">
-                        <span class="inline-block w-3 h-3 rounded" style="background-color: #3B82F6;"></span> In Person
+                        <span class="inline-block w-3 h-3 rounded" style="background-color: #1C3519;"></span> In Person
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <span class="inline-block w-3 h-3 rounded" style="background-color: #8B5CF6;"></span> Virtual
+                        <span class="inline-block w-3 h-3 rounded" style="background-color: #AD7E07;"></span> Virtual
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <span class="inline-block w-3 h-3 rounded" style="background-color: #6366F1;"></span> Hybrid
+                        <span class="inline-block w-3 h-3 rounded" style="background-color: #2E522A;"></span> Hybrid
                     </div>
                 </div>
             </div>

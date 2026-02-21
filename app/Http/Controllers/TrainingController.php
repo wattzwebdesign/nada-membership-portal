@@ -67,9 +67,9 @@ class TrainingController extends Controller
             ->get();
 
         $typeColors = [
-            'in_person' => ['bg' => '#3B82F6', 'border' => '#2563EB'],
-            'virtual'   => ['bg' => '#8B5CF6', 'border' => '#7C3AED'],
-            'hybrid'    => ['bg' => '#6366F1', 'border' => '#4F46E5'],
+            'in_person' => ['bg' => '#1C3519', 'border' => '#152A13'],
+            'virtual'   => ['bg' => '#AD7E07', 'border' => '#8A6506'],
+            'hybrid'    => ['bg' => '#2E522A', 'border' => '#1C3519'],
         ];
 
         $events = $trainings->map(function (Training $t) use ($typeColors) {
