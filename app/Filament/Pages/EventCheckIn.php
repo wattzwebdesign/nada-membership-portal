@@ -133,6 +133,32 @@ class EventCheckIn extends Page
         $this->search();
     }
 
+    public function undoCheckIn(int $registrationId): void
+    {
+        $registration = EventRegistration::find($registrationId);
+
+        if (! $registration || ! $registration->isCheckedIn()) {
+            Notification::make()
+                ->title('Registration not found or not checked in.')
+                ->warning()
+                ->send();
+            return;
+        }
+
+        $registration->update([
+            'checked_in_at' => null,
+            'checked_in_by' => null,
+            'status' => RegistrationStatus::Registered,
+        ]);
+
+        Notification::make()
+            ->title('Check-in reversed: ' . $registration->full_name)
+            ->success()
+            ->send();
+
+        $this->search();
+    }
+
     public function getStats(): array
     {
         $query = EventRegistration::query()

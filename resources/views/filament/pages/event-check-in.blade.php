@@ -112,7 +112,11 @@
                                                 Check In
                                             </button>
                                         @else
-                                            <span class="text-gray-400">--</span>
+                                            <button wire:click="undoCheckIn({{ $result['id'] }})"
+                                                wire:confirm="Undo check-in for {{ $result['first_name'] }} {{ $result['last_name'] }}?"
+                                                class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                                Undo
+                                            </button>
                                         @endif
                                     </td>
                                 </tr>
