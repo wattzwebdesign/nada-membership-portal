@@ -84,7 +84,7 @@ class CartService
 
         foreach ($items as $item) {
             $price = $item['price_cents'];
-            if ($user && $item['member_price_cents'] && $user->hasActiveSubscription()) {
+            if ($user && $item['member_price_cents'] && $user->hasFullMembership()) {
                 $price = $item['member_price_cents'];
             }
             $total += $price * $item['quantity'];

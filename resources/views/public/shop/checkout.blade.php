@@ -122,7 +122,7 @@
                         <div class="space-y-3 divide-y divide-gray-100">
                             @foreach ($cart as $item)
                                 @php
-                                    $effectivePrice = (auth()->user()?->hasActiveSubscription() && $item['member_price_cents']) ? $item['member_price_cents'] : $item['price_cents'];
+                                    $effectivePrice = (auth()->user()?->hasFullMembership() && $item['member_price_cents']) ? $item['member_price_cents'] : $item['price_cents'];
                                     $lineTotal = $effectivePrice * $item['quantity'];
                                 @endphp
                                 <div class="flex gap-3 {{ !$loop->first ? 'pt-3' : '' }}">

@@ -9,6 +9,7 @@ enum PlanType: string
     case Senior = 'senior';
     case Student = 'student';
     case Comped = 'comped';
+    case Associate = 'associate';
 
     public function label(): string
     {
@@ -18,6 +19,7 @@ enum PlanType: string
             self::Senior => 'Senior',
             self::Student => 'Student',
             self::Comped => 'Comped',
+            self::Associate => 'Associate',
         };
     }
 }

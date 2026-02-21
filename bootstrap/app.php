@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'trainer' => \App\Http\Middleware\EnsureIsTrainer::class,
             'vendor' => \App\Http\Middleware\EnsureIsVendor::class,
             'nda' => \App\Http\Middleware\EnsureNdaSigned::class,
+            'full-member' => \App\Http\Middleware\EnsureNotAssociate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

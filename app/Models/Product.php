@@ -112,7 +112,7 @@ class Product extends Model implements HasMedia
 
     public function getEffectivePrice(?User $user = null): int
     {
-        if ($user && $this->member_price_cents && $user->hasActiveSubscription()) {
+        if ($user && $this->member_price_cents && $user->hasFullMembership()) {
             return $this->member_price_cents;
         }
 

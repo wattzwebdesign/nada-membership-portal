@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DiscountType;
+use App\Enums\PlanType;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
@@ -209,6 +210,19 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
     public function hasActiveSubscription(): bool
     {
         return $this->subscriptions()->where('status', 'active')->exists();
+    }
+
+    public function hasAssociatePlan(): bool
+    {
+        return once(fn () => $this->subscriptions()
+            ->where('status', 'active')
+            ->whereHas('plan', fn ($q) => $q->where('plan_type', PlanType::Associate))
+            ->exists());
+    }
+
+    public function hasFullMembership(): bool
+    {
+        return $this->hasActiveSubscription() && !$this->hasAssociatePlan();
     }
 
     public function hasApprovedDiscount(): bool

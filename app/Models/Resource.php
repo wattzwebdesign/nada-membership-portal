@@ -77,7 +77,7 @@ class Resource extends Model implements HasMedia
 
         $user = auth()->user();
 
-        return $user && $user->hasActiveSubscription();
+        return $user && $user->hasFullMembership();
     }
 
     public function scopePublished($query)

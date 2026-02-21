@@ -17,6 +17,11 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
+        // Associate plan holders see the membership page instead
+        if ($user->hasAssociatePlan()) {
+            return redirect()->route('membership.index');
+        }
+
         // Customer-only users get a simplified dashboard
         if ($user->isCustomerOnly()) {
             $recentOrders = $user->shopOrders()

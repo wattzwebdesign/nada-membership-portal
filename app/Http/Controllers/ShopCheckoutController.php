@@ -124,7 +124,7 @@ class ShopCheckoutController extends Controller
             foreach ($items as $item) {
                 $product = Product::find($item['product_id']);
                 $effectivePrice = $product ? $product->getEffectivePrice($user) : $item['price_cents'];
-                $wasMemberPrice = $user && $item['member_price_cents'] && $user->hasActiveSubscription() && $effectivePrice === $item['member_price_cents'];
+                $wasMemberPrice = $user && $item['member_price_cents'] && $user->hasFullMembership() && $effectivePrice === $item['member_price_cents'];
 
                 OrderItem::create([
                     'order_id' => $order->id,

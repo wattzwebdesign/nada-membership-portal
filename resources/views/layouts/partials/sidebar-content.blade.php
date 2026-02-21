@@ -1,6 +1,10 @@
+@php
+    $isAssociate = auth()->user()->hasAssociatePlan();
+@endphp
+
 {{-- Logo --}}
 <div class="flex items-center px-4 py-5 shrink-0">
-    <a href="{{ auth()->user()->hasAnyRole(['member', 'registered_trainer', 'admin']) ? route('dashboard') : route('vendor.dashboard') }}">
+    <a href="{{ $isAssociate ? route('membership.index') : (auth()->user()->hasAnyRole(['member', 'registered_trainer', 'admin']) ? route('dashboard') : route('vendor.dashboard')) }}">
         <img src="{{ asset('NADAWebsiteLogo.svg') }}" alt="NADA" class="h-10" />
     </a>
 </div>
@@ -28,6 +32,9 @@
                 } elseif ($badgeUser->hasRole('vendor')) {
                     $badgeColor = 'bg-purple-100 text-purple-700';
                     $badgeLabel = 'Vendor';
+                } elseif ($isAssociate) {
+                    $badgeColor = 'bg-teal-100 text-teal-700';
+                    $badgeLabel = 'Associate';
                 } elseif ($badgeUser->hasRole('member')) {
                     $badgeColor = 'bg-blue-100 text-blue-700';
                     $badgeLabel = 'Member';
@@ -68,16 +75,18 @@
         </div>
     </div>
     @else
-    {{-- MEMBER section --}}
+    {{-- MEMBER / ASSOCIATE section --}}
     <div>
-        <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-brand-accent">Member</p>
+        <p class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-brand-accent">{{ $isAssociate ? 'Associate' : 'Member' }}</p>
         <div class="space-y-1">
+            @if(!$isAssociate)
             <x-sidebar-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" data-guide="nav-dashboard">
                 <x-slot name="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
                 </x-slot>
                 Dashboard
             </x-sidebar-link>
+            @endif
 
             <x-sidebar-link :href="route('orders.index')" :active="request()->routeIs('orders.*')" data-guide="nav-orders">
                 <x-slot name="icon">
@@ -100,6 +109,7 @@
                 Invoices
             </x-sidebar-link>
 
+            @if(!$isAssociate)
             <x-sidebar-link :href="route('certificates.index')" :active="request()->routeIs('certificates.*')" data-guide="nav-certificates">
                 <x-slot name="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" /></svg>
@@ -120,6 +130,7 @@
                 </x-slot>
                 Clinicals
             </x-sidebar-link>
+            @endif
 
             <x-sidebar-link :href="route('bookmarks.index')" :active="request()->routeIs('bookmarks.*')" data-guide="nav-bookmarks">
                 <x-slot name="icon">
@@ -329,14 +340,14 @@
                 Profile
             </a>
 
-            @role('member')
+            @if(auth()->user()->hasRole('member') && !$isAssociate)
             <a href="{{ route('discount.request.status') }}" data-guide="nav-discount-request" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium hover:bg-black/5 transition-colors duration-150 text-brand-text mx-1">
                 <span class="w-5 h-5 shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>
                 </span>
                 Discount Request
             </a>
-            @endrole
+            @endif
 
             <hr class="my-1 border-black/10 mx-2">
 

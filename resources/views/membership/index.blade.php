@@ -112,7 +112,7 @@
 
                             <a href="{{ route('membership.plans') }}" data-guide="membership-change-plan" class="inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md border-brand-primary text-brand-primary">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                                Change Plan
+                                {{ auth()->user()->hasAssociatePlan() ? 'Upgrade Membership' : 'Change Plan' }}
                             </a>
 
                             <a href="{{ route('invoices.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50">
@@ -130,8 +130,8 @@
                             @endif
                         </div>
 
-                        {{-- Digital Membership Card --}}
-                        @if (($subscription->status->value ?? $subscription->status) === 'active')
+                        {{-- Digital Membership Card (not available for Associate plans) --}}
+                        @if (($subscription->status->value ?? $subscription->status) === 'active' && !auth()->user()->hasAssociatePlan())
                             <div class="mt-6 border-t border-gray-200 pt-6">
                                 <h4 class="text-sm font-semibold text-gray-900 mb-3">Digital Membership Card</h4>
                                 <p class="text-sm text-gray-500 mb-4">Add your membership card to your phone's wallet. Your card updates automatically when your membership renews.</p>

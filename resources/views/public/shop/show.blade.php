@@ -90,7 +90,7 @@
                 {{-- Pricing --}}
                 <div class="mt-4 pb-4 border-b border-gray-200">
                     @php
-                        $showMemberPrice = auth()->check() && auth()->user()->hasActiveSubscription() && $product->member_price_cents;
+                        $showMemberPrice = auth()->check() && auth()->user()->hasFullMembership() && $product->member_price_cents;
                         $effectivePrice = $showMemberPrice ? $product->member_price_cents : $product->price_cents;
                     @endphp
 

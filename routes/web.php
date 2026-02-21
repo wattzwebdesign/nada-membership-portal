@@ -110,34 +110,43 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     Route::get('/membership/invoices/{invoice}/pay/success', [InvoiceController::class, 'paySuccess'])->name('invoices.pay.success');
     Route::get('/membership/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
 
-    // Wallet Passes
-    Route::get('/membership/wallet/apple', [WalletPassController::class, 'downloadApplePass'])->name('membership.wallet.apple');
-    Route::get('/membership/wallet/google', [WalletPassController::class, 'getGooglePassUrl'])->name('membership.wallet.google');
+    // Routes restricted from Associate plan holders
+    Route::middleware(['full-member'])->group(function () {
+        // Wallet Passes
+        Route::get('/membership/wallet/apple', [WalletPassController::class, 'downloadApplePass'])->name('membership.wallet.apple');
+        Route::get('/membership/wallet/google', [WalletPassController::class, 'getGooglePassUrl'])->name('membership.wallet.google');
 
-    // Certificates
-    Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
-    Route::get('/certificates/{certificate}/download', [CertificateController::class, 'download'])->name('certificates.download');
+        // Certificates
+        Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
+        Route::get('/certificates/{certificate}/download', [CertificateController::class, 'download'])->name('certificates.download');
 
-    // Trainings
-    Route::get('/trainings', [TrainingController::class, 'index'])->name('trainings.index');
-    Route::get('/trainings/my-registrations', [TrainingRegistrationController::class, 'index'])->name('trainings.my-registrations');
-    Route::get('/trainings/{training}', [TrainingController::class, 'show'])->name('trainings.show');
-    Route::post('/trainings/{training}/register', [TrainingRegistrationController::class, 'store'])->name('trainings.register');
-    Route::get('/trainings/{training}/payment/success', [TrainingRegistrationController::class, 'paymentSuccess'])->name('trainings.payment.success');
-    Route::delete('/trainings/{training}/cancel-registration', [TrainingRegistrationController::class, 'destroy'])->name('trainings.cancel-registration');
-    Route::get('/trainings/{training}/wallet/apple', [WalletPassController::class, 'downloadAppleTrainingPass'])->name('trainings.wallet.apple');
-    Route::get('/trainings/{training}/wallet/google', [WalletPassController::class, 'getGoogleTrainingPassUrl'])->name('trainings.wallet.google');
+        // Trainings
+        Route::get('/trainings', [TrainingController::class, 'index'])->name('trainings.index');
+        Route::get('/trainings/my-registrations', [TrainingRegistrationController::class, 'index'])->name('trainings.my-registrations');
+        Route::get('/trainings/{training}', [TrainingController::class, 'show'])->name('trainings.show');
+        Route::post('/trainings/{training}/register', [TrainingRegistrationController::class, 'store'])->name('trainings.register');
+        Route::get('/trainings/{training}/payment/success', [TrainingRegistrationController::class, 'paymentSuccess'])->name('trainings.payment.success');
+        Route::delete('/trainings/{training}/cancel-registration', [TrainingRegistrationController::class, 'destroy'])->name('trainings.cancel-registration');
+        Route::get('/trainings/{training}/wallet/apple', [WalletPassController::class, 'downloadAppleTrainingPass'])->name('trainings.wallet.apple');
+        Route::get('/trainings/{training}/wallet/google', [WalletPassController::class, 'getGoogleTrainingPassUrl'])->name('trainings.wallet.google');
 
-    // Clinicals
-    Route::get('/clinicals', fn () => redirect()->route('clinicals.index'));
-    Route::get('/clinicals/submit', [ClinicalController::class, 'create'])->name('clinicals.create');
-    Route::post('/clinicals', [ClinicalController::class, 'store'])->name('clinicals.store');
-    Route::get('/clinicals/history', [ClinicalController::class, 'index'])->name('clinicals.index');
+        // Clinicals
+        Route::get('/clinicals', fn () => redirect()->route('clinicals.index'));
+        Route::get('/clinicals/submit', [ClinicalController::class, 'create'])->name('clinicals.create');
+        Route::post('/clinicals', [ClinicalController::class, 'store'])->name('clinicals.store');
+        Route::get('/clinicals/history', [ClinicalController::class, 'index'])->name('clinicals.index');
 
-    // Discount Request
-    Route::get('/discount/request', [DiscountRequestController::class, 'create'])->name('discount.request.create');
-    Route::post('/discount/request', [DiscountRequestController::class, 'store'])->name('discount.request.store');
-    Route::get('/discount/status', [DiscountRequestController::class, 'status'])->name('discount.request.status');
+        // Discount Request
+        Route::get('/discount/request', [DiscountRequestController::class, 'create'])->name('discount.request.create');
+        Route::post('/discount/request', [DiscountRequestController::class, 'store'])->name('discount.request.store');
+        Route::get('/discount/status', [DiscountRequestController::class, 'status'])->name('discount.request.status');
+
+        // Trainer Application
+        Route::get('/account/upgrade-to-trainer', [TrainerApplicationController::class, 'create'])->name('trainer-application.create');
+        Route::post('/account/upgrade-to-trainer', [TrainerApplicationController::class, 'store'])->name('trainer-application.store');
+        Route::get('/account/upgrade-to-trainer/payment/success', [TrainerApplicationController::class, 'paymentSuccess'])->name('trainer-application.payment.success');
+        Route::get('/account/upgrade-to-trainer/payment/cancel', [TrainerApplicationController::class, 'paymentCancel'])->name('trainer-application.payment.cancel');
+    });
 
     // Bookmarks
     Route::get('/bookmarks', [ResourceBookmarkController::class, 'index'])->name('bookmarks.index');
@@ -151,10 +160,6 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
     // Account / Profile
     Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');
     Route::put('/account', [AccountController::class, 'update'])->name('account.update');
-    Route::get('/account/upgrade-to-trainer', [TrainerApplicationController::class, 'create'])->name('trainer-application.create');
-    Route::post('/account/upgrade-to-trainer', [TrainerApplicationController::class, 'store'])->name('trainer-application.store');
-    Route::get('/account/upgrade-to-trainer/payment/success', [TrainerApplicationController::class, 'paymentSuccess'])->name('trainer-application.payment.success');
-    Route::get('/account/upgrade-to-trainer/payment/cancel', [TrainerApplicationController::class, 'paymentCancel'])->name('trainer-application.payment.cancel');
 });
 
 // Trainer Routes
