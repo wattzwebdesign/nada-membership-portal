@@ -26,6 +26,18 @@ class GroupTrainingRequestResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'training_name';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getModel()::where('status', 'pending')->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
+
     public static function form(Form $form): Form
     {
         $feeService = app(GroupTrainingFeeService::class);
