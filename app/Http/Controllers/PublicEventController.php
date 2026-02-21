@@ -3,15 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use Illuminate\Http\Request;
 
 class PublicEventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::published()
-            ->upcoming()
-            ->orderBy('start_date')
-            ->paginate(12);
+        $query = Event::published()
+            ->orderBy('start_date');
+
+        // Search filter
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('location_name', 'like', "%{$search}%")
+                    ->orWhere('city', 'like', "%{$search}%")
+                    ->orWhere('state', 'like', "%{$search}%");
+            });
+        }
+
+        // Date filter
+        if ($dateFrom = $request->input('date_from')) {
+            $query->where('start_date', '>=', $dateFrom);
+        } else {
+            // Default to upcoming events only
+            $query->upcoming();
+        }
+
+        if ($dateTo = $request->input('date_to')) {
+            $query->where('start_date', '<=', $dateTo . ' 23:59:59');
+        }
+
+        $events = $query->paginate(12)->withQueryString();
 
         $featuredEvents = Event::published()
             ->upcoming()

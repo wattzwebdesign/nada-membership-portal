@@ -33,6 +33,34 @@
             </div>
         @endif
 
+        {{-- Search & Filters --}}
+        <div class="bg-white rounded-lg shadow p-4 mb-8">
+            <form method="GET" action="{{ route('public.events.index') }}" class="flex flex-col sm:flex-row gap-4 items-end">
+                <div class="flex-1 w-full">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Search events..." class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm">
+                </div>
+                <div class="w-full sm:w-auto">
+                    <label for="date_from" class="block text-sm font-medium text-gray-700 mb-1">From</label>
+                    <input type="date" name="date_from" id="date_from" value="{{ request('date_from') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm">
+                </div>
+                <div class="w-full sm:w-auto">
+                    <label for="date_to" class="block text-sm font-medium text-gray-700 mb-1">To</label>
+                    <input type="date" name="date_to" id="date_to" value="{{ request('date_to') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm">
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-md hover:bg-brand-primary-hover transition-colors">
+                        Search
+                    </button>
+                    @if (request('search') || request('date_from') || request('date_to'))
+                        <a href="{{ route('public.events.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors">
+                            Clear
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+
         {{-- All Events --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse ($events as $event)
@@ -66,7 +94,11 @@
                 </a>
             @empty
                 <div class="col-span-full text-center py-12">
-                    <p class="text-gray-500">No upcoming events at this time. Check back soon!</p>
+                    @if (request('search') || request('date_from') || request('date_to'))
+                        <p class="text-gray-500">No events match your search. <a href="{{ route('public.events.index') }}" class="text-brand-primary hover:underline">Clear filters</a></p>
+                    @else
+                        <p class="text-gray-500">No upcoming events at this time. Check back soon!</p>
+                    @endif
                 </div>
             @endforelse
         </div>
