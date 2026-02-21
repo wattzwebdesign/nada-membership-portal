@@ -105,14 +105,40 @@
     {{-- Floating Button --}}
     <button
         @click="open = !open"
-        class="ml-auto flex items-center justify-center w-14 h-14 rounded-full text-white shadow-lg transition hover:scale-105 hover:shadow-xl bg-brand-primary"
-        style="display: flex; align-items: center; justify-content: center; width: 3.5rem; height: 3.5rem; border-radius: 9999px; color: white; background-color: #1C3519; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1); cursor: pointer; border: none;"
+        class="ml-auto flex items-center justify-center rounded-full text-white shadow-lg hover:shadow-xl bg-brand-primary"
+        :style="{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: (showLabel && !open) ? '7.5rem' : '3.5rem',
+            height: '3.5rem',
+            borderRadius: '9999px',
+            color: 'white',
+            backgroundColor: '#1C3519',
+            boxShadow: '0 10px 15px -3px rgba(0,0,0,.1)',
+            cursor: 'pointer',
+            border: 'none',
+            overflow: 'hidden',
+            transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+            gap: (showLabel && !open) ? '0.375rem' : '0',
+        }"
         title="Chat with NADA Support"
     >
-        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0; width: 1.5rem; height: 1.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
         </svg>
-        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <span
+            x-show="showLabel && !open"
+            x-transition:enter="transition ease-out duration-300 delay-150"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            x-cloak
+            style="font-size: 0.875rem; font-weight: 600; white-space: nowrap; flex-shrink: 0;"
+        >Help</span>
+        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" style="width: 1.5rem; height: 1.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
     </button>
@@ -122,6 +148,7 @@
 (function() {
     var componentDef = () => ({
         open: false,
+        showLabel: false,
         messages: [],
         userInput: '',
         isLoading: false,
@@ -135,11 +162,30 @@
                 try { this.messages = JSON.parse(saved); } catch (e) {}
             }
             this.$watch('open', (isOpen) => {
-                if (isOpen) this.$nextTick(() => this.scrollToBottom());
+                if (isOpen) {
+                    this.showLabel = false;
+                    if (this._pillTimer) { clearTimeout(this._pillTimer); this._pillTimer = null; }
+                    this.$nextTick(() => this.scrollToBottom());
+                }
             });
             this.$watch('messages', (val) => {
                 sessionStorage.setItem('nada_chat_messages', JSON.stringify(val));
             });
+
+            // "Help" pill animation — expand once every 24 hours
+            const pillHours = 24;
+            const lastPill = localStorage.getItem('nada_chat_pill_ts');
+            const hoursSince = lastPill ? (Date.now() - parseInt(lastPill)) / 3600000 : Infinity;
+            if (hoursSince >= pillHours && this.messages.length === 0) {
+                this._pillTimer = setTimeout(() => {
+                    if (this.open) return;
+                    this.showLabel = true;
+                    localStorage.setItem('nada_chat_pill_ts', Date.now().toString());
+                    this._pillTimer = setTimeout(() => {
+                        this.showLabel = false;
+                    }, 30000);
+                }, 2000);
+            }
         },
 
         async sendMessage() {
