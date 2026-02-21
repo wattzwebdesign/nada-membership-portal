@@ -16,6 +16,7 @@
         "maatwebsite/excel": "^3.1",
         "pkpass/pkpass": "^2.5",
         "schmeits/filament-umami-widgets": "^1.4",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-activitylog": "^4.11",
         "spatie/laravel-image-optimizer": "^1.8",
         "spatie/laravel-medialibrary": "^11.19",

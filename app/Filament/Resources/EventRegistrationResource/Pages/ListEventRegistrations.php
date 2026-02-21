@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Filament\Resources\EventRegistrationResource\Pages;
+
+use App\Filament\Resources\EventRegistrationResource;
+use Filament\Resources\Pages\ListRecords;
+
+class ListEventRegistrations extends ListRecords
+{
+    protected static string $resource = EventRegistrationResource::class;
+}

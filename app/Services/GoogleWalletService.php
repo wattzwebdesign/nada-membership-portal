@@ -413,6 +413,246 @@ class GoogleWalletService
         }
     }
 
+    // ------------------------------------------------------------------
+    // Event Pass Methods
+    // ------------------------------------------------------------------
+
+    public function ensureEventClassExists(\App\Models\Event $event): string
+    {
+        $eventClassId = $this->issuerId . '.nada-event-' . $event->id;
+
+        $client = new GoogleClient;
+        $repo = new EventTicketClassRepository($client);
+
+        $venue = null;
+        if ($event->location_name) {
+            $venue = new EventVenue(
+                name: LocalizedString::make('en', $event->location_name),
+                address: LocalizedString::make('en', $event->location_address ?: $event->location_name),
+            );
+        }
+
+        $dateTime = new EventDateTime(
+            start: $event->start_date->toIso8601String(),
+            end: $event->end_date->toIso8601String(),
+        );
+
+        $class = new EventTicketClass(
+            eventName: LocalizedString::make('en', $event->title),
+            id: $eventClassId,
+            reviewStatus: 'UNDER_REVIEW',
+            issuerName: 'NADA',
+            hexBackgroundColor: '#1C3519',
+            logo: Image::make(config('app.url') . '/images/nada-mark.png'),
+            venue: $venue,
+            dateTime: $dateTime,
+            multipleDevicesAndHoldersAllowedStatus: MultipleDevicesAndHoldersAllowedStatus::MULTIPLE_HOLDERS,
+        );
+
+        try {
+            $repo->create($class);
+        } catch (\Exception $e) {
+            try {
+                $repo->update($class);
+            } catch (\Exception $e2) {
+                Log::error('Failed to create/update Google Event EventTicketClass.', [
+                    'error' => $e2->getMessage(),
+                    'class_id' => $eventClassId,
+                ]);
+                throw $e2;
+            }
+        }
+
+        return $eventClassId;
+    }
+
+    public function createEventPassAndGetSaveUrl(\App\Models\EventRegistration $registration): string
+    {
+        $registration->load(['event']);
+        $event = $registration->event;
+
+        $eventClassId = $this->ensureEventClassExists($event);
+        $walletPass = $this->getOrCreateEventWalletPass($registration);
+
+        $objectId = $walletPass->google_object_id;
+        $checkInUrl = route('filament.admin.pages.event-check-in') . '?scan=' . $registration->qr_code_token;
+
+        $textModules = [
+            new TextModuleData(header: 'Registration #', body: $registration->registration_number, id: 'reg_number'),
+        ];
+
+        $locations = [];
+        if ($event->latitude && $event->longitude) {
+            $locations[] = new LatLongPoint(
+                latitude: (float) $event->latitude,
+                longitude: (float) $event->longitude,
+            );
+        }
+
+        $barcode = new Barcode(
+            type: BarcodeType::QR_CODE,
+            value: $checkInUrl,
+        );
+
+        $object = new EventTicketObject(
+            id: $objectId,
+            classId: $eventClassId,
+            state: State::ACTIVE,
+            hexBackgroundColor: '#1C3519',
+            ticketHolderName: $registration->full_name,
+            ticketNumber: $registration->registration_number,
+            barcode: $barcode,
+            reservationInfo: new EventReservationInfo(
+                confirmationCode: $registration->registration_number,
+            ),
+            textModulesData: $textModules,
+            locations: $locations,
+        );
+
+        $client = new GoogleClient;
+        $repo = new EventTicketObjectRepository($client);
+
+        try {
+            $repo->create($object);
+        } catch (\Exception $e) {
+            try {
+                $repo->update($object);
+            } catch (\Exception $e2) {
+                Log::error('Failed to create/update Google Event EventTicketObject.', [
+                    'error' => $e2->getMessage(),
+                    'object_id' => $objectId,
+                ]);
+                throw $e2;
+            }
+        }
+
+        $walletPass->update([
+            'last_updated_at' => now(),
+            'metadata' => [
+                'event_id' => $event->id,
+                'event_title' => $event->title,
+                'start_date' => $event->start_date->toIso8601String(),
+                'attendee' => $registration->full_name,
+            ],
+        ]);
+
+        return $this->generateTrainingSaveUrl($objectId);
+    }
+
+    public function updateEventPassObject(WalletPass $walletPass): void
+    {
+        $registration = $walletPass->eventRegistration;
+        if (! $registration) {
+            return;
+        }
+
+        $registration->load(['event']);
+        $event = $registration->event;
+
+        $eventClassId = $this->ensureEventClassExists($event);
+        $objectId = $walletPass->google_object_id;
+        $checkInUrl = route('filament.admin.pages.event-check-in') . '?scan=' . $registration->qr_code_token;
+
+        $textModules = [
+            new TextModuleData(header: 'Registration #', body: $registration->registration_number, id: 'reg_number'),
+        ];
+
+        $locations = [];
+        if ($event->latitude && $event->longitude) {
+            $locations[] = new LatLongPoint(
+                latitude: (float) $event->latitude,
+                longitude: (float) $event->longitude,
+            );
+        }
+
+        $barcode = new Barcode(
+            type: BarcodeType::QR_CODE,
+            value: $checkInUrl,
+        );
+
+        $object = new EventTicketObject(
+            id: $objectId,
+            classId: $eventClassId,
+            state: State::ACTIVE,
+            hexBackgroundColor: '#1C3519',
+            ticketHolderName: $registration->full_name,
+            ticketNumber: $registration->registration_number,
+            barcode: $barcode,
+            reservationInfo: new EventReservationInfo(
+                confirmationCode: $registration->registration_number,
+            ),
+            textModulesData: $textModules,
+            locations: $locations,
+        );
+
+        $client = new GoogleClient;
+        $repo = new EventTicketObjectRepository($client);
+
+        try {
+            $repo->update($object);
+        } catch (\Exception $e) {
+            Log::error('Failed to update Google event pass.', [
+                'error' => $e->getMessage(),
+                'object_id' => $objectId,
+            ]);
+        }
+
+        $walletPass->update([
+            'last_updated_at' => now(),
+            'metadata' => [
+                'event_id' => $event->id,
+                'event_title' => $event->title,
+                'start_date' => $event->start_date->toIso8601String(),
+                'attendee' => $registration->full_name,
+            ],
+        ]);
+    }
+
+    public function voidEventPassObject(WalletPass $walletPass): void
+    {
+        $objectId = $walletPass->google_object_id;
+        if (! $objectId) {
+            return;
+        }
+
+        $client = new GoogleClient;
+        $repo = new EventTicketObjectRepository($client);
+
+        try {
+            $existing = $repo->get($objectId);
+            $existing->state = State::EXPIRED;
+            $repo->update($existing);
+
+            Log::info('Google event pass voided.', ['object_id' => $objectId]);
+        } catch (\Exception $e) {
+            Log::error('Failed to void Google event pass.', [
+                'error' => $e->getMessage(),
+                'object_id' => $objectId,
+            ]);
+        }
+    }
+
+    protected function getOrCreateEventWalletPass(\App\Models\EventRegistration $registration): WalletPass
+    {
+        $existing = WalletPass::where('event_registration_id', $registration->id)
+            ->where('platform', 'google')
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        return WalletPass::create([
+            'user_id' => $registration->user_id,
+            'platform' => 'google',
+            'pass_category' => 'event',
+            'event_registration_id' => $registration->id,
+            'serial_number' => 'NADA-GEVT-' . $registration->id . '-' . Str::random(8),
+            'google_object_id' => $this->issuerId . '.nada-event-reg-' . $registration->id,
+            'authentication_token' => Str::random(64),
+        ]);
+    }
+
     protected function getOrCreateTrainingWalletPass(TrainingRegistration $registration): WalletPass
     {
         $existing = WalletPass::where('training_registration_id', $registration->id)

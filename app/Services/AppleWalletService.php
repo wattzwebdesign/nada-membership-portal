@@ -271,6 +271,161 @@ class AppleWalletService
         return $pkpass;
     }
 
+    // ------------------------------------------------------------------
+    // Event Pass Methods
+    // ------------------------------------------------------------------
+
+    public function createEventPass(\App\Models\EventRegistration $registration): string
+    {
+        $registration->load(['event']);
+        $event = $registration->event;
+
+        $walletPass = $this->getOrCreateEventWalletPass($registration);
+
+        $certPath = storage_path('app/' . config('services.apple_wallet.certificate_path'));
+        $certPassword = config('services.apple_wallet.certificate_password');
+        $compatibleP12 = $this->ensureCompatibleP12($certPath, $certPassword);
+
+        $pass = new PKPass($compatibleP12, $certPassword);
+        $pass->setWwdrCertificatePath(
+            storage_path('app/' . config('services.apple_wallet.wwdr_certificate_path'))
+        );
+
+        $timeDisplay = $event->start_date->format('g:i A') . ' - ' . $event->end_date->format('g:i A');
+        if ($event->timezone) {
+            $timeDisplay .= ' ' . $event->timezone;
+        }
+
+        $checkInUrl = route('filament.admin.pages.event-check-in') . '?scan=' . $registration->qr_code_token;
+
+        $passDefinition = [
+            'formatVersion' => 1,
+            'passTypeIdentifier' => config('services.apple_wallet.pass_type_identifier'),
+            'serialNumber' => $walletPass->serial_number,
+            'teamIdentifier' => config('services.apple_wallet.team_identifier'),
+            'organizationName' => 'NADA',
+            'description' => 'NADA Event: ' . $event->title,
+            'backgroundColor' => 'rgb(28, 53, 25)',
+            'foregroundColor' => 'rgb(255, 255, 255)',
+            'labelColor' => 'rgb(221, 173, 38)',
+            'authenticationToken' => $walletPass->authentication_token,
+            'relevantDate' => $event->start_date->toIso8601String(),
+            'eventTicket' => [
+                'primaryFields' => [
+                    [
+                        'key' => 'event',
+                        'label' => 'EVENT',
+                        'value' => $event->title,
+                    ],
+                ],
+                'secondaryFields' => [
+                    [
+                        'key' => 'date',
+                        'label' => 'DATE',
+                        'value' => $event->start_date->format('M j, Y'),
+                    ],
+                    [
+                        'key' => 'time',
+                        'label' => 'TIME',
+                        'value' => $timeDisplay,
+                    ],
+                ],
+                'auxiliaryFields' => [
+                    [
+                        'key' => 'location',
+                        'label' => 'LOCATION',
+                        'value' => $event->location_display,
+                    ],
+                    [
+                        'key' => 'registration',
+                        'label' => 'REG #',
+                        'value' => $registration->registration_number,
+                    ],
+                ],
+                'backFields' => [
+                    [
+                        'key' => 'attendee',
+                        'label' => 'Attendee',
+                        'value' => $registration->full_name,
+                    ],
+                    [
+                        'key' => 'organization',
+                        'label' => 'Organization',
+                        'value' => 'National Acupuncture Detoxification Association',
+                    ],
+                ],
+            ],
+            'barcodes' => [
+                [
+                    'format' => 'PKBarcodeFormatQR',
+                    'message' => $checkInUrl,
+                    'messageEncoding' => 'iso-8859-1',
+                    'altText' => 'Scan for Check-In',
+                ],
+            ],
+        ];
+
+        if ($event->latitude && $event->longitude) {
+            $passDefinition['locations'] = [
+                [
+                    'latitude' => (float) $event->latitude,
+                    'longitude' => (float) $event->longitude,
+                    'relevantText' => 'Your NADA event starts soon: ' . $event->title,
+                ],
+            ];
+        }
+
+        $webServiceUrl = config('services.apple_wallet.web_service_url');
+        if ($webServiceUrl) {
+            $passDefinition['webServiceURL'] = $webServiceUrl;
+        }
+
+        $pass->setData($passDefinition);
+
+        $imageDir = storage_path('app/wallet/apple-images');
+        foreach (['icon.png', 'icon@2x.png', 'logo.png', 'logo@2x.png'] as $image) {
+            $imagePath = $imageDir . '/' . $image;
+            if (file_exists($imagePath)) {
+                $pass->addFile($imagePath);
+            }
+        }
+
+        $pkpass = $pass->create();
+
+        $walletPass->update([
+            'last_updated_at' => now(),
+            'metadata' => [
+                'event_id' => $event->id,
+                'event_title' => $event->title,
+                'start_date' => $event->start_date->toIso8601String(),
+                'attendee' => $registration->full_name,
+            ],
+        ]);
+
+        return $pkpass;
+    }
+
+    protected function getOrCreateEventWalletPass(\App\Models\EventRegistration $registration): WalletPass
+    {
+        $existing = WalletPass::where('event_registration_id', $registration->id)
+            ->where('platform', 'apple')
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        return WalletPass::create([
+            'user_id' => $registration->user_id,
+            'platform' => 'apple',
+            'pass_category' => 'event',
+            'event_registration_id' => $registration->id,
+            'serial_number' => 'NADA-EVT-' . $registration->id . '-' . Str::random(8),
+            'pass_type_identifier' => config('services.apple_wallet.pass_type_identifier'),
+            'authentication_token' => Str::random(64),
+        ]);
+    }
+
     protected function getOrCreateTrainingWalletPass(TrainingRegistration $registration): WalletPass
     {
         $existing = WalletPass::where('training_registration_id', $registration->id)
@@ -479,6 +634,14 @@ class AppleWalletService
                 return null;
             }
             return $this->createTrainingPass($registration);
+        }
+
+        if ($walletPass->pass_category === 'event') {
+            $registration = $walletPass->eventRegistration;
+            if (! $registration) {
+                return null;
+            }
+            return $this->createEventPass($registration);
         }
 
         return $this->createPass($walletPass->user);

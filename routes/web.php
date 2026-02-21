@@ -32,6 +32,8 @@ use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\ClinicalLogController;
 use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\WalletPassController;
+use App\Http\Controllers\PublicEventController;
+use App\Http\Controllers\EventRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -66,6 +68,13 @@ Route::post('/shop/checkout', [ShopCheckoutController::class, 'store'])->name('s
 Route::get('/shop/checkout/success', [ShopCheckoutController::class, 'success'])->name('shop.checkout.success');
 Route::get('/shop/checkout/cancel', [ShopCheckoutController::class, 'cancel'])->name('shop.checkout.cancel');
 Route::get('/shop/orders/{order}/download/{orderItem}', [ShopCheckoutController::class, 'download'])->name('shop.download');
+
+// Public Events (no auth required)
+Route::get('/events', [PublicEventController::class, 'index'])->name('public.events.index');
+Route::get('/events/{event:slug}', [PublicEventController::class, 'show'])->name('public.events.show');
+Route::post('/events/{event:slug}/register', [EventRegistrationController::class, 'store'])->middleware('throttle:10,1')->name('events.register');
+Route::get('/events/{event:slug}/register/success', [EventRegistrationController::class, 'paymentSuccess'])->name('events.payment.success');
+Route::get('/events/{event:slug}/confirmation/{registration}', [EventRegistrationController::class, 'confirmation'])->name('events.confirmation');
 
 // Group Training (public form, no auth)
 Route::get('/group-training', [GroupTrainingController::class, 'create'])->name('group-training.create');
@@ -155,6 +164,12 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
         Route::get('/account/upgrade-to-trainer/payment/success', [TrainerApplicationController::class, 'paymentSuccess'])->name('trainer-application.payment.success');
         Route::get('/account/upgrade-to-trainer/payment/cancel', [TrainerApplicationController::class, 'paymentCancel'])->name('trainer-application.payment.cancel');
     });
+
+    // My Events
+    Route::get('/my-events', [EventRegistrationController::class, 'index'])->name('events.my-registrations');
+    Route::delete('/events/{event:slug}/cancel', [EventRegistrationController::class, 'destroy'])->name('events.cancel');
+    Route::get('/events/{event}/wallet/apple', [WalletPassController::class, 'downloadAppleEventPass'])->name('events.wallet.apple');
+    Route::get('/events/{event}/wallet/google', [WalletPassController::class, 'getGoogleEventPassUrl'])->name('events.wallet.google');
 
     // Bookmarks
     Route::get('/bookmarks', [ResourceBookmarkController::class, 'index'])->name('bookmarks.index');

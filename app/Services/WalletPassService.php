@@ -119,6 +119,65 @@ class WalletPassService
         }
     }
 
+    // ------------------------------------------------------------------
+    // Event Wallet Pass Methods
+    // ------------------------------------------------------------------
+
+    public function generateAppleEventPass(\App\Models\EventRegistration $registration): string
+    {
+        return $this->appleWalletService->createEventPass($registration);
+    }
+
+    public function generateGoogleEventPassUrl(\App\Models\EventRegistration $registration): string
+    {
+        return $this->googleWalletService->createEventPassAndGetSaveUrl($registration);
+    }
+
+    public function updateEventPasses(\App\Models\EventRegistration $registration): void
+    {
+        $passes = $registration->walletPasses;
+
+        foreach ($passes as $pass) {
+            try {
+                if ($pass->platform === 'apple') {
+                    $this->appleWalletService->pushUpdateToDevices($pass);
+                } elseif ($pass->platform === 'google') {
+                    $this->googleWalletService->updateEventPassObject($pass);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to update event wallet pass.', [
+                    'wallet_pass_id' => $pass->id,
+                    'platform' => $pass->platform,
+                    'registration_id' => $registration->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    public function voidEventPasses(\App\Models\EventRegistration $registration): void
+    {
+        $passes = $registration->walletPasses;
+
+        foreach ($passes as $pass) {
+            try {
+                if ($pass->platform === 'google') {
+                    $this->googleWalletService->voidEventPassObject($pass);
+                }
+                if ($pass->platform === 'apple') {
+                    $this->appleWalletService->pushUpdateToDevices($pass);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to void event wallet pass.', [
+                    'wallet_pass_id' => $pass->id,
+                    'platform' => $pass->platform,
+                    'registration_id' => $registration->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
     public function onCertificateIssued(User $user): void
     {
         $this->updateAllPassesForUser($user);

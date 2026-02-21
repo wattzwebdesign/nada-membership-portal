@@ -443,6 +443,40 @@ class StripeWebhookController extends Controller
 
         }
 
+        // Handle event registration payment
+        if ($type === 'event_registration' && $session->payment_status === 'paid') {
+            $registrationId = $session->metadata->event_registration_id ?? null;
+            $eventRegistration = $registrationId
+                ? \App\Models\EventRegistration::find($registrationId)
+                : null;
+
+            if ($eventRegistration && $eventRegistration->payment_status->value === 'unpaid') {
+                $registrationService = app(\App\Services\EventRegistrationService::class);
+                $registrationService->processPayment($eventRegistration, $session->payment_intent);
+
+                // Send confirmation notifications
+                try {
+                    \Illuminate\Support\Facades\Notification::route('mail', $eventRegistration->email)
+                        ->notify(new \App\Notifications\EventRegistrationConfirmation($eventRegistration->fresh()));
+
+                    $adminEmail = \App\Models\SiteSetting::adminEmail();
+                    if ($adminEmail) {
+                        \Illuminate\Support\Facades\Notification::route('mail', $adminEmail)
+                            ->notify(new \App\Notifications\NewEventRegistrationNotification($eventRegistration));
+                    }
+                } catch (\Exception $notifyError) {
+                    Log::error('Event registration webhook notification failed.', [
+                        'error' => $notifyError->getMessage(),
+                    ]);
+                }
+
+                Log::info('Event registration paid from webhook.', [
+                    'registration_id' => $eventRegistration->id,
+                    'payment_intent' => $session->payment_intent,
+                ]);
+            }
+        }
+
         // Handle store checkout payment
         if ($type === 'store_checkout' && $session->payment_status === 'paid') {
             $orderId = $session->metadata->order_id ?? null;

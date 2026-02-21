@@ -13,6 +13,7 @@ class WalletPass extends Model
         'platform',
         'pass_category',
         'training_registration_id',
+        'event_registration_id',
         'serial_number',
         'pass_type_identifier',
         'google_object_id',
@@ -39,6 +40,11 @@ class WalletPass extends Model
         return $this->belongsTo(TrainingRegistration::class);
     }
 
+    public function eventRegistration(): BelongsTo
+    {
+        return $this->belongsTo(EventRegistration::class);
+    }
+
     public function deviceRegistrations(): HasMany
     {
         return $this->hasMany(WalletDeviceRegistration::class);
@@ -62,5 +68,10 @@ class WalletPass extends Model
     public function scopeTraining($query)
     {
         return $query->where('pass_category', 'training');
+    }
+
+    public function scopeEvent($query)
+    {
+        return $query->where('pass_category', 'event');
     }
 }

@@ -138,6 +138,77 @@ class WalletPassController extends Controller
         return redirect()->away($url);
     }
 
+    /**
+     * Download Apple Wallet .pkpass file for an event registration.
+     */
+    public function downloadAppleEventPass(Request $request, \App\Models\Event $event)
+    {
+        $user = $request->user();
+
+        $registration = \App\Models\EventRegistration::where('event_id', $event->id)
+            ->where('user_id', $user->id)
+            ->where('status', RegistrationStatus::Registered->value)
+            ->first();
+
+        if (! $registration) {
+            return back()->with('error', 'You are not registered for this event.');
+        }
+
+        try {
+            $pkpass = $this->walletPassService->generateAppleEventPass($registration);
+        } catch (\Exception $e) {
+            Log::error('Apple event pass generation failed.', [
+                'user_id' => $user->id,
+                'event_id' => $event->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Unable to generate your event pass. Please try again or contact support.');
+        }
+
+        if (empty($pkpass)) {
+            return back()->with('error', 'Unable to generate your event pass. Please try again or contact support.');
+        }
+
+        return response($pkpass, 200, [
+            'Content-Type' => 'application/vnd.apple.pkpass',
+            'Content-Disposition' => 'inline; filename="nada-event.pkpass"',
+            'Content-Length' => strlen($pkpass),
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+        ]);
+    }
+
+    /**
+     * Redirect to Google Wallet save URL for an event registration.
+     */
+    public function getGoogleEventPassUrl(Request $request, \App\Models\Event $event)
+    {
+        $user = $request->user();
+
+        $registration = \App\Models\EventRegistration::where('event_id', $event->id)
+            ->where('user_id', $user->id)
+            ->where('status', RegistrationStatus::Registered->value)
+            ->first();
+
+        if (! $registration) {
+            return back()->with('error', 'You are not registered for this event.');
+        }
+
+        try {
+            $url = $this->walletPassService->generateGoogleEventPassUrl($registration);
+        } catch (\Exception $e) {
+            Log::error('Google event pass generation failed.', [
+                'user_id' => $user->id,
+                'event_id' => $event->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Unable to generate your event pass. Please try again or contact support.');
+        }
+
+        return redirect()->away($url);
+    }
+
     // ------------------------------------------------------------------
     // Apple Web Service Callbacks (token-verified, no auth middleware)
     // ------------------------------------------------------------------
