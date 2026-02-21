@@ -136,7 +136,35 @@ class RegistrationsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\ExportAction::make()
-                    ->exporter(EventRegistrationExporter::class),
+                    ->exporter(EventRegistrationExporter::class)
+                    ->modalWidth('4xl')
+                    ->form(fn (Tables\Actions\ExportAction $action): array => [
+                        Forms\Components\Fieldset::make(__('filament-actions::export.modal.form.columns.label'))
+                            ->columns(2)
+                            ->schema(function () use ($action): array {
+                                return array_map(
+                                    fn (\Filament\Actions\Exports\ExportColumn $column): Forms\Components\Split => Forms\Components\Split::make([
+                                        Forms\Components\Checkbox::make('isEnabled')
+                                            ->label($column->getName())
+                                            ->hiddenLabel()
+                                            ->default($column->isEnabledByDefault())
+                                            ->live()
+                                            ->grow(false),
+                                        Forms\Components\TextInput::make('label')
+                                            ->label($column->getName())
+                                            ->hiddenLabel()
+                                            ->default($column->getLabel())
+                                            ->placeholder($column->getLabel())
+                                            ->disabled(fn (Forms\Get $get): bool => ! $get('isEnabled'))
+                                            ->required(fn (Forms\Get $get): bool => (bool) $get('isEnabled')),
+                                    ])
+                                        ->verticallyAlignCenter()
+                                        ->statePath($column->getName()),
+                                    $action->getExporter()::getColumns(),
+                                );
+                            })
+                            ->statePath('columnMap'),
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
