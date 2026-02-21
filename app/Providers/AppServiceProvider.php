@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\SiteSetting;
+use App\Models\Event;
 use App\Models\Training;
+use App\Observers\EventObserver;
 use App\Observers\TrainingObserver;
 use App\Services\FixedFilamentUmami;
 use Illuminate\Support\ServiceProvider;
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::observe(EventObserver::class);
         Training::observe(TrainingObserver::class);
 
         try {
