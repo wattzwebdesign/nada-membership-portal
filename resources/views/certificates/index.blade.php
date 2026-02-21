@@ -118,8 +118,8 @@
                                 $emptyUrl = route('trainings.my-registrations');
                             } elseif (! ($progress['has_approved_clinical'] ?? false)) {
                                 $emptyMessage = 'Submit your 40 hours of clinicals to continue toward your certificate.';
-                                $emptyAction = 'Submit Clinicals';
-                                $emptyUrl = route('clinicals.create');
+                                $emptyAction = 'Clinical Log Books';
+                                $emptyUrl = route('clinical-logs.index');
                             } else {
                                 $emptyMessage = 'Your clinical hours have been approved. Your certificate will be issued shortly.';
                                 $emptyAction = null;
