@@ -23,7 +23,7 @@ NADA (National Acupuncture Detoxification Association) promotes and standardizes
 | Page | Path | Description |
 |------|------|-------------|
 | Home | `/` | Redirects to login |
-| Pricing | `/pricing` | View membership plans and pricing |
+| Memberships | `/pricing` | View membership plans and pricing |
 | Trainer Directory | `/trainers` | Browse registered NADA trainers |
 | Trainer Profile | `/trainers/{id}` | View a specific trainer's profile and contact them |
 | Certificate Verification | `/verify` | Verify a NADA certificate by code |
