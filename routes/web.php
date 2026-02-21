@@ -12,6 +12,7 @@ use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicCertificateController;
 use App\Http\Controllers\PublicPricingController;
+use App\Http\Controllers\PublicGlossaryController;
 use App\Http\Controllers\PublicResourceController;
 use App\Http\Controllers\PublicTrainerController;
 use App\Http\Controllers\TrainerApplicationController;
@@ -246,6 +247,9 @@ Route::middleware(['auth', 'verified', 'nda', 'vendor'])->prefix('vendor')->name
     Route::get('/payouts/connect/callback', [App\Http\Controllers\Vendor\PayoutController::class, 'connectCallback'])->name('payouts.connect.callback');
     Route::get('/payouts/reports', [App\Http\Controllers\Vendor\PayoutController::class, 'reports'])->name('payouts.reports');
 });
+
+// Public Glossary
+Route::get('/glossary', [PublicGlossaryController::class, 'index'])->name('public.glossary.index');
 
 // Public Resource Library
 Route::get('/resources', [PublicResourceController::class, 'index'])->name('public.resources.index');

@@ -30,6 +30,7 @@
                         <a href="https://acudetox.com" class="text-gray-600 hover:text-gray-900 text-sm font-medium">NADA Website</a>
                         <a href="{{ route('public.trainers.index') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Trainers</a>
                         <a href="{{ route('public.resources.index') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Resources</a>
+                        <a href="{{ route('public.glossary.index') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Glossary</a>
                         <a href="{{ route('public.pricing') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Pricing</a>
                         <a href="{{ route('public.shop.index') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Shop</a>
                         <a href="{{ route('vendor-application.create') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Sell</a>
@@ -92,6 +93,7 @@
                     <a href="https://acudetox.com" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">NADA Website</a>
                     <a href="{{ route('public.trainers.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">Trainers</a>
                     <a href="{{ route('public.resources.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">Resources</a>
+                    <a href="{{ route('public.glossary.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">Glossary</a>
                     <a href="{{ route('public.pricing') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">Pricing</a>
                     <a href="{{ route('public.shop.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">Shop</a>
                     <a href="{{ route('vendor-application.create') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">Sell</a>
