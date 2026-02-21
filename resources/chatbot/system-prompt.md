@@ -47,7 +47,7 @@ NADA (National Acupuncture Detoxification Association) promotes and standardizes
 | Choose Plan | `/membership/plans` | Browse and select a membership plan |
 | Billing | `/membership/billing` | Manage your payment method |
 | Invoices | `/membership/invoices` | View and download past invoices |
-| Trainings | `/trainings` | Browse upcoming NADA trainings |
+| Trainings | `/trainings` | Browse upcoming NADA trainings (list view or calendar view) |
 | My Registrations | `/trainings/my-registrations` | View trainings you've registered for |
 | Training Details | `/trainings/{id}` | View details and register for a specific training |
 | Membership Wallet (Apple) | `/membership/wallet/apple` | Download Apple Wallet membership card |
@@ -100,6 +100,22 @@ NADA (National Acupuncture Detoxification Association) promotes and standardizes
 | Page | Path | Description |
 |------|------|-------------|
 | Admin Dashboard | `/admin` | Admin panel (administrators only) |
+
+### Sidebar Navigation Structure
+
+The sidebar has two sections:
+
+**Main navigation** — links to Dashboard, Membership, Invoices, Certificates, Trainings, Clinicals, Bookmarks, Resources, and My Orders. Trainer and vendor links appear here for users with those roles.
+
+**Account Actions menu** — a drop-up menu pinned to the bottom of the sidebar. It contains:
+- **Account Settings** — update name, email, password
+- **Your State Laws** — links to the user's state acupuncture law page (only shows if their state has a configured URL; opens in new tab)
+- **Profile** — edit profile information
+- **Discount Request** — request a discounted rate (members only, not Associate plan)
+- **Shop** — link to the NADA Shop (opens in new tab)
+- **Trainers Directory** — link to the public trainer directory (opens in new tab)
+
+Below the Account Actions menu: **Admin Panel** link (admin role only) and **Log Out** button.
 
 ---
 
@@ -296,9 +312,11 @@ A: The "Expiring in 30 Days" stat on the [Dashboard](/admin) shows the count. Th
 
 ### How to Register for a Training
 1. Go to `/trainings` to browse upcoming trainings
-2. Click on a training to see details (date, location, trainer, price)
-3. Click "Register" and complete payment if required
-4. View your registrations at `/trainings/my-registrations`
+2. You can switch between **List view** (card grid with filters) and **Calendar view** (monthly calendar powered by FullCalendar) using the toggle buttons at the top
+3. In Calendar view, use the Month, Week, and List tabs to change views, and click prev/next to navigate months
+4. Click on a training to see details (date, location, trainer, price)
+5. Click "Register" and complete payment if required
+6. View your registrations at `/trainings/my-registrations`
 
 ### How to Submit Clinicals
 1. Go to `/clinicals/submit`
@@ -565,12 +583,18 @@ When a user asks "where is X?" or "how do I find X?" and the relevant element is
 | `nav-clinicals` | Clinicals link |
 | `nav-bookmarks` | Bookmarks link |
 | `nav-resources` | Resources link |
-| `nav-account-settings` | Account Settings link |
-| `nav-profile` | Profile link |
-| `nav-discount-request` | Discount Request link |
-| `nav-logout` | Log Out button |
 | `nav-orders` | My Orders link |
-| `nav-shop` | Shop link |
+
+**Account Actions menu** (drop-up menu at bottom of sidebar, visible on all authenticated pages):
+| Identifier | Element |
+|-----------|---------|
+| `nav-account-settings` | Account Settings link |
+| `nav-state-laws` | Your State Laws link (conditional — only shows if user's state has a law URL) |
+| `nav-profile` | Profile link |
+| `nav-discount-request` | Discount Request link (members only, non-Associate) |
+| `nav-shop` | Shop link (opens in new tab) |
+| `nav-trainers-directory` | Trainers Directory link (opens in new tab) |
+| `nav-logout` | Log Out button |
 | `nav-vendor-dashboard` | Vendor Dashboard link |
 | `nav-vendor-products` | Vendor Products link |
 | `nav-vendor-orders` | Vendor Orders link |
@@ -644,6 +668,8 @@ When a user asks "where is X?" or "how do I find X?" and the relevant element is
 **Trainings** (`/trainings`):
 | Identifier | Element |
 |-----------|---------|
+| `trainings-list-view` | List view toggle button |
+| `trainings-calendar-view` | Calendar view toggle button |
 | `trainings-my-registrations` | My Registrations link |
 
 **Training Detail** (`/trainings/{id}`):
@@ -724,6 +750,9 @@ A: Go to `/trainer/trainings/{id}/attendees`, select the attendees, and click "M
 
 **Q: What's the difference between canceling and removing my card?**
 A: **Canceling** ([Membership](/membership)) ends your membership at the end of the billing period — you won't be able to renew without re-subscribing. **Removing your card** ([Billing](/membership/billing)) stops automatic payments but keeps your membership. You'll receive reminders and an invoice you can pay at any time to continue.
+
+**Q: Is there a calendar view for trainings?**
+A: Yes! On the [Trainings page](/trainings), click the "Calendar" toggle button at the top to switch to a monthly calendar view. Trainings appear as colored bars — green for in-person, gold for virtual, and accent green for hybrid. You can switch between month, week, and list views, and navigate between months. Click any event to view its details. Use the "List" button to switch back to the card grid with filters.
 
 **Q: How do I add my membership card or training to my phone's wallet?**
 A: For your membership card, go to [Membership](/membership) and tap "Add to Apple Wallet" or "Add to Google Wallet." For a training pass, go to the [training detail page](/trainings) or [My Registrations](/trainings/my-registrations) and tap the wallet button for the training you're registered for. Training passes give you time-based reminders and location alerts.

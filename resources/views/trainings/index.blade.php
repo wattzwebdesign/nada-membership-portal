@@ -7,13 +7,13 @@
             <div class="flex items-center gap-3">
                 {{-- View Toggle --}}
                 <div class="inline-flex rounded-md shadow-sm" role="group">
-                    <button id="btn-list"
+                    <button id="btn-list" data-guide="trainings-list-view"
                             onclick="switchView('list')"
                             class="inline-flex items-center px-3 py-1.5 text-sm font-medium border border-gray-300 rounded-l-md transition-colors">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         List
                     </button>
-                    <button id="btn-calendar"
+                    <button id="btn-calendar" data-guide="trainings-calendar-view"
                             onclick="switchView('calendar')"
                             class="inline-flex items-center px-3 py-1.5 text-sm font-medium border border-gray-300 border-l-0 rounded-r-md transition-colors">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
