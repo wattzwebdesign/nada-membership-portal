@@ -7,6 +7,8 @@ use App\Enums\TrainingStatus;
 use App\Models\Agreement;
 use App\Models\Training;
 use App\Models\TrainingInvitee;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -47,6 +49,36 @@ class TrainingController extends Controller
         $trainings = $query->orderBy('start_date', 'asc')->paginate(12);
 
         return view('trainings.index', compact('trainings'));
+    }
+
+    /**
+     * Return trainings as JSON for the calendar view.
+     */
+    public function calendarEvents(Request $request): JsonResponse
+    {
+        $month = $request->input('month', now()->format('Y-m'));
+        $startOfMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $endOfMonth = $startOfMonth->copy()->endOfMonth();
+
+        $trainings = Training::publiclyVisible()
+            ->with('trainer')
+            ->where('start_date', '<=', $endOfMonth)
+            ->where('end_date', '>=', $startOfMonth)
+            ->orderBy('start_date')
+            ->get();
+
+        $events = $trainings->map(fn (Training $t) => [
+            'id' => $t->id,
+            'title' => $t->title,
+            'start' => $t->start_date->toDateString(),
+            'end' => $t->end_date->toDateString(),
+            'type' => $t->type->value,
+            'url' => route('trainings.show', $t),
+            'trainer' => $t->trainer->full_name ?? 'N/A',
+            'price' => $t->is_paid ? '$' . number_format($t->price_cents / 100, 2) : 'Free',
+        ]);
+
+        return response()->json($events);
     }
 
     /**

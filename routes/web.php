@@ -122,6 +122,7 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
 
         // Trainings
         Route::get('/trainings', [TrainingController::class, 'index'])->name('trainings.index');
+        Route::get('/trainings/calendar-events', [TrainingController::class, 'calendarEvents'])->name('trainings.calendar-events');
         Route::get('/trainings/my-registrations', [TrainingRegistrationController::class, 'index'])->name('trainings.my-registrations');
         Route::get('/trainings/{training}', [TrainingController::class, 'show'])->name('trainings.show');
         Route::post('/trainings/{training}/register', [TrainingRegistrationController::class, 'store'])->name('trainings.register');

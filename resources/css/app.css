@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+[x-cloak] { display: none !important; }
+
 /* Hide sidebar scrollbar while keeping scroll functionality */
 nav[x-ref="navScroll"] {
     scrollbar-width: none; /* Firefox */
