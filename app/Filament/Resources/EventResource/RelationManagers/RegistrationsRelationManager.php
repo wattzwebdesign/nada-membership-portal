@@ -84,6 +84,25 @@ class RegistrationsRelationManager extends RelationManager
                             ->send();
                     }),
 
+                Tables\Actions\Action::make('undo_check_in')
+                    ->label('Undo Check-In')
+                    ->icon('heroicon-o-arrow-uturn-left')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->visible(fn (EventRegistration $record) => $record->isCheckedIn())
+                    ->action(function (EventRegistration $record) {
+                        $record->update([
+                            'checked_in_at' => null,
+                            'checked_in_by' => null,
+                            'status' => RegistrationStatus::Registered,
+                        ]);
+
+                        Notification::make()
+                            ->title('Check-in reversed')
+                            ->success()
+                            ->send();
+                    }),
+
                 Tables\Actions\Action::make('comp')
                     ->label('Comp')
                     ->icon('heroicon-o-gift')

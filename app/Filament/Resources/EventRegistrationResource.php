@@ -7,6 +7,8 @@ use App\Enums\RegistrationStatus;
 use App\Filament\Exports\EventRegistrationExporter;
 use App\Filament\Resources\EventRegistrationResource\Pages;
 use App\Models\EventRegistration;
+use App\Services\EventRegistrationService;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -72,6 +74,59 @@ class EventRegistrationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+
+                Tables\Actions\Action::make('check_in')
+                    ->label('Check In')
+                    ->icon('heroicon-o-check-badge')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn (EventRegistration $record) => ! $record->isCheckedIn() && $record->status !== RegistrationStatus::Canceled)
+                    ->action(function (EventRegistration $record) {
+                        $record->update([
+                            'checked_in_at' => now(),
+                            'checked_in_by' => auth()->id(),
+                            'status' => RegistrationStatus::Attended,
+                        ]);
+
+                        Notification::make()
+                            ->title('Checked in: ' . $record->full_name)
+                            ->success()
+                            ->send();
+                    }),
+
+                Tables\Actions\Action::make('undo_check_in')
+                    ->label('Undo Check-In')
+                    ->icon('heroicon-o-arrow-uturn-left')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->visible(fn (EventRegistration $record) => $record->isCheckedIn())
+                    ->action(function (EventRegistration $record) {
+                        $record->update([
+                            'checked_in_at' => null,
+                            'checked_in_by' => null,
+                            'status' => RegistrationStatus::Registered,
+                        ]);
+
+                        Notification::make()
+                            ->title('Check-in reversed: ' . $record->full_name)
+                            ->success()
+                            ->send();
+                    }),
+
+                Tables\Actions\Action::make('cancel')
+                    ->label('Cancel')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->visible(fn (EventRegistration $record) => $record->status !== RegistrationStatus::Canceled)
+                    ->action(function (EventRegistration $record) {
+                        app(EventRegistrationService::class)->cancelRegistration($record);
+
+                        Notification::make()
+                            ->title('Registration canceled')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
