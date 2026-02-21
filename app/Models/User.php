@@ -70,6 +70,21 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return "{$this->first_name} {$this->last_name}";
     }
 
+    public function getLifetimeValueCentsAttribute(): int
+    {
+        $invoiceDollars = $this->invoices()->sum('amount_paid');
+        $trainingCents = $this->trainingRegistrations()->sum('amount_paid_cents');
+        $orderCents = $this->shopOrders()->sum('total_cents');
+        $applicationCents = $this->trainerApplications()->sum('amount_paid_cents');
+
+        return (int) (($invoiceDollars * 100) + $trainingCents + $orderCents + $applicationCents);
+    }
+
+    public function getLifetimeValueFormattedAttribute(): string
+    {
+        return '$' . number_format($this->lifetime_value_cents / 100, 2);
+    }
+
     // Filament
 
     public function getFilamentName(): string

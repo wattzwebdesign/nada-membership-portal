@@ -128,6 +128,46 @@ class UserResource extends Resource
                             ->dehydrated(false),
                     ])->collapsible()->collapsed(),
 
+                Forms\Components\Section::make('Revenue Breakdown')
+                    ->schema([
+                        Forms\Components\Placeholder::make('total_lifetime_value')
+                            ->label('Total Lifetime Value')
+                            ->content(fn (?User $record): string => $record ? $record->lifetime_value_formatted : '$0.00')
+                            ->extraAttributes(['class' => 'text-lg font-bold']),
+                        Forms\Components\Placeholder::make('invoice_revenue')
+                            ->label('Membership Invoices')
+                            ->content(function (?User $record): string {
+                                if (! $record) return '$0.00 (0 invoices)';
+                                $total = $record->invoices()->sum('amount_paid');
+                                $count = $record->invoices()->count();
+                                return '$' . number_format($total, 2) . ' (' . $count . ' ' . str('invoice')->plural($count) . ')';
+                            }),
+                        Forms\Components\Placeholder::make('training_revenue')
+                            ->label('Training Registrations')
+                            ->content(function (?User $record): string {
+                                if (! $record) return '$0.00 (0 registrations)';
+                                $cents = $record->trainingRegistrations()->sum('amount_paid_cents');
+                                $count = $record->trainingRegistrations()->count();
+                                return '$' . number_format($cents / 100, 2) . ' (' . $count . ' ' . str('registration')->plural($count) . ')';
+                            }),
+                        Forms\Components\Placeholder::make('order_revenue')
+                            ->label('Shop Orders')
+                            ->content(function (?User $record): string {
+                                if (! $record) return '$0.00 (0 orders)';
+                                $cents = $record->shopOrders()->sum('total_cents');
+                                $count = $record->shopOrders()->count();
+                                return '$' . number_format($cents / 100, 2) . ' (' . $count . ' ' . str('order')->plural($count) . ')';
+                            }),
+                        Forms\Components\Placeholder::make('application_revenue')
+                            ->label('Trainer Application Fees')
+                            ->content(function (?User $record): string {
+                                if (! $record) return '$0.00 (0 applications)';
+                                $cents = $record->trainerApplications()->sum('amount_paid_cents');
+                                $count = $record->trainerApplications()->count();
+                                return '$' . number_format($cents / 100, 2) . ' (' . $count . ' ' . str('application')->plural($count) . ')';
+                            }),
+                    ])->columns(2)->collapsible()->collapsed(),
+
                 Forms\Components\Section::make('Roles')
                     ->schema([
                         Forms\Components\CheckboxList::make('roles')
@@ -184,6 +224,18 @@ class UserResource extends Resource
                     ->counts('subscriptions')
                     ->label('Subs')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('lifetime_value')
+                    ->label('Lifetime Value')
+                    ->getStateUsing(fn (User $record): string => $record->lifetime_value_formatted)
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->orderByRaw('(
+                            COALESCE((SELECT SUM(amount_paid) * 100 FROM invoices WHERE invoices.user_id = users.id), 0)
+                            + COALESCE((SELECT SUM(amount_paid_cents) FROM training_registrations WHERE training_registrations.user_id = users.id), 0)
+                            + COALESCE((SELECT SUM(total_cents) FROM orders WHERE orders.user_id = users.id), 0)
+                            + COALESCE((SELECT SUM(amount_paid_cents) FROM trainer_applications WHERE trainer_applications.user_id = users.id), 0)
+                        ) ' . $direction);
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('nda_accepted_at')
                     ->label('NDA Signed')
                     ->boolean()
