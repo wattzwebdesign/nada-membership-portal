@@ -110,7 +110,7 @@
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: (showLabel && !open) ? '7.5rem' : '3.5rem',
+            width: (showLabel && !open) ? '9.5rem' : '3.5rem',
             height: '3.5rem',
             borderRadius: '9999px',
             color: 'white',
@@ -137,7 +137,7 @@
             x-transition:leave-end="opacity-0"
             x-cloak
             style="font-size: 0.875rem; font-weight: 600; white-space: nowrap; flex-shrink: 0;"
-        >Help</span>
+        >Need Help?</span>
         <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" style="width: 1.5rem; height: 1.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
