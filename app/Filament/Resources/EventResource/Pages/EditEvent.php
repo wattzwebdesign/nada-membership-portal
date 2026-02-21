@@ -28,6 +28,7 @@ class EditEvent extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\ViewAction::make(),
             Actions\Action::make('view_public')
                 ->label('View Public Page')
                 ->icon('heroicon-o-arrow-top-right-on-square')
