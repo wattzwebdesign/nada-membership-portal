@@ -1,6 +1,12 @@
 <x-public-layout title="Registration Confirmed - NADA">
 
     <div class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        @if (session('error'))
+            <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             {{-- Success Header --}}
             <div class="bg-brand-primary p-6 text-center">
