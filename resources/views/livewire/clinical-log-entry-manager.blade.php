@@ -38,7 +38,7 @@
 
                         <div>
                             <label for="hours" class="block text-sm font-medium text-gray-700 mb-1">Hours *</label>
-                            <input type="number" wire:model="hours" id="hours" step="0.25" min="0.25" max="24" placeholder="e.g. 2.5" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm">
+                            <input type="number" wire:model="hours" id="hours" step="0.25" min="0.25" placeholder="e.g. 2.5" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary text-sm">
                             @error('hours') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
 

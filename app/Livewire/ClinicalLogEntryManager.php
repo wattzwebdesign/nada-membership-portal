@@ -167,7 +167,7 @@ class ClinicalLogEntryManager extends Component
             'date' => ['required', 'date', 'before_or_equal:today'],
             'location' => ['required', 'string', 'max:255'],
             'protocol' => ['required', 'string', 'max:255'],
-            'hours' => ['required', 'numeric', 'min:0.25', 'max:24'],
+            'hours' => ['required', 'numeric', 'min:0.25'],
             'notes' => ['nullable', 'string', 'max:2000'],
             'attachments' => ['nullable', 'array'],
             'attachments.*' => ['file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,doc,docx'],
