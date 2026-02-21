@@ -6,15 +6,15 @@
             </h2>
             <div class="flex items-center gap-3">
                 {{-- View Toggle --}}
-                <div x-data class="inline-flex rounded-md shadow-sm" role="group">
-                    <button @click="$dispatch('set-view', 'list')"
-                            :class="($store.trainingView.current === 'list') ? 'bg-brand-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50'"
+                <div class="inline-flex rounded-md shadow-sm" role="group">
+                    <button id="btn-list"
+                            onclick="switchView('list')"
                             class="inline-flex items-center px-3 py-1.5 text-sm font-medium border border-gray-300 rounded-l-md transition-colors">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         List
                     </button>
-                    <button @click="$dispatch('set-view', 'calendar')"
-                            :class="($store.trainingView.current === 'calendar') ? 'bg-brand-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50'"
+                    <button id="btn-calendar"
+                            onclick="switchView('calendar')"
                             class="inline-flex items-center px-3 py-1.5 text-sm font-medium border border-gray-300 border-l-0 rounded-r-md transition-colors">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         Calendar
@@ -29,7 +29,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8" x-data="trainingCalendar('{{ request('view', 'list') }}', '{{ url('/trainings/calendar-events') }}')" @set-view.window="setView($event.detail)">
+    <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @if (session('success'))
@@ -39,7 +39,7 @@
             @endif
 
             {{-- ==================== LIST VIEW ==================== --}}
-            <div x-show="view === 'list'" x-cloak>
+            <div id="list-view">
                 {{-- Filters --}}
                 <div class="mb-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-4">
@@ -173,83 +173,21 @@
             </div>
 
             {{-- ==================== CALENDAR VIEW ==================== --}}
-            <div x-show="view === 'calendar'" x-cloak>
-                {{-- Month Navigation --}}
-                <div class="mb-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-4 flex items-center justify-between">
-                        <button @click="prevMonth()" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                            Prev
-                        </button>
-                        <h3 class="text-lg font-semibold text-gray-800" x-text="monthLabel"></h3>
-                        <button @click="nextMonth()" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            Next
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                {{-- Loading Spinner --}}
-                <div x-show="loading" class="flex justify-center py-12">
-                    <svg class="animate-spin h-8 w-8 text-brand-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                    </svg>
-                </div>
-
-                {{-- Calendar Grid --}}
-                <div x-show="!loading" class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    {{-- Day-of-week Headers --}}
-                    <div class="grid grid-cols-7 border-b border-gray-200">
-                        <template x-for="dayName in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="dayName">
-                            <div class="px-2 py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide" x-text="dayName"></div>
-                        </template>
-                    </div>
-
-                    {{-- Day Cells --}}
-                    <div class="grid grid-cols-7">
-                        <template x-for="(day, index) in calendarDays" :key="index">
-                            <div class="min-h-[100px] border-r border-b border-gray-100 px-1 py-1"
-                                 :class="day.isCurrentMonth ? 'bg-white' : 'bg-gray-50'">
-                                {{-- Day Number --}}
-                                <div class="text-xs font-medium mb-1 px-1"
-                                     :class="{
-                                         'text-gray-400': !day.isCurrentMonth,
-                                         'text-gray-700': day.isCurrentMonth && !day.isToday,
-                                         'text-white bg-brand-primary rounded-full w-6 h-6 flex items-center justify-center': day.isToday
-                                     }"
-                                     x-text="day.dayNumber"></div>
-
-                                {{-- Events --}}
-                                <div class="space-y-0.5">
-                                    <template x-for="(evt, ei) in day.visibleEvents" :key="evt.id + '-' + index">
-                                        <a :href="evt.url"
-                                           class="block rounded px-1.5 py-0.5 text-xs font-medium truncate leading-tight cursor-pointer hover:opacity-80 transition-opacity"
-                                           :class="eventColorClass(evt.type)"
-                                           :title="evt.title + ' (' + evt.trainer + ') ' + evt.price">
-                                            <span x-show="evt.showTitle" x-text="evt.title"></span>
-                                            <span x-show="!evt.showTitle">&nbsp;</span>
-                                        </a>
-                                    </template>
-                                    <template x-if="day.extraCount > 0">
-                                        <div class="text-xs text-gray-500 px-1 font-medium" x-text="'+' + day.extraCount + ' more'"></div>
-                                    </template>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
+            <div id="calendar-view" style="display: none;">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
+                    <div id="calendar"></div>
                 </div>
 
                 {{-- Legend --}}
                 <div class="mt-4 flex flex-wrap gap-4 text-xs text-gray-600">
                     <div class="flex items-center gap-1.5">
-                        <span class="inline-block w-3 h-3 rounded bg-blue-500"></span> In Person
+                        <span class="inline-block w-3 h-3 rounded" style="background-color: #3B82F6;"></span> In Person
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <span class="inline-block w-3 h-3 rounded bg-purple-500"></span> Virtual
+                        <span class="inline-block w-3 h-3 rounded" style="background-color: #8B5CF6;"></span> Virtual
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <span class="inline-block w-3 h-3 rounded bg-indigo-500"></span> Hybrid
+                        <span class="inline-block w-3 h-3 rounded" style="background-color: #6366F1;"></span> Hybrid
                     </div>
                 </div>
             </div>
@@ -257,163 +195,146 @@
     </div>
 
     @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('trainingView', {
-            current: new URLSearchParams(window.location.search).get('view') || 'list',
-        });
-    });
+    (function() {
+        const eventsUrl = '{{ url('/trainings/calendar-events') }}';
+        const initialView = new URLSearchParams(window.location.search).get('view') || 'list';
 
-    function trainingCalendar(initialView, eventsUrl) {
-        const now = new Date();
-        return {
-            view: initialView || 'list',
-            currentYear: now.getFullYear(),
-            currentMonth: now.getMonth(),
-            events: [],
-            calendarDays: [],
-            loading: false,
-            maxVisibleEvents: 3,
+        let calendar = null;
 
-            get monthLabel() {
-                const date = new Date(this.currentYear, this.currentMonth, 1);
-                return date.toLocaleString('default', { month: 'long', year: 'numeric' });
-            },
+        // Toggle button styling
+        function updateToggleButtons(activeView) {
+            const btnList = document.getElementById('btn-list');
+            const btnCal = document.getElementById('btn-calendar');
+            const activeClasses = ['bg-brand-primary', 'text-white'];
+            const inactiveClasses = ['bg-white', 'text-gray-700', 'hover:bg-gray-50'];
 
-            init() {
-                Alpine.store('trainingView').current = this.view;
-                if (this.view === 'calendar') {
-                    this.fetchEvents();
-                }
-            },
+            if (activeView === 'list') {
+                btnList.classList.remove(...inactiveClasses);
+                btnList.classList.add(...activeClasses);
+                btnCal.classList.remove(...activeClasses);
+                btnCal.classList.add(...inactiveClasses);
+            } else {
+                btnCal.classList.remove(...inactiveClasses);
+                btnCal.classList.add(...activeClasses);
+                btnList.classList.remove(...activeClasses);
+                btnList.classList.add(...inactiveClasses);
+            }
+        }
 
-            setView(newView) {
-                this.view = newView;
-                Alpine.store('trainingView').current = newView;
-                const url = new URL(window.location);
-                url.searchParams.set('view', newView);
-                history.replaceState({}, '', url);
-                if (newView === 'calendar' && this.calendarDays.length === 0) {
-                    this.fetchEvents();
-                }
-            },
+        // Switch between views
+        window.switchView = function(view) {
+            const listView = document.getElementById('list-view');
+            const calendarView = document.getElementById('calendar-view');
 
-            prevMonth() {
-                if (this.currentMonth === 0) {
-                    this.currentMonth = 11;
-                    this.currentYear--;
+            if (view === 'calendar') {
+                listView.style.display = 'none';
+                calendarView.style.display = 'block';
+                if (!calendar) {
+                    initCalendar();
                 } else {
-                    this.currentMonth--;
+                    calendar.updateSize();
                 }
-                this.fetchEvents();
-            },
+            } else {
+                listView.style.display = 'block';
+                calendarView.style.display = 'none';
+            }
 
-            nextMonth() {
-                if (this.currentMonth === 11) {
-                    this.currentMonth = 0;
-                    this.currentYear++;
-                } else {
-                    this.currentMonth++;
-                }
-                this.fetchEvents();
-            },
+            updateToggleButtons(view);
 
-            async fetchEvents() {
-                this.loading = true;
-                const monthStr = this.currentYear + '-' + String(this.currentMonth + 1).padStart(2, '0');
-                try {
-                    const resp = await fetch(eventsUrl + '?month=' + monthStr, {
+            const url = new URL(window.location);
+            url.searchParams.set('view', view);
+            history.replaceState({}, '', url);
+        };
+
+        // Initialize FullCalendar
+        function initCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listWeek'
+                },
+                height: 'auto',
+                navLinks: true,
+                editable: false,
+                dayMaxEvents: true,
+                events: function(info, successCallback, failureCallback) {
+                    const params = new URLSearchParams({
+                        start: info.startStr,
+                        end: info.endStr,
+                    });
+                    fetch(eventsUrl + '?' + params, {
                         credentials: 'same-origin',
                         headers: { 'Accept': 'application/json' },
-                    });
-                    this.events = await resp.json();
-                } catch (e) {
-                    this.events = [];
-                }
-                this.buildCalendar();
-                this.loading = false;
-            },
-
-            buildCalendar() {
-                const year = this.currentYear;
-                const month = this.currentMonth;
-                const firstDay = new Date(year, month, 1);
-                const lastDay = new Date(year, month + 1, 0);
-                const startDow = firstDay.getDay(); // 0=Sun
-                const daysInMonth = lastDay.getDate();
-                const today = new Date();
-                const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-
-                const days = [];
-
-                // Previous month padding
-                const prevLastDay = new Date(year, month, 0);
-                const prevDays = prevLastDay.getDate();
-                for (let i = startDow - 1; i >= 0; i--) {
-                    const d = prevDays - i;
-                    const dateStr = this.dateStr(year, month - 1, d);
-                    days.push(this.makeDayObj(d, dateStr, false, dateStr === todayStr));
-                }
-
-                // Current month
-                for (let d = 1; d <= daysInMonth; d++) {
-                    const dateStr = this.dateStr(year, month, d);
-                    days.push(this.makeDayObj(d, dateStr, true, dateStr === todayStr));
-                }
-
-                // Next month padding
-                const remaining = 7 - (days.length % 7);
-                if (remaining < 7) {
-                    for (let d = 1; d <= remaining; d++) {
-                        const dateStr = this.dateStr(year, month + 1, d);
-                        days.push(this.makeDayObj(d, dateStr, false, dateStr === todayStr));
+                    })
+                    .then(function(resp) { return resp.json(); })
+                    .then(function(events) { successCallback(events); })
+                    .catch(function(err) { failureCallback(err); });
+                },
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
                     }
-                }
+                },
+                eventDidMount: function(info) {
+                    var props = info.event.extendedProps;
+                    var type = props.type ? props.type.replace('_', ' ') : '';
+                    type = type.charAt(0).toUpperCase() + type.slice(1);
+                    var tip = info.event.title;
+                    if (props.trainer) tip += '\nTrainer: ' + props.trainer;
+                    if (type) tip += '\nType: ' + type;
+                    if (props.price) tip += '\nPrice: ' + props.price;
+                    if (props.location) tip += '\nLocation: ' + props.location;
+                    info.el.setAttribute('title', tip);
+                },
+            });
+            calendar.render();
+        }
 
-                this.calendarDays = days;
-            },
-
-            dateStr(year, month, day) {
-                // Handle month overflow/underflow
-                const d = new Date(year, month, day);
-                return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-            },
-
-            makeDayObj(dayNumber, dateStr, isCurrentMonth, isToday) {
-                const dayEvents = this.events
-                    .filter(e => dateStr >= e.start && dateStr <= e.end)
-                    .map(e => {
-                        const dayOfWeek = new Date(dateStr).getDay();
-                        const isStartDay = dateStr === e.start;
-                        const isRowStart = dayOfWeek === 0; // Sunday
-                        const isFirstOfMonth = dateStr.endsWith('-01');
-                        return {
-                            ...e,
-                            showTitle: isStartDay || isRowStart || isFirstOfMonth,
-                        };
-                    });
-
-                const maxVisible = this.maxVisibleEvents;
-                return {
-                    dayNumber,
-                    dateStr,
-                    isCurrentMonth,
-                    isToday,
-                    visibleEvents: dayEvents.slice(0, maxVisible),
-                    extraCount: Math.max(0, dayEvents.length - maxVisible),
-                };
-            },
-
-            eventColorClass(type) {
-                const colors = {
-                    in_person: 'bg-blue-100 text-blue-800 border-l-2 border-blue-500',
-                    virtual: 'bg-purple-100 text-purple-800 border-l-2 border-purple-500',
-                    hybrid: 'bg-indigo-100 text-indigo-800 border-l-2 border-indigo-500',
-                };
-                return colors[type] || 'bg-gray-100 text-gray-800 border-l-2 border-gray-500';
-            },
-        };
-    }
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            switchView(initialView);
+        });
+    })();
     </script>
+    <style>
+        /* FullCalendar event styling */
+        .fc-event {
+            border-radius: 4px !important;
+            font-size: 0.8rem !important;
+            padding: 2px 4px !important;
+            cursor: pointer !important;
+        }
+        .fc-daygrid-event-dot {
+            display: none !important;
+        }
+        .fc-event:hover {
+            opacity: 0.85;
+        }
+        .fc .fc-button-primary {
+            background-color: #1C3519 !important;
+            border-color: #1C3519 !important;
+        }
+        .fc .fc-button-primary:not(:disabled).fc-button-active,
+        .fc .fc-button-primary:not(:disabled):active {
+            background-color: #2E522A !important;
+            border-color: #2E522A !important;
+        }
+        .fc .fc-button-primary:hover {
+            background-color: #2E522A !important;
+            border-color: #2E522A !important;
+        }
+        .fc .fc-today-button:disabled {
+            opacity: 0.5;
+        }
+        .fc .fc-day-today {
+            background-color: rgba(173, 126, 7, 0.08) !important;
+        }
+    </style>
     @endpush
 </x-app-layout>

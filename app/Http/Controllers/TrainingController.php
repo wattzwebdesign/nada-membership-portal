@@ -52,31 +52,47 @@ class TrainingController extends Controller
     }
 
     /**
-     * Return trainings as JSON for the calendar view.
+     * Return trainings as JSON for the FullCalendar view.
      */
     public function calendarEvents(Request $request): JsonResponse
     {
-        $month = $request->input('month', now()->format('Y-m'));
-        $startOfMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
-        $endOfMonth = $startOfMonth->copy()->endOfMonth();
+        $start = $request->input('start', now()->startOfMonth()->toDateString());
+        $end = $request->input('end', now()->endOfMonth()->toDateString());
 
         $trainings = Training::publiclyVisible()
             ->with('trainer')
-            ->where('start_date', '<=', $endOfMonth)
-            ->where('end_date', '>=', $startOfMonth)
+            ->where('start_date', '<=', $end)
+            ->where('end_date', '>=', $start)
             ->orderBy('start_date')
             ->get();
 
-        $events = $trainings->map(fn (Training $t) => [
-            'id' => $t->id,
-            'title' => $t->title,
-            'start' => $t->start_date->toDateString(),
-            'end' => $t->end_date->toDateString(),
-            'type' => $t->type->value,
-            'url' => route('trainings.show', $t),
-            'trainer' => $t->trainer->full_name ?? 'N/A',
-            'price' => $t->is_paid ? '$' . number_format($t->price_cents / 100, 2) : 'Free',
-        ]);
+        $typeColors = [
+            'in_person' => ['bg' => '#3B82F6', 'border' => '#2563EB'],
+            'virtual'   => ['bg' => '#8B5CF6', 'border' => '#7C3AED'],
+            'hybrid'    => ['bg' => '#6366F1', 'border' => '#4F46E5'],
+        ];
+
+        $events = $trainings->map(function (Training $t) use ($typeColors) {
+            $colors = $typeColors[$t->type->value] ?? ['bg' => '#6B7280', 'border' => '#4B5563'];
+            // FullCalendar end date is exclusive — add 1 day
+            $endDate = $t->end_date->copy()->addDay()->format('Y-m-d');
+
+            return [
+                'id' => $t->id,
+                'title' => $t->title,
+                'start' => $t->start_date->format('Y-m-d'),
+                'end' => $endDate,
+                'url' => route('trainings.show', $t),
+                'backgroundColor' => $colors['bg'],
+                'borderColor' => $colors['border'],
+                'extendedProps' => [
+                    'type' => $t->type->value,
+                    'trainer' => $t->trainer->full_name ?? 'N/A',
+                    'price' => $t->is_paid ? '$' . number_format($t->price_cents / 100, 2) : 'Free',
+                    'location' => $t->location_name,
+                ],
+            ];
+        });
 
         return response()->json($events);
     }
