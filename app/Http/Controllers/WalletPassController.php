@@ -147,7 +147,7 @@ class WalletPassController extends Controller
 
         $registration = \App\Models\EventRegistration::where('event_id', $event->id)
             ->where('user_id', $user->id)
-            ->where('status', RegistrationStatus::Registered->value)
+            ->whereNotIn('status', [RegistrationStatus::Canceled->value])
             ->first();
 
         if (! $registration) {
@@ -163,11 +163,11 @@ class WalletPassController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return back()->with('error', 'Unable to generate your event pass. Please try again or contact support.');
+            return back()->with('error', 'Unable to generate your event pass: ' . $e->getMessage());
         }
 
         if (empty($pkpass)) {
-            return back()->with('error', 'Unable to generate your event pass. Please try again or contact support.');
+            return back()->with('error', 'Unable to generate your event pass. The pass file was empty.');
         }
 
         return response($pkpass, 200, [
@@ -187,7 +187,7 @@ class WalletPassController extends Controller
 
         $registration = \App\Models\EventRegistration::where('event_id', $event->id)
             ->where('user_id', $user->id)
-            ->where('status', RegistrationStatus::Registered->value)
+            ->whereNotIn('status', [RegistrationStatus::Canceled->value])
             ->first();
 
         if (! $registration) {
@@ -203,7 +203,7 @@ class WalletPassController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return back()->with('error', 'Unable to generate your event pass. Please try again or contact support.');
+            return back()->with('error', 'Unable to generate your event pass: ' . $e->getMessage());
         }
 
         return redirect()->away($url);
