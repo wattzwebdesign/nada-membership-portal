@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\EventPaymentStatus;
 use App\Enums\RegistrationStatus;
+use App\Filament\Exports\EventRegistrationExporter;
 use App\Filament\Resources\EventRegistrationResource\Pages;
 use App\Models\EventRegistration;
 use Filament\Resources\Resource;
@@ -71,6 +72,12 @@ class EventRegistrationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\ExportBulkAction::make()
+                        ->exporter(EventRegistrationExporter::class),
+                ]),
             ]);
     }
 

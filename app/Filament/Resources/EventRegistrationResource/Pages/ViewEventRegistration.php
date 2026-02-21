@@ -22,7 +22,8 @@ class ViewEventRegistration extends ViewRecord
                         Infolists\Components\TextEntry::make('full_name')
                             ->label('Name'),
                         Infolists\Components\TextEntry::make('email'),
-                        Infolists\Components\TextEntry::make('phone'),
+                        Infolists\Components\TextEntry::make('phone')
+                            ->placeholder('--'),
                         Infolists\Components\TextEntry::make('status')
                             ->badge(),
                         Infolists\Components\TextEntry::make('payment_status')
@@ -42,22 +43,25 @@ class ViewEventRegistration extends ViewRecord
                         Infolists\Components\TextEntry::make('checkedInBy.full_name')
                             ->label('Checked In By')
                             ->placeholder('--'),
-                        Infolists\Components\TextEntry::make('qr_code_token')
-                            ->label('QR Token'),
-                    ])->columns(3),
+                    ])->columns(2),
 
                 Infolists\Components\Section::make('Payment')
                     ->schema([
                         Infolists\Components\TextEntry::make('stripe_checkout_session_id')
                             ->label('Stripe Session')
-                            ->placeholder('--'),
+                            ->placeholder('--')
+                            ->limit(30)
+                            ->tooltip(fn ($record) => $record->stripe_checkout_session_id),
                         Infolists\Components\TextEntry::make('stripe_payment_intent_id')
                             ->label('Payment Intent')
-                            ->placeholder('--'),
+                            ->placeholder('--')
+                            ->limit(30)
+                            ->tooltip(fn ($record) => $record->stripe_payment_intent_id),
                         Infolists\Components\TextEntry::make('invoice.number')
                             ->label('Invoice')
                             ->placeholder('--'),
-                    ])->columns(3),
+                    ])->columns(3)
+                    ->visible(fn ($record) => $record->stripe_checkout_session_id || $record->invoice_id),
 
                 Infolists\Components\Section::make('Form Responses')
                     ->schema([
@@ -74,6 +78,15 @@ class ViewEventRegistration extends ViewRecord
                             ->columnSpanFull(),
                     ])
                     ->visible(fn ($record) => ! empty($record->notes)),
+
+                Infolists\Components\Section::make('Metadata')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->dateTime(),
+                        Infolists\Components\TextEntry::make('canceled_at')
+                            ->dateTime()
+                            ->placeholder('--'),
+                    ])->columns(2),
             ]);
     }
 }
