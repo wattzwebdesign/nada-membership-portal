@@ -35,4 +35,9 @@ class EventReports extends Page
             CheckInRateChart::class,
         ];
     }
+
+    public function getFooterWidgetsColumns(): int|array
+    {
+        return 2;
+    }
 }
