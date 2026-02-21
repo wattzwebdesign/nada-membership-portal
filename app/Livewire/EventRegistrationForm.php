@@ -43,8 +43,8 @@ class EventRegistrationForm extends Component
             $this->email = $user->email ?? '';
             $this->phone = $user->phone ?? '';
 
-            // Auto-verify member status
-            if ($user->hasActiveSubscription()) {
+            // Auto-verify member status (only if event has member pricing)
+            if ($user->hasActiveSubscription() && $this->event->hasMemberPricing()) {
                 $this->isMemberVerified = true;
                 $this->memberVerificationMessage = 'Member pricing applied.';
             }
@@ -79,7 +79,11 @@ class EventRegistrationForm extends Component
 
         if ($user && $user->hasActiveSubscription()) {
             $this->isMemberVerified = true;
-            $this->memberVerificationMessage = 'Member verified! Member pricing has been applied.';
+            if ($this->event->hasMemberPricing()) {
+                $this->memberVerificationMessage = 'Member verified! Member pricing has been applied.';
+            } else {
+                $this->memberVerificationMessage = 'Member verified!';
+            }
         } else {
             $this->memberVerificationMessage = 'No active membership found for this email.';
         }

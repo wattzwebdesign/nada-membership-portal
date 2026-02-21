@@ -190,4 +190,11 @@ class Event extends Model
     {
         return $this->registrations()->whereNotIn('status', ['canceled'])->count();
     }
+
+    public function hasMemberPricing(): bool
+    {
+        return $this->pricingCategories()
+            ->whereHas('packages', fn ($q) => $q->whereNotNull('member_price_cents'))
+            ->exists();
+    }
 }
