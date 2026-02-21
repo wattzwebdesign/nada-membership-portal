@@ -4,6 +4,7 @@ namespace App\Filament\Resources\EventResource\RelationManagers;
 
 use App\Enums\EventPaymentStatus;
 use App\Enums\RegistrationStatus;
+use App\Filament\Exports\EventRegistrationExporter;
 use App\Models\EventRegistration;
 use App\Services\EventRegistrationService;
 use Filament\Forms;
@@ -132,6 +133,16 @@ class RegistrationsRelationManager extends RelationManager
                             ->success()
                             ->send();
                     }),
+            ])
+            ->headerActions([
+                Tables\Actions\ExportAction::make()
+                    ->exporter(EventRegistrationExporter::class),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\ExportBulkAction::make()
+                        ->exporter(EventRegistrationExporter::class),
+                ]),
             ]);
     }
 }
