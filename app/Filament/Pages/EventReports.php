@@ -24,19 +24,13 @@ class EventReports extends Page
     {
         return [
             EventStatsOverview::class,
-        ];
-    }
-
-    protected function getFooterWidgets(): array
-    {
-        return [
             RegistrationsByEventChart::class,
             EventRevenueChart::class,
             CheckInRateChart::class,
         ];
     }
 
-    public function getFooterWidgetsColumns(): int|array
+    public function getHeaderWidgetsColumns(): int|array
     {
         return 2;
     }

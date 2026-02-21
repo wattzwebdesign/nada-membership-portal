@@ -10,6 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class EventStatsOverview extends StatsOverviewWidget
 {
+    protected int | string | array $columnSpan = 'full';
     protected function getStats(): array
     {
         $totalEvents = Event::count();
