@@ -12,6 +12,21 @@ class ViewEvent extends ViewRecord
 {
     protected static string $resource = EventResource::class;
 
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
+
+    public function getContentTabLabel(): ?string
+    {
+        return 'Overview';
+    }
+
+    public function getContentTabIcon(): ?string
+    {
+        return 'heroicon-o-information-circle';
+    }
+
     protected function getHeaderActions(): array
     {
         return [

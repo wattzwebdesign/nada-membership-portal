@@ -88,10 +88,16 @@ class EventResource extends Resource
 
                 Forms\Components\Section::make('Location')
                     ->schema([
+                        Forms\Components\ViewField::make('google_autocomplete')
+                            ->view('filament.forms.google-address-autocomplete')
+                            ->columnSpanFull()
+                            ->dehydrated(false),
                         Forms\Components\TextInput::make('location_name')
                             ->maxLength(255),
                         Forms\Components\TextInput::make('location_address')
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->live(onBlur: true)
+                            ->helperText('Start typing to search for an address'),
                         Forms\Components\TextInput::make('city')
                             ->maxLength(100),
                         Forms\Components\TextInput::make('state')
