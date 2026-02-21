@@ -36,7 +36,7 @@
                     </svg>
                 </button>
             </div>
-            <p x-show="search.length > 0" class="text-center text-sm text-gray-500 mt-2">
+            <p x-show="search.length > 0" x-cloak class="text-center text-sm text-gray-500 mt-2">
                 <span x-text="visibleCount"></span> matching term<span x-show="visibleCount !== 1">s</span>
             </p>
         </div>
@@ -74,32 +74,38 @@
             </template>
         </div>
 
-        {{-- Categories & Terms --}}
-        @foreach ($categories as $category)
-            <div
-                x-show="isCategoryVisible('{{ $category->slug }}')"
-                class="mb-10"
-                x-cloak
-            >
-                <div class="flex items-center gap-3 mb-4" id="category-{{ $category->slug }}">
-                    <h2 class="text-lg font-bold text-gray-900 whitespace-nowrap">{{ $category->name }}</h2>
-                    <div class="flex-1 border-t border-gray-200"></div>
-                    <span class="text-sm text-gray-400 whitespace-nowrap" x-text="categoryVisibleCount('{{ $category->slug }}') + ' terms'"></span>
+        {{-- Alphabetical Terms List --}}
+        @php
+            $grouped = $terms->groupBy(fn($t) => strtoupper(substr($t->term, 0, 1)));
+        @endphp
+
+        @foreach ($grouped as $letter => $letterTerms)
+            <div x-show="isLetterVisible('{{ $letter }}')" x-cloak>
+                {{-- Letter Heading --}}
+                <div class="sticky top-0 z-10 bg-gray-50 border-b border-gray-200 py-2 mb-3" id="letter-{{ $letter }}">
+                    <h2 class="text-2xl font-bold text-brand-primary">{{ $letter }}</h2>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @foreach ($category->publishedTerms as $term)
+                {{-- Terms for this letter --}}
+                <div class="space-y-3 mb-8">
+                    @foreach ($letterTerms as $term)
                         <div
-                            x-show="isTermVisible('{{ addslashes($term->term) }}', '{{ $category->slug }}')"
+                            x-show="isTermVisible('{{ addslashes($term->term) }}', '{{ $term->category->slug }}')"
                             data-term="{{ strtolower($term->term) }}"
-                            data-letter="{{ strtoupper(substr($term->term, 0, 1)) }}"
-                            data-category="{{ $category->slug }}"
+                            data-definition="{{ strtolower($term->definition) }}"
+                            data-letter="{{ $letter }}"
+                            data-category="{{ $term->category->slug }}"
                             class="term-card bg-white border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow duration-150"
                             id="term-{{ $term->slug }}"
                             x-cloak
                         >
-                            <h3 class="font-semibold text-gray-900">{{ $term->term }}</h3>
-                            <p class="mt-1 text-sm text-gray-600 leading-relaxed">{{ $term->definition }}</p>
+                            <div class="flex flex-wrap items-start gap-2 mb-1">
+                                <h3 class="font-semibold text-gray-900">{{ $term->term }}</h3>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-brand-primary/10 text-brand-primary shrink-0">
+                                    {{ $term->category->name }}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 leading-relaxed">{{ $term->definition }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -107,7 +113,7 @@
         @endforeach
 
         {{-- No Results --}}
-        <div x-show="visibleCount === 0 && search.length > 0" class="text-center py-12 text-gray-500" x-cloak>
+        <div x-show="visibleCount === 0 && (search.length > 0 || activeCategory !== '')" class="text-center py-12 text-gray-500" x-cloak>
             <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
@@ -143,36 +149,34 @@
                 },
 
                 isTermVisibleByElement(card) {
-                    const term = card.dataset.term;
-                    const category = card.dataset.category;
-                    const matchesCategory = this.activeCategory === '' || category === this.activeCategory;
-                    const matchesSearch = this.search === '' || term.includes(this.search.toLowerCase());
-                    return matchesCategory && matchesSearch;
+                    const matchesCategory = this.activeCategory === '' || card.dataset.category === this.activeCategory;
+                    if (!matchesCategory) return false;
+                    if (this.search === '') return true;
+                    const q = this.search.toLowerCase();
+                    return card.dataset.term.includes(q) || card.dataset.definition.includes(q);
                 },
 
                 isTermVisible(term, categorySlug) {
                     const matchesCategory = this.activeCategory === '' || categorySlug === this.activeCategory;
-                    const matchesSearch = this.search === '' || term.toLowerCase().includes(this.search.toLowerCase());
-                    return matchesCategory && matchesSearch;
+                    if (!matchesCategory) return false;
+                    if (this.search === '') return true;
+                    const q = this.search.toLowerCase();
+                    const card = document.querySelector(`.term-card[data-term="${CSS.escape(term.toLowerCase())}"]`);
+                    return term.toLowerCase().includes(q) || (card && card.dataset.definition.includes(q));
                 },
 
-                isCategoryVisible(categorySlug) {
-                    if (this.activeCategory !== '' && categorySlug !== this.activeCategory) return false;
-                    return this.categoryVisibleCount(categorySlug) > 0 || this.search === '';
-                },
-
-                categoryVisibleCount(categorySlug) {
-                    let count = 0;
-                    document.querySelectorAll(`.term-card[data-category="${categorySlug}"]`).forEach(card => {
-                        if (this.isTermVisibleByElement(card)) count++;
-                    });
-                    return count;
+                isLetterVisible(letter) {
+                    const cards = document.querySelectorAll(`.term-card[data-letter="${letter}"]`);
+                    for (const card of cards) {
+                        if (this.isTermVisibleByElement(card)) return true;
+                    }
+                    return false;
                 },
 
                 jumpToLetter(letter) {
-                    const card = document.querySelector(`.term-card[data-letter="${letter}"]`);
-                    if (card) {
-                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const heading = document.getElementById('letter-' + letter);
+                    if (heading) {
+                        heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 }
             };

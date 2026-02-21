@@ -3,21 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\GlossaryCategory;
+use App\Models\GlossaryTerm;
 
 class PublicGlossaryController extends Controller
 {
     public function index()
     {
-        $categories = GlossaryCategory::with(['publishedTerms' => function ($query) {
-            $query->orderBy('term');
-        }])
-            ->withCount('publishedTerms')
-            ->orderBy('sort_order')
-            ->orderBy('name')
+        $categories = GlossaryCategory::orderBy('sort_order')->get();
+
+        $terms = GlossaryTerm::published()
+            ->with('category')
+            ->orderBy('term')
             ->get();
 
-        $totalTerms = $categories->sum('published_terms_count');
-
-        return view('public.glossary.index', compact('categories', 'totalTerms'));
+        return view('public.glossary.index', [
+            'categories' => $categories,
+            'terms' => $terms,
+            'totalTerms' => $terms->count(),
+        ]);
     }
 }
