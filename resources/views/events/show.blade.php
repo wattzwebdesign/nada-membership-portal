@@ -35,6 +35,69 @@
                     </div>
                 @endif
 
+                @if ($event->latitude && $event->longitude)
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div id="event-map" class="w-full h-64"></div>
+                        <div class="p-4">
+                            @if ($event->location_name || $event->location_address)
+                                <p class="text-sm font-medium text-gray-900">{{ $event->location_name }}</p>
+                                @if ($event->location_address)
+                                    <p class="text-sm text-gray-500">
+                                        {{ $event->location_address }}@if($event->city), {{ $event->city }}@endif @if($event->state){{ $event->state }}@endif {{ $event->zip }}
+                                    </p>
+                                @endif
+                            @endif
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @php
+                                    $addressQuery = urlencode(collect([$event->location_name, $event->location_address, $event->city, $event->state, $event->zip])->filter()->implode(', '));
+                                    $coords = $event->latitude . ',' . $event->longitude;
+                                @endphp
+                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ $addressQuery }}"
+                                    target="_blank"
+                                    class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md bg-brand-primary text-white hover:bg-brand-accent transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    Get Directions
+                                </a>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ $addressQuery }}"
+                                    target="_blank"
+                                    class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                                    View on Google Maps
+                                </a>
+                                <a href="https://www.google.com/maps/search/hotels+near+{{ $addressQuery }}"
+                                    target="_blank"
+                                    class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                    Nearby Hotels
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @elseif ($event->location_address || $event->location_name)
+                    {{-- No coordinates but has address — show address card with link buttons --}}
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-brand-secondary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">{{ $event->location_name }}</p>
+                                @if ($event->location_address)
+                                    <p class="text-sm text-gray-500">
+                                        {{ $event->location_address }}@if($event->city), {{ $event->city }}@endif @if($event->state){{ $event->state }}@endif {{ $event->zip }}
+                                    </p>
+                                @endif
+                                @php
+                                    $addressQuery = urlencode(collect([$event->location_name, $event->location_address, $event->city, $event->state, $event->zip])->filter()->implode(', '));
+                                @endphp
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    <a href="https://www.google.com/maps/dir/?api=1&destination={{ $addressQuery }}" target="_blank" class="text-sm text-brand-primary hover:underline">Get Directions</a>
+                                    <span class="text-gray-300">|</span>
+                                    <a href="https://www.google.com/maps/search/hotels+near+{{ $addressQuery }}" target="_blank" class="text-sm text-brand-primary hover:underline">Nearby Hotels</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 @if ($event->virtual_link)
                     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
                         <p class="text-sm text-blue-800"><strong>Virtual Link:</strong> This event includes a virtual component. The link will be shared upon registration.</p>
@@ -77,4 +140,43 @@
             </div>
         </div>
     </div>
+
+    @if ($event->latitude && $event->longitude && config('services.google.maps_api_key'))
+        @push('scripts')
+        <script>
+            function initEventMap() {
+                const location = { lat: {{ $event->latitude }}, lng: {{ $event->longitude }} };
+                const map = new google.maps.Map(document.getElementById('event-map'), {
+                    center: location,
+                    zoom: 15,
+                    disableDefaultUI: true,
+                    zoomControl: true,
+                    mapTypeControl: false,
+                    streetViewControl: false,
+                    fullscreenControl: true,
+                    styles: [
+                        { featureType: 'poi', stylers: [{ visibility: 'simplified' }] },
+                    ],
+                });
+                new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: @json($event->location_name ?: $event->title),
+                });
+            }
+
+            (function() {
+                if (window.google && window.google.maps) {
+                    initEventMap();
+                    return;
+                }
+                const script = document.createElement('script');
+                script.src = 'https://maps.googleapis.com/maps/api/js?key={{ config("services.google.maps_api_key") }}&callback=initEventMap';
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+            })();
+        </script>
+        @endpush
+    @endif
 </x-public-layout>
