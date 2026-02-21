@@ -38,7 +38,7 @@ class TrainerApplicationResource extends Resource
 
     public static function getNavigationBadgeColor(): ?string
     {
-        return 'warning';
+        return 'success';
     }
 
     public static function getGloballySearchableAttributes(): array
