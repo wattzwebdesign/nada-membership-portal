@@ -1,5 +1,4 @@
-<x-layouts.public>
-    <x-slot:title>Events - NADA</x-slot:title>
+<x-public-layout title="Events - NADA">
 
     <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-10">
@@ -76,4 +75,4 @@
             {{ $events->links() }}
         </div>
     </div>
-</x-layouts.public>
+</x-public-layout>

@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('event_registration_pricing_package', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_registration_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('event_pricing_package_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('pricing_category_id')->nullable()->constrained('event_pricing_categories')->nullOnDelete();
+            $table->foreignId('event_registration_id')->constrained('event_registrations', 'id', 'erpp_reg_id_fk')->cascadeOnDelete();
+            $table->foreignId('event_pricing_package_id')->constrained('event_pricing_packages', 'id', 'erpp_pkg_id_fk')->cascadeOnDelete();
+            $table->foreignId('pricing_category_id')->nullable()->constrained('event_pricing_categories', 'id', 'erpp_cat_id_fk')->nullOnDelete();
             $table->unsignedInteger('unit_price_cents');
             $table->boolean('is_member_pricing')->default(false);
             $table->boolean('is_early_bird')->default(false);

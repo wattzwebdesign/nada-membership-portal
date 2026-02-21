@@ -1,5 +1,4 @@
-<x-layouts.public>
-    <x-slot:title>Registration Confirmed - NADA</x-slot:title>
+<x-public-layout title="Registration Confirmed - NADA">
 
     <div class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -84,4 +83,4 @@
             </a>
         </div>
     </div>
-</x-layouts.public>
+</x-public-layout>
