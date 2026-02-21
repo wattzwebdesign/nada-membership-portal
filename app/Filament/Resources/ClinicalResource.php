@@ -27,7 +27,7 @@ class ClinicalResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
-    protected static ?string $navigationLabel = 'Clinical Submissions';
+    protected static ?string $navigationLabel = 'Clinical Submissions (Legacy)';
 
     protected static ?string $pluralModelLabel = 'clinical submissions';
 

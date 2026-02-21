@@ -29,6 +29,7 @@ use App\Http\Controllers\ShopCartController;
 use App\Http\Controllers\ShopCheckoutController;
 use App\Http\Controllers\OrderContactController;
 use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\ClinicalLogController;
 use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\WalletPassController;
 use Illuminate\Support\Facades\Route;
@@ -132,11 +133,16 @@ Route::middleware(['auth', 'verified', 'nda'])->group(function () {
         Route::get('/trainings/{training}/wallet/apple', [WalletPassController::class, 'downloadAppleTrainingPass'])->name('trainings.wallet.apple');
         Route::get('/trainings/{training}/wallet/google', [WalletPassController::class, 'getGoogleTrainingPassUrl'])->name('trainings.wallet.google');
 
-        // Clinicals
-        Route::get('/clinicals', fn () => redirect()->route('clinicals.index'));
-        Route::get('/clinicals/submit', [ClinicalController::class, 'create'])->name('clinicals.create');
-        Route::post('/clinicals', [ClinicalController::class, 'store'])->name('clinicals.store');
+        // Clinical Log Books
+        Route::get('/clinicals', fn () => redirect()->route('clinical-logs.index'));
         Route::get('/clinicals/history', [ClinicalController::class, 'index'])->name('clinicals.index');
+        Route::get('/clinical-logs', [ClinicalLogController::class, 'index'])->name('clinical-logs.index');
+        Route::get('/clinical-logs/create', [ClinicalLogController::class, 'create'])->name('clinical-logs.create');
+        Route::post('/clinical-logs', [ClinicalLogController::class, 'store'])->name('clinical-logs.store');
+        Route::get('/clinical-logs/{log}', [ClinicalLogController::class, 'show'])->name('clinical-logs.show');
+        Route::put('/clinical-logs/{log}', [ClinicalLogController::class, 'update'])->name('clinical-logs.update');
+        Route::post('/clinical-logs/{log}/complete', [ClinicalLogController::class, 'markComplete'])->name('clinical-logs.complete');
+        Route::delete('/clinical-logs/{log}', [ClinicalLogController::class, 'destroy'])->name('clinical-logs.destroy');
 
         // Discount Request
         Route::get('/discount/request', [DiscountRequestController::class, 'create'])->name('discount.request.create');
@@ -199,12 +205,19 @@ Route::middleware(['auth', 'verified', 'nda', 'trainer'])->prefix('trainer')->na
     Route::post('/registrations/{registration}/complete', [App\Http\Controllers\Trainer\RegistrationController::class, 'markComplete'])->name('registrations.complete');
     Route::post('/registrations/bulk-complete', [App\Http\Controllers\Trainer\RegistrationController::class, 'bulkComplete'])->name('registrations.bulk-complete');
 
-    // Clinicals Review
+    // Clinicals Review (Legacy)
     Route::get('/clinicals', [App\Http\Controllers\Trainer\ClinicalController::class, 'index'])->name('clinicals.index');
     Route::get('/clinicals/{clinical}', [App\Http\Controllers\Trainer\ClinicalController::class, 'show'])->name('clinicals.show');
     Route::post('/clinicals/{clinical}/approve', [App\Http\Controllers\Trainer\ClinicalController::class, 'approve'])->name('clinicals.approve');
     Route::post('/clinicals/{clinical}/reject', [App\Http\Controllers\Trainer\ClinicalController::class, 'reject'])->name('clinicals.reject');
     Route::post('/clinicals/{clinical}/issue-certificate', [App\Http\Controllers\Trainer\ClinicalController::class, 'issueCertificate'])->name('clinicals.issue-certificate');
+
+    // Clinical Log Books
+    Route::get('/clinical-logs', [App\Http\Controllers\Trainer\ClinicalLogController::class, 'index'])->name('clinical-logs.index');
+    Route::get('/clinical-logs/{log}', [App\Http\Controllers\Trainer\ClinicalLogController::class, 'show'])->name('clinical-logs.show');
+    Route::post('/clinical-logs/{log}/approve', [App\Http\Controllers\Trainer\ClinicalLogController::class, 'approve'])->name('clinical-logs.approve');
+    Route::post('/clinical-logs/{log}/reject', [App\Http\Controllers\Trainer\ClinicalLogController::class, 'reject'])->name('clinical-logs.reject');
+    Route::post('/clinical-logs/{log}/issue-certificate', [App\Http\Controllers\Trainer\ClinicalLogController::class, 'issueCertificate'])->name('clinical-logs.issue-certificate');
 
     // Payouts
     Route::get('/payouts', [App\Http\Controllers\Trainer\PayoutController::class, 'index'])->name('payouts.index');

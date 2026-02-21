@@ -42,6 +42,7 @@ class SiteSettings extends Page implements HasForms
     public ?string $umami_script_url = '';
     public ?string $umami_website_id = '';
     public array $state_law_links = [];
+    public ?string $clinical_hours_threshold = '40';
 
     public array $stripeInfo = [];
 
@@ -62,6 +63,7 @@ class SiteSettings extends Page implements HasForms
             ->map(fn ($url, $state) => ['state' => $state, 'url' => $url])
             ->values()
             ->toArray();
+        $this->clinical_hours_threshold = SiteSetting::get('clinical_hours_threshold', '40');
         $this->stripeInfo = $this->fetchStripeInfo();
     }
 
@@ -144,6 +146,17 @@ class SiteSettings extends Page implements HasForms
                                     ->helperText('The Umami Website ID for this site. Also used by the admin analytics dashboard widgets.'),
                             ]),
 
+                        Tabs\Tab::make('Clinicals')
+                            ->icon('heroicon-o-book-open')
+                            ->schema([
+                                TextInput::make('clinical_hours_threshold')
+                                    ->label('Clinical Hours Threshold')
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(1)
+                                    ->helperText('Number of clinical hours required before a member can submit their log book for review (default: 40).'),
+                            ]),
+
                         Tabs\Tab::make('State Laws')
                             ->icon('heroicon-o-building-library')
                             ->schema([
@@ -194,6 +207,7 @@ class SiteSettings extends Page implements HasForms
             'image_max_width' => ['nullable', 'numeric', 'min:100'],
             'image_max_height' => ['nullable', 'numeric', 'min:100'],
             'image_thumb_size' => ['nullable', 'numeric', 'min:50', 'max:800'],
+            'clinical_hours_threshold' => ['required', 'numeric', 'min:1'],
         ]);
 
         SiteSetting::set('admin_notification_email', $this->admin_notification_email);
@@ -213,6 +227,7 @@ class SiteSettings extends Page implements HasForms
             ->mapWithKeys(fn ($item) => [$item['state'] => $item['url']])
             ->toArray();
         SiteSetting::setJson('state_law_links', $linksMap);
+        SiteSetting::set('clinical_hours_threshold', $this->clinical_hours_threshold);
 
         Notification::make()
             ->title('Settings saved successfully')

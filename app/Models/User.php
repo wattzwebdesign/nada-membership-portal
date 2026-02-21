@@ -174,6 +174,16 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return $this->hasMany(Order::class);
     }
 
+    public function clinicalLogs(): HasMany
+    {
+        return $this->hasMany(ClinicalLog::class);
+    }
+
+    public function assignedClinicalLogs(): HasMany
+    {
+        return $this->hasMany(ClinicalLog::class, 'trainer_id');
+    }
+
     // Scopes & Helpers
 
     public function isTrainer(): bool

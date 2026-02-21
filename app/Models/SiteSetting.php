@@ -75,6 +75,11 @@ class SiteSetting extends Model
         static::set($key, json_encode($value));
     }
 
+    public static function clinicalHoursThreshold(): float
+    {
+        return (float) static::get('clinical_hours_threshold', '40');
+    }
+
     public static function stateLawLink(?string $state): ?string
     {
         if (! $state) {
