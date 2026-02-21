@@ -14,6 +14,8 @@ class PricingCategoriesRelationManager extends RelationManager
 
     protected static ?string $title = 'Pricing';
 
+    protected static ?string $icon = 'heroicon-o-currency-dollar';
+
     public function form(Form $form): Form
     {
         return $form

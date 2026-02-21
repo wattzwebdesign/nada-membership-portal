@@ -17,6 +17,8 @@ class RegistrationsRelationManager extends RelationManager
 {
     protected static string $relationship = 'registrations';
 
+    protected static ?string $icon = 'heroicon-o-user-group';
+
     public function table(Table $table): Table
     {
         return $table

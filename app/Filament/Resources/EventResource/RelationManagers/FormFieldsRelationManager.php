@@ -13,6 +13,8 @@ class FormFieldsRelationManager extends RelationManager
 {
     protected static string $relationship = 'formFields';
 
+    protected static ?string $icon = 'heroicon-o-document-text';
+
     protected static ?string $title = 'Custom Form Fields';
 
     public function form(Form $form): Form
