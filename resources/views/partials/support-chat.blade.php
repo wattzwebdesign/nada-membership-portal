@@ -172,15 +172,11 @@
                 sessionStorage.setItem('nada_chat_messages', JSON.stringify(val));
             });
 
-            // "Help" pill animation — expand once every 24 hours
-            const pillHours = 24;
-            const lastPill = localStorage.getItem('nada_chat_pill_ts');
-            const hoursSince = lastPill ? (Date.now() - parseInt(lastPill)) / 3600000 : Infinity;
-            if (hoursSince >= pillHours && this.messages.length === 0) {
+            // "Need Help?" pill animation — expand on every page visit
+            if (this.messages.length === 0) {
                 this._pillTimer = setTimeout(() => {
                     if (this.open) return;
                     this.showLabel = true;
-                    localStorage.setItem('nada_chat_pill_ts', Date.now().toString());
                     this._pillTimer = setTimeout(() => {
                         this.showLabel = false;
                     }, 30000);
