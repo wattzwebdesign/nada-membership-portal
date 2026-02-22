@@ -9,8 +9,10 @@ use App\Notifications\EventRegistrationConfirmation;
 use App\Notifications\NewEventRegistrationNotification;
 use App\Services\EventRegistrationService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EventRegistrationController extends Controller
 {
@@ -138,6 +140,21 @@ class EventRegistrationController extends Controller
         }
 
         return back()->with('success', 'Your registration has been canceled.');
+    }
+
+    public function qrCode(EventRegistration $registration): Response
+    {
+        $checkInUrl = route('filament.admin.pages.event-check-in') . '?scan=' . $registration->qr_code_token;
+
+        $png = QrCode::format('png')
+            ->size(300)
+            ->margin(2)
+            ->generate($checkInUrl);
+
+        return response($png, 200, [
+            'Content-Type' => 'image/png',
+            'Cache-Control' => 'public, max-age=86400',
+        ]);
     }
 
     protected function sendConfirmationNotifications(EventRegistration $registration): void

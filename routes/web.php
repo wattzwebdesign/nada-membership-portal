@@ -71,6 +71,7 @@ Route::get('/shop/orders/{order}/download/{orderItem}', [ShopCheckoutController:
 
 // Public Events (no auth required)
 Route::get('/events', [PublicEventController::class, 'index'])->name('public.events.index');
+Route::get('/events/qr/{registration:qr_code_token}.png', [EventRegistrationController::class, 'qrCode'])->name('events.qr');
 Route::get('/events/{event:slug}', [PublicEventController::class, 'show'])->name('public.events.show');
 Route::post('/events/{event:slug}/register', [EventRegistrationController::class, 'store'])->middleware('throttle:10,1')->name('events.register');
 Route::get('/events/{event:slug}/register/success', [EventRegistrationController::class, 'paymentSuccess'])->name('events.payment.success');
