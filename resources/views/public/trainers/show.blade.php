@@ -94,10 +94,10 @@
         @endif
 
         {{-- Trainings I am Hosting --}}
-        @if ($upcomingTrainings->isNotEmpty())
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8 mt-6">
-                <h2 class="text-lg font-semibold mb-4 text-brand-primary">Trainings I am Hosting</h2>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8 mt-6">
+            <h2 class="text-lg font-semibold mb-4 text-brand-primary">Trainings I am Hosting</h2>
 
+            @if ($upcomingTrainings->isNotEmpty())
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     @foreach ($upcomingTrainings as $training)
                         <a href="{{ route('trainings.show', $training) }}" class="block border border-gray-200 rounded-lg p-4 hover:border-gray-300 hover:shadow-sm transition-all">
@@ -122,8 +122,10 @@
                         </a>
                     @endforeach
                 </div>
-            </div>
-        @endif
+            @else
+                <p class="text-sm text-gray-500">No trainings with this Registered Trainer. Check back later.</p>
+            @endif
+        </div>
 
         {{-- Contact Modal --}}
         <div x-show="showContactModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
